@@ -8,56 +8,58 @@
 
     <meta name="description"
           content="Liên hệ với Fashion Store để gửi câu hỏi hoặc góp ý về sản phẩm.">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
+<body class="bo-cuc-trang">
 
-    <header>
+    <header class="dau-trang">
         <h1>Liên hệ với Fashion Store</h1>
-        <p>Gửi thông tin hoặc câu hỏi cho chúng tôi</p>
+        <p class="dau-trang__khau-hieu">Gửi thông tin hoặc câu hỏi cho chúng tôi</p>
     </header>
 
-    <nav aria-label="Điều hướng chính">
-        <ul>
-            <li>
-                <a href="index.html">Trang chủ</a>
+    <nav class="dieu-huong" aria-label="Điều hướng chính">
+        <ul class="dieu-huong__danh-sach">
+            <li class="dieu-huong__muc">
+                <a class="dieu-huong__lien-ket" href="index.html">Trang chủ</a>
             </li>
 
-            <li>
-                <a href="danh-sach.html">Sản phẩm</a>
+            <li class="dieu-huong__muc">
+                <a class="dieu-huong__lien-ket" href="danh-sach.html">Sản phẩm</a>
             </li>
 
-            <li>
-                <a href="chi-tiet.html">Chi tiết sản phẩm</a>
+            <li class="dieu-huong__muc">
+                <a class="dieu-huong__lien-ket" href="chi-tiet.html">Chi tiết sản phẩm</a>
             </li>
 
-            <li>
-                <a href="gioi-thieu.html">Giới thiệu</a>
+            <li class="dieu-huong__muc">
+                <a class="dieu-huong__lien-ket" href="gioi-thieu.html">Giới thiệu</a>
             </li>
 
-            <li>
-                <a href="lien-he.html">Liên hệ</a>
+            <li class="dieu-huong__muc">
+                <a class="dieu-huong__lien-ket" href="lien-he.html">Liên hệ</a>
             </li>
         </ul>
     </nav>
 
-    <main>
+    <main class="noi-dung-chinh">
 
-        <section>
+        <section class="khoi-noi-dung">
             <h2>Form liên hệ</h2>
 
-            <form action="#" method="post">
+            <form class="bieu-mau" action="#" method="post">
 
                 <fieldset>
 
                     <legend>Thông tin người dùng</legend>
 
-                    <p>
-                        <label for="fullname">
+                    <p class="bieu-mau__nhom">
+                        <label class="bieu-mau__nhan" for="fullname">
                             Họ và tên:
                         </label>
 
                         <input
+                            class="bieu-mau__nhap"
                             type="text"
                             id="fullname"
                             name="fullname"
@@ -65,24 +67,26 @@
                             required>
                     </p>
 
-                    <p>
-                        <label for="email">
+                    <p class="bieu-mau__nhom">
+                        <label class="bieu-mau__nhan" for="email">
                             Email:
                         </label>
 
                         <input
+                            class="bieu-mau__nhap"
                             type="email"
                             id="email"
                             name="email"
                             required>
                     </p>
 
-                    <p>
-                        <label for="phone">
+                    <p class="bieu-mau__nhom">
+                        <label class="bieu-mau__nhan" for="phone">
                             Số điện thoại:
                         </label>
 
                         <input
+                            class="bieu-mau__nhap"
                             type="tel"
                             id="phone"
                             name="phone"
@@ -91,12 +95,13 @@
                             required>
                     </p>
 
-                    <p>
-                        <label for="age">
+                    <p class="bieu-mau__nhom">
+                        <label class="bieu-mau__nhan" for="age">
                             Tuổi:
                         </label>
 
                         <input
+                            class="bieu-mau__nhap"
                             type="number"
                             id="age"
                             name="age"
@@ -105,24 +110,26 @@
                             required>
                     </p>
 
-                    <p>
-                        <label for="date">
+                    <p class="bieu-mau__nhom">
+                        <label class="bieu-mau__nhan" for="date">
                             Ngày liên hệ:
                         </label>
 
                         <input
+                            class="bieu-mau__nhap"
                             type="date"
                             id="date"
                             name="date"
                             required>
                     </p>
 
-                    <p>
-                        <label for="topic">
+                    <p class="bieu-mau__nhom">
+                        <label class="bieu-mau__nhan" for="topic">
                             Chủ đề:
                         </label>
 
                         <select
+                            class="bieu-mau__lua-chon"
                             id="topic"
                             name="topic"
                             required>
@@ -146,14 +153,15 @@
                         </select>
                     </p>
 
-                    <p>
-                        <label for="message">
+                    <p class="bieu-mau__nhom">
+                        <label class="bieu-mau__nhan" for="message">
                             Nội dung:
                         </label>
                     </p>
 
-                    <p>
+                    <p class="bieu-mau__nhom">
                         <textarea
+                            class="bieu-mau__van-ban"
                             id="message"
                             name="message"
                             rows="5"
@@ -162,12 +170,12 @@
                             required></textarea>
                     </p>
 
-                    <p>
-                        <button type="submit">
+                    <p class="bieu-mau__nhom-nut">
+                        <button class="nut-bam nut-bam--chinh" type="submit">
                             Gửi thông tin
                         </button>
 
-                        <button type="reset">
+                        <button class="nut-bam nut-bam--phu" type="reset">
                             Nhập lại
                         </button>
                     </p>
@@ -180,7 +188,7 @@
 
     </main>
 
-    <footer>
+    <footer class="chan-trang">
         <p>
             &copy; 2026 Fashion Store. All rights reserved.
         </p>

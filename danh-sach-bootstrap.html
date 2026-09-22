@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Danh sách sản phẩm thời trang dựng bằng Bootstrap 5 - Fashion Store Nhóm 08.">
+    <title>Danh sách Bootstrap | Fashion Store Nhóm 08</title>
+    <!-- Nạp Bootstrap 5 CSS từ CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Nạp tệp CSS tùy biến riêng ngay sau Bootstrap -->
+    <link rel="stylesheet" href="css/bootstrap-custom.css">
+</head>
+<body class="bg-light">
+
+    <!-- Header -->
+    <header class="bg-primary text-white text-center py-3">
+        <h1 class="m-0 fs-4 fw-bold">Fashion Store - Phiên Bản Bootstrap 5</h1>
+    </header>
+
+    <!-- Thành phần Navbar dựng sẵn -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" aria-label="Điều hướng Bootstrap">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">FashionStore</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuBootstrap" aria-controls="menuBootstrap" aria-expanded="false" aria-label="Mở menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menuBootstrap">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Trang chủ</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="danh-sach-bootstrap.html">Danh sách (Bootstrap)</a></li>
+                    <li class="nav-item"><a class="nav-link" href="danh-sach.html">Danh sách (CSS gốc)</a></li>
+                    <li class="nav-item"><a class="nav-link" href="chi-tiet.html">Chi tiết</a></li>
+                    <li class="nav-item"><a class="nav-link" href="gioi-thieu.html">Giới thiệu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="lien-he.html">Liên hệ</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main sử dụng lưới Container - Row - Col -->
+    <main class="container my-4">
+        <h2 class="mb-4 text-primary fs-3">Danh Sách Mặt Hàng (Bản Bootstrap 5)</h2>
+
+        <!-- Thành phần Alert dựng sẵn -->
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <strong>Ưu đãi khai trương:</strong> Miễn phí vận chuyển toàn quốc cho tất cả đơn hàng từ 500.000 VNĐ!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>
+        </div>
+
+        <!-- Bảng dựng sẵn với Table & Card của Bootstrap -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h3 class="h5 m-0 text-primary">Bảng Giá Niêm Yết Sản Phẩm</h3>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <caption class="px-3">Bảng giá sản phẩm thời trang chính hãng</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Mã hàng</th>
+                                <th scope="col">Tên sản phẩm</th>
+                                <th scope="col">Chất liệu</th>
+                                <th scope="col">Giá niêm yết</th>
+                                <th scope="col">Tình trạng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">FS-01</th>
+                                <td>Áo Sơ Mi Oxford Slimfit</td>
+                                <td>100% Cotton</td>
+                                <td>450.000 VNĐ</td>
+                                <td><span class="badge bg-success">Còn hàng</span></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">FS-02</th>
+                                <td>Áo Polo Pique Cổ Bẻ</td>
+                                <td>Cotton pha Poly</td>
+                                <td>320.000 VNĐ</td>
+                                <td><span class="badge bg-success">Còn hàng</span></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">FS-03</th>
+                                <td>Quần Tây Kaki Hàn Quốc</td>
+                                <td>Kaki thun cao cấp</td>
+                                <td>520.000 VNĐ</td>
+                                <td><span class="badge bg-danger">Tạm hết</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lưới Card hiển thị sản phẩm -->
+        <h3 class="h4 mb-3 text-primary">Sản Phẩm Tiêu Biểu</h3>
+        <div class="row g-3">
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title h5">Áo Sơ Mi Oxford</h4>
+                        <p class="card-text text-muted">Vải dệt mật độ cao đứng form, thấm hút mồ hôi tốt khi đi làm.</p>
+                        <a href="chi-tiet.html" class="btn btn-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title h5">Áo Polo Pique</h4>
+                        <p class="card-text text-muted">Chất liệu co giãn nhẹ, phù hợp cho cả đi chơi thể thao và dạo phố.</p>
+                        <a href="chi-tiet.html" class="btn btn-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title h5">Quần Tây Kaki</h4>
+                        <p class="card-text text-muted">Thiết kế tối giản, dễ phối cùng áo sơ mi và giày tây lịch lãm.</p>
+                        <a href="chi-tiet.html" class="btn btn-primary">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <p class="m-0">© 2026 Nhóm 08 – Khoa Công nghệ Thông tin – Trường Đại học Sư phạm, Đại học Đà Nẵng</p>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

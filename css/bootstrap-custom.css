@@ -1,0 +1,20 @@
+/* Tùy biến màu chính của Bootstrap theo nhận diện nhóm */
+:root {
+    --bs-primary: #1e40af;
+    --bs-primary-rgb: 30, 64, 175;
+    --bs-body-font-family: system-ui, -apple-system, sans-serif;
+}
+
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.btn-primary:hover {
+    background-color: #172554;
+    border-color: #172554;
+}
+
+.table th {
+    background-color: #e2e8f0;
+}

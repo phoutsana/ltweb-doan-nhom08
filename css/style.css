@@ -1,0 +1,368 @@
+/* ==========================================================================
+   01-bien.css: Khai báo biến trong :root (bảng màu, cỡ chữ, bo góc, khoảng cách)
+   Đảm bảo độ tương phản màu chữ - nền >= 4.5:1
+   ========================================================================== */
+:root {
+    --mau-chinh: #1e40af;       /* Xanh dương đậm chuẩn tương phản */
+    --mau-chinh-dam: #172554;
+    --mau-nhan: #d97706;        /* Vàng hổ phách */
+    --mau-chu: #0f172a;         /* Chữ đen than dễ đọc */
+    --mau-chu-phu: #334155;
+    --mau-nen: #f8fafc;         /* Nền xám nhạt dịu mắt */
+    --mau-trang: #ffffff;
+    --mau-vien: #cbd5e1;
+    --bo-goc: 8px;
+    --bo-goc-lon: 12px;
+    --khoang-cach: 16px;
+    --khoang-cach-lon: 32px;
+    --phong-chu: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ==========================================================================
+   02-chuan-hoa.css: box-sizing, lề của body và chuẩn hóa hình ảnh
+   ========================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--phong-chu);
+    line-height: 1.6;
+    color: var(--mau-chu);
+    background-color: var(--mau-nen);
+    overflow-x: hidden; /* Không cho xuất hiện thanh cuộn ngang ở mọi kích thước màn hình */
+}
+
+/* Quy tắc ảnh theo đề bài: max-width 100%, height auto, display block */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ==========================================================================
+   03-bo-cuc.css: Bố cục Grid theo triết lý mobile-first
+   ========================================================================== */
+/* Mặc định: Điện thoại di động (từ 360px trở lên) xếp 1 cột */
+.bo-cuc-trang {
+    display: grid;
+    min-height: 100vh;
+    grid-template-areas:
+        "dau"
+        "menu"
+        "chinh"
+        "chan";
+    grid-template-rows: auto auto 1fr auto;
+    gap: 0;
+    width: 100%;
+}
+
+.dau-trang {
+    grid-area: dau;
+    background: linear-gradient(135deg, var(--mau-chinh-dam), var(--mau-chinh));
+    color: var(--mau-trang);
+    padding: var(--khoang-cach);
+    text-align: center;
+}
+/* Thêm đoạn này vào phần .dau-trang trong css/style.css */
+.dau-trang h1 {
+    color: var(--mau-trang);
+    margin: 0 0 8px 0;
+}
+
+.dau-trang__khau-hieu {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.dieu-huong {
+    grid-area: menu;
+    background-color: var(--mau-chinh-dam);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.noi-dung-chinh {
+    grid-area: chinh;
+    width: 100%;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: var(--khoang-cach);
+}
+
+.chan-trang {
+    grid-area: chan;
+    background-color: var(--mau-chinh-dam);
+    color: var(--mau-trang);
+    text-align: center;
+    padding: var(--khoang-cach-lon) var(--khoang-cach);
+    margin-top: var(--khoang-cach-lon);
+}
+
+/* Điểm ngắt 1: Máy tính bảng (min-width: 768px) */
+@media (min-width: 768px) {
+    .noi-dung-chinh {
+        padding: var(--khoang-cach-lon);
+    }
+}
+
+/* Điểm ngắt 2: Máy tính để bàn (min-width: 1024px) */
+@media (min-width: 1024px) {
+    .dau-trang {
+        padding: var(--khoang-cach-lon) var(--khoang-cach);
+    }
+    .dau-trang__khau-hieu {
+        font-size: 1.35rem;
+    }
+}
+
+/* ==========================================================================
+   04-thanh-phan.css: Dàn Flexbox cho menu, thẻ, bảng, form (Theo quy tắc BEM)
+   ========================================================================== */
+/* Menu điều hướng dạng Flexbox (tự xuống dòng trên màn hình nhỏ 360px) */
+.dieu-huong__danh-sach {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+}
+
+.dieu-huong__muc {
+    margin: 0;
+}
+
+.dieu-huong__lien-ket {
+    display: block;
+    color: var(--mau-trang);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 10px 14px;
+    border-radius: var(--bo-goc);
+    transition: background-color 0.25s ease, color 0.25s ease; /* transition <= 0.3s */
+}
+
+/* Trạng thái :hover, :active, :focus-visible đầy đủ, giữ viền focus */
+.dieu-huong__lien-ket:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #93c5fd;
+}
+
+.dieu-huong__lien-ket:active {
+    background-color: var(--mau-chinh);
+}
+
+.dieu-huong__lien-ket:focus-visible {
+    outline: 2px solid #fde047;
+    outline-offset: 2px;
+}
+
+/* Hàng thẻ/Section */
+.khoi-noi-dung {
+    background-color: var(--mau-trang);
+    padding: var(--khoang-cach);
+    border-radius: var(--bo-goc-lon);
+    border: 1px solid var(--mau-vien);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-bottom: var(--khoang-cach-lon);
+}
+
+@media (min-width: 768px) {
+    .khoi-noi-dung {
+        padding: var(--khoang-cach-lon);
+    }
+}
+
+h1 {
+    font-size: 1.75rem;
+    color: var(--mau-chinh-dam);
+    margin-top: 0;
+    margin-bottom: var(--khoang-cach);
+}
+
+h2 {
+    font-size: 1.35rem;
+    color: var(--mau-chinh);
+    border-left: 5px solid var(--mau-chinh);
+    padding-left: 12px;
+    margin-top: 0;
+    margin-bottom: var(--khoang-cach);
+}
+
+/* Lưới thẻ sản phẩm co giãn tự động */
+.luoi-the {
+    display: grid;
+    gap: var(--khoang-cach);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    margin-top: var(--khoang-cach);
+}
+
+/* Hình ảnh và chú thích */
+figure {
+    margin: var(--khoang-cach) 0;
+}
+
+figure img {
+    border-radius: var(--bo-goc);
+    border: 1px solid var(--mau-vien);
+    object-fit: cover;
+    width: 100%;
+}
+
+figcaption {
+    font-size: 0.875rem;
+    color: var(--mau-chu-phu);
+    margin-top: 8px;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Iframe co giãn responsive 16:9 */
+.khung-video {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--bo-goc);
+}
+
+.khung-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Bảng dữ liệu có bao bọc tránh tràn */
+.hop-bang {
+    width: 100%;
+    overflow-x: auto;
+    margin: var(--khoang-cach) 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--mau-trang);
+}
+
+caption {
+    font-weight: bold;
+    color: var(--mau-chinh-dam);
+    padding-bottom: 8px;
+    text-align: left;
+}
+
+th, td {
+    padding: 12px 14px;
+    border: 1px solid var(--mau-vien);
+}
+
+thead th {
+    background-color: #e2e8f0;
+    color: var(--mau-chu);
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f1f5f9;
+}
+
+/* Biểu mẫu (Form) */
+.bieu-mau {
+    display: flex;
+    flex-direction: column;
+    gap: var(--khoang-cach);
+    max-width: 600px;
+}
+
+.bieu-mau__nhom {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.bieu-mau__nhan {
+    font-weight: 600;
+}
+
+.bieu-mau__nhap, 
+.bieu-mau__lua-chon, 
+.bieu-mau__van-ban {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--mau-vien);
+    border-radius: var(--bo-goc);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.25s ease;
+}
+
+.bieu-mau__nhap:focus-visible, 
+.bieu-mau__lua-chon:focus-visible, 
+.bieu-mau__van-ban:focus-visible {
+    outline: 2px solid var(--mau-chinh);
+    border-color: var(--mau-chinh);
+}
+
+.bieu-mau__nhom-nut {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* Nhóm nút bấm */
+.nut-bam {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--bo-goc);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+}
+
+.nut-bam--chinh {
+    background-color: var(--mau-chinh);
+    color: var(--mau-trang);
+}
+
+.nut-bam--chinh:hover {
+    background-color: var(--mau-chinh-dam);
+}
+
+.nut-bam--phu {
+    background-color: #e2e8f0;
+    color: var(--mau-chu);
+    border-color: var(--mau-vien);
+}
+
+.nut-bam--phu:hover {
+    background-color: #cbd5e1;
+}
+
+.nut-bam:focus-visible {
+    outline: 2px solid #fde047;
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   05-tien-ich.css: Lớp dùng lại
+   ========================================================================== */
+.the-thong-tin {
+    background-color: #eff6ff;
+    border-left: 4px solid var(--mau-chinh);
+    padding: 12px 16px;
+    border-radius: 0 var(--bo-goc) var(--bo-goc) 0;
+    margin: var(--khoang-cach) 0;
+}
