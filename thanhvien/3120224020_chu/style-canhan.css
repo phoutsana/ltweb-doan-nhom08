@@ -1,351 +1,262 @@
-<!DOCTYPE html>
-<html lang="vi">
-
-<head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Giới thiệu cá nhân - Nguyễn Sơn Chu</title>
-
-    <meta name="description"
-          content="Trang giới thiệu cá nhân của Nguyễn Sơn Chu.">
-
-    <!-- Nạp tệp CSS riêng cho trang cá nhân -->
-    <link rel="stylesheet" href="style-canhan.css">
-</head>
-
-
-<body>
-
-    <!-- LIÊN KẾT QUAY VỀ TRANG CHỦ NHÓM (Dùng ../../index.html) -->
-    <a class="back-home" href="../../index.html">
-        ← Về trang chủ nhóm
-    </a>
-
-
-    <!-- PHẦN ĐẦU TRANG -->
-    <header>
-
-        <h1>
-            Trang giới thiệu cá nhân
-        </h1>
-
-        <p>
-            Xin chào! Rất vui được giới thiệu về bản thân tôi.
-        </p>
-
-    </header>
-
-
-    <!-- THANH ĐIỀU HƯỚNG -->
-    <nav aria-label="Điều hướng chính">
-
-        <a href="#gioi-thieu">
-            Giới thiệu
-        </a>
-
-        <a href="#so-thich">
-            Sở thích
-        </a>
-
-        <a href="#ky-nang">
-            Kỹ năng
-        </a>
-
-        <a href="#thoi-khoa-bieu">
-            Thời khóa biểu
-        </a>
-
-    </nav>
-
-
-    <!-- NỘI DUNG CHÍNH -->
-    <main>
-
-
-        <!-- GIỚI THIỆU BẢN THÂN -->
-        <section id="gioi-thieu">
-
-            <h2>
-                Giới thiệu bản thân
-            </h2>
-
-            <div class="profile">
-
-                <img
-                    src="../../images/avatar-SonChu.jpg"
-                    alt="Ảnh chân dung của Nguyễn Sơn Chu"
-                >
-
-                <div class="info">
-
-                    <p>
-                        <strong>Họ và tên:</strong>
-                        Nguyễn Sơn Chu
-                    </p>
-
-                    <p>
-                        <strong>Ngành học:</strong>
-                        Công nghệ thông tin
-                    </p>
-
-                    <p>
-                        <strong>Lớp:</strong>
-                        24CNTT2
-                    </p>
-
-                    <p>
-                        <strong>Trường:</strong>
-                        Trường Đại học Sư phạm - Đại học Đà Nẵng
-                    </p>
-
-                    <p>
-                        <strong>Quê quán:</strong>
-                        Nghệ An
-                    </p>
-
-                    <p>
-                        <strong>Mục tiêu:</strong>
-                        Nâng cao kiến thức lập trình và phát triển
-                        các sản phẩm công nghệ phục vụ học tập và
-                        cuộc sống.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- SỞ THÍCH -->
-        <article id="so-thich">
-
-            <h2>
-                Sở thích
-            </h2>
-
-            <p>
-                Tôi thích lập trình, tìm hiểu công nghệ,
-                chơi game và nghe nhạc.
-            </p>
-
-            <p>
-                Ngoài ra, tôi cũng thích tìm hiểu những công nghệ
-                mới và áp dụng kiến thức đã học vào các dự án
-                thực tế.
-            </p>
-
-        </article>
-
-
-        <!-- KỸ NĂNG -->
-        <section id="ky-nang">
-
-            <h2>
-                Kỹ năng
-            </h2>
-
-            <ul class="luoi-ky-nang">
-
-                <li>
-                    Lập trình C/C++
-                </li>
-
-                <li>
-                    HTML và CSS
-                </li>
-
-                <li>
-                    SQL
-                </li>
-
-                <li>
-                    Làm việc nhóm
-                </li>
-
-                <li>
-                    Tìm hiểu và sử dụng công nghệ mới
-                </li>
-
-            </ul>
-
-        </section>
-
-
-        <!-- THỜI KHÓA BIỂU -->
-        <section id="thoi-khoa-bieu">
-
-            <h2>
-                Thời khóa biểu
-            </h2>
-
-            <!-- Khung cuộn ngang riêng cho bảng trên điện thoại -->
-            <div class="khung-cuon-bang">
-                <table>
-
-                    <caption>
-                        Thời khóa biểu trong tuần
-                    </caption>
-
-                    <thead>
-
-                        <tr>
-
-                            <th scope="col">
-                                Thứ
-                            </th>
-
-                            <th scope="col">
-                                Buổi sáng
-                            </th>
-
-                            <th scope="col">
-                                Buổi chiều
-                            </th>
-
-                            <th scope="col">
-                                Buổi tối
-                            </th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        <tr>
-
-                            <th scope="row">
-                                Thứ 2
-                            </th>
-
-                            <td>
-                                Cơ sở dữ liệu
-                            </td>
-
-                            <td>
-                                Lập trình C++
-                            </td>
-
-                            <td>
-                                Tự học
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <th scope="row">
-                                Thứ 3
-                            </th>
-
-                            <td>
-                                Khai phá dữ liệu
-                            </td>
-
-                            <td>
-                                Web/Phát triển Web
-                            </td>
-
-                            <td>
-                                Tự học
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <th scope="row">
-                                Thứ 4
-                            </th>
-
-                            <td>
-                                Trống
-                            </td>
-
-                            <td>
-                                Cơ sở dữ liệu
-                            </td>
-
-                            <td>
-                                Làm bài tập
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <th scope="row">
-                                Thứ 5
-                            </th>
-
-                            <td>
-                                An toàn thông tin
-                            </td>
-
-                            <td>
-                                Lập trình Python
-                            </td>
-
-                            <td>
-                                Tự học
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <th scope="row">
-                                Thứ 6
-                            </th>
-
-                            <td>
-                                Trống
-                            </td>
-
-                            <td>
-                                Trống
-                            </td>
-
-                            <td>
-                                Nghỉ
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-            </div>
-
-        </section>
-
-
-    </main>
-
-
-    <!-- CHÂN TRANG -->
-    <footer>
-
-        <p>
-            © 2026 Nguyễn Sơn Chu
-        </p>
-
-        <p>
-            Trang cá nhân - Fashion Store
-        </p>
-
-    </footer>
-
-
-</body>
-
-</html>
+/* ==========================================================
+   CSS DÀNH RIÊNG CHO TRANG CÁ NHÂN (MSSV: 3120224020_chu)
+   Kế thừa bảng màu và biến CSS chung của Nhóm 08
+   Bố cục bằng Flexbox & CSS Grid, hỗ trợ cuộn ngang di động
+   ========================================================== */
+
+/* 1. Kế thừa bảng màu và biến CSS chung của nhóm */
+:root {
+    --mau-chinh: #1a56db;
+    --mau-chinh-hover: #1e429f;
+    --mau-phu: #0e9f6e;
+    --mau-dam: #111928;
+    --mau-nhat: #f1f5f9;
+    --mau-trang: #ffffff;
+    --mau-vien: #e2e8f0;
+    --font-chinh: Arial, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-chinh);
+    background-color: var(--mau-nhat);
+    color: #222;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Nút quay về trang chủ */
+.back-home {
+    display: inline-block;
+    margin: 20px 5%;
+    padding: 10px 18px;
+    background-color: var(--mau-chinh);
+    color: var(--mau-trang);
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    width: fit-content;
+    transition: background-color 0.2s ease;
+}
+
+.back-home:hover {
+    background-color: var(--mau-chinh-hover);
+}
+
+/* Phần đầu trang - Bố cục Flexbox */
+header {
+    background: linear-gradient(
+        135deg,
+        #1e40af,
+        var(--mau-chinh)
+    );
+    color: var(--mau-trang);
+    text-align: center;
+    padding: 45px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+header h1 {
+    font-size: 40px;
+    margin: 0;
+}
+
+header p {
+    font-size: 20px;
+    margin-top: 10px;
+}
+
+/* Thanh điều hướng - Bố cục Flexbox */
+nav {
+    background-color: #172554;
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+nav a {
+    color: var(--mau-trang);
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 15px;
+    font-size: 18px;
+    transition: color 0.2s ease;
+}
+
+nav a:hover {
+    color: #93c5fd;
+}
+
+/* Nội dung chính */
+main {
+    width: 90%;
+    max-width: 1100px;
+    margin: 35px auto;
+    flex: 1;
+}
+
+section,
+article {
+    background-color: var(--mau-trang);
+    padding: 35px;
+    margin-bottom: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+    color: #1e40af;
+    border-left: 6px solid var(--mau-chinh);
+    padding-left: 15px;
+    margin-bottom: 30px;
+}
+
+/* Thông tin cá nhân - Bố cục Flexbox */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 45px;
+}
+
+.profile img {
+    width: 270px;
+    height: 270px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 6px solid var(--mau-chinh);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+}
+
+.info {
+    flex: 1;
+}
+
+.info p {
+    font-size: 19px;
+    margin: 12px 0;
+}
+
+.info strong {
+    color: #1e40af;
+}
+
+/* Danh sách kỹ năng - Bố cục CSS Grid */
+.luoi-ky-nang {
+    padding-left: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.luoi-ky-nang li {
+    margin: 0;
+    font-size: 18px;
+    background-color: #f8fafc;
+    border: 1px solid var(--mau-vien);
+    border-left: 4px solid var(--mau-chinh);
+    padding: 12px 16px;
+    border-radius: 6px;
+}
+
+/* Khung cuộn ngang khớp chính xác với class bang-cuon-bang trong HTML */
+.bang-cuon-bang {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    min-width: 550px; /* Giữ độ rộng để cuộn ngang mượt mà trên di động 360px */
+    border-collapse: collapse;
+}
+
+caption {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 12px;
+    margin-bottom: 5px;
+    color: #1e40af;
+    text-align: left;
+}
+
+th,
+td {
+    border: 1px solid #ccc;
+    padding: 12px;
+    text-align: center;
+}
+
+th {
+    background-color: #dbeafe;
+    color: #1e3a8a;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+/* Chân trang */
+footer {
+    background-color: #172554;
+    color: var(--mau-trang);
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+}
+
+/* Hiển thị trên điện thoại (Responsive) */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 30px;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    nav a {
+        display: block;
+        margin: 5px 0;
+    }
+
+    .profile {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .profile img {
+        width: 220px;
+        height: 220px;
+    }
+
+    section,
+    article {
+        padding: 20px 15px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+}
