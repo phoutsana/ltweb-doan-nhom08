@@ -13,6 +13,22 @@
           content="Trang giới thiệu cá nhân của Nguyễn Sơn Chu.">
 
     <style>
+        /* BẢNG MÀU VÀ BIẾN CSS DÙNG CHUNG CỦA NHÓM */
+        :root {
+            --mau-chinh: #1a56db;
+            --mau-chinh-hover: #1e429f;
+            --mau-phu: #0e9f6e;
+            --mau-phu-hover: #046c4e;
+            --mau-dam: #111928;
+            --mau-nhat: #f9fafb;
+            --mau-trang: #ffffff;
+            --mau-vien: #e5e7eb;
+            --mau-chu-phu: #6b7280;
+            --khoang-cach-goc: 16px;
+            --bo-goc-khung: 12px;
+            --do-bong-nhe: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --font-chu-chinh: Arial, sans-serif;
+        }
 
         * {
             box-sizing: border-box;
@@ -20,10 +36,13 @@
 
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f1f5f9;
-            color: #222;
+            font-family: var(--font-chu-chinh);
+            background-color: var(--mau-nhat);
+            color: var(--mau-dam);
             line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         /* Nút quay về trang chủ */
@@ -31,53 +50,63 @@
             display: inline-block;
             margin: 20px 5%;
             padding: 10px 18px;
-            background-color: #2563eb;
-            color: white;
+            background-color: var(--mau-chinh);
+            color: var(--mau-trang);
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
+            transition: background-color 0.2s ease;
         }
 
         .back-home:hover {
-            background-color: #1d4ed8;
+            background-color: var(--mau-chinh-hover);
         }
 
-        /* Phần đầu trang */
+        /* Phần đầu trang - Dùng Flexbox */
         header {
             background: linear-gradient(
                 135deg,
                 #1e40af,
-                #2563eb
+                var(--mau-chinh)
             );
 
-            color: white;
+            color: var(--mau-trang);
             text-align: center;
             padding: 45px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         header h1 {
             margin: 0;
-            font-size: 40px;
+            font-size: 36px;
         }
 
         header p {
-            font-size: 20px;
+            font-size: 18px;
             margin-top: 10px;
         }
 
-        /* Thanh điều hướng */
+        /* Thanh điều hướng - Bố cục Flexbox */
         nav {
             background-color: #172554;
             padding: 15px;
             text-align: center;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
         }
 
         nav a {
-            color: white;
+            color: var(--mau-trang);
             text-decoration: none;
             font-weight: bold;
-            margin: 0 20px;
-            font-size: 18px;
+            margin: 0 10px;
+            font-size: 17px;
+            transition: color 0.2s ease;
         }
 
         nav a:hover {
@@ -89,38 +118,42 @@
             width: 90%;
             max-width: 1100px;
             margin: 35px auto;
+            flex: 1;
         }
 
         section,
         article {
-            background-color: white;
-            padding: 35px;
+            background-color: var(--mau-trang);
+            padding: 30px;
             margin-bottom: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border-radius: var(--bo-goc-khung);
+            box-shadow: var(--do-bong-nhe);
+            border: 1px solid var(--mau-vien);
         }
 
         h2 {
-            color: #1e40af;
-            border-left: 6px solid #2563eb;
+            color: var(--mau-chinh);
+            border-left: 6px solid var(--mau-chinh);
             padding-left: 15px;
-            margin-bottom: 30px;
+            margin-top: 0;
+            margin-bottom: 25px;
         }
 
-        /* Thông tin cá nhân */
+        /* Thông tin cá nhân - Bố cục Flexbox */
         .profile {
             display: flex;
             align-items: center;
-            gap: 45px;
+            gap: 40px;
         }
 
         .profile img {
-            width: 270px;
-            height: 270px;
+            width: 250px;
+            height: 250px;
             object-fit: cover;
             border-radius: 50%;
-            border: 6px solid #2563eb;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 5px solid var(--mau-chinh);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
         }
 
         .info {
@@ -128,41 +161,65 @@
         }
 
         .info p {
-            font-size: 19px;
-            margin: 12px 0;
+            font-size: 17px;
+            margin: 10px 0;
         }
 
         .info strong {
-            color: #1e40af;
+            color: var(--mau-chinh);
         }
 
-        /* Danh sách kỹ năng */
-        ul {
-            padding-left: 25px;
+        /* Danh sách kỹ năng - Bố cục bằng CSS GRID */
+        #ky-nang ul {
+            padding-left: 0;
+            margin: 0;
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
         }
 
-        li {
-            margin: 10px 0;
-            font-size: 18px;
+        #ky-nang li {
+            margin: 0;
+            font-size: 16px;
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-left: 4px solid var(--mau-chinh);
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        /* Khung cuộn ngang bảo vệ bảng trên thiết bị di động */
+        .bang-cuon-ngang {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid var(--mau-vien);
+            border-radius: 8px;
+            margin-top: 15px;
         }
 
         /* Bảng thời khóa biểu */
         table {
             width: 100%;
+            min-width: 550px; /* Giữ bảng chuẩn tỷ lệ khi cuộn ngang */
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 0;
         }
 
         caption {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
-            margin-bottom: 15px;
-            color: #1e40af;
+            padding: 10px;
+            margin-bottom: 5px;
+            color: var(--mau-chinh);
+            text-align: left;
         }
 
         th,
         td {
-            border: 1px solid #ccc;
+            border: 1px solid var(--mau-vien);
             padding: 12px;
             text-align: center;
         }
@@ -170,44 +227,61 @@
         th {
             background-color: #dbeafe;
             color: #1e3a8a;
+            font-weight: bold;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f8fafc;
         }
 
         /* Footer */
         footer {
             background-color: #172554;
-            color: white;
+            color: var(--mau-trang);
             text-align: center;
             padding: 20px;
             margin-top: 40px;
         }
 
-        /* Hiển thị trên điện thoại */
-        @media (max-width: 768px) {
+        footer p {
+            margin: 5px 0;
+        }
 
+        /* Tối ưu hiển thị Responsive trên điện thoại */
+        @media (max-width: 768px) {
             header h1 {
-                font-size: 30px;
+                font-size: 26px;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 8px;
             }
 
             nav a {
-                display: block;
-                margin: 10px;
+                margin: 5px 0;
             }
 
             .profile {
                 flex-direction: column;
                 text-align: center;
+                gap: 20px;
             }
 
             .profile img {
-                width: 220px;
-                height: 220px;
+                width: 180px;
+                height: 180px;
+            }
+
+            section,
+            article {
+                padding: 20px 15px;
             }
 
             table {
                 font-size: 14px;
             }
         }
-
     </style>
 </head>
 
@@ -377,146 +451,148 @@
                 Thời khóa biểu
             </h2>
 
-            <table>
+            <div class="bang-cuon-ngang">
+                <table>
 
-                <caption>
-                    Thời khóa biểu trong tuần
-                </caption>
+                    <caption>
+                        Thời khóa biểu trong tuần
+                    </caption>
 
-                <thead>
+                    <thead>
 
-                    <tr>
+                        <tr>
 
-                        <th scope="col">
-                            Thứ
-                        </th>
+                            <th scope="col">
+                                Thứ
+                            </th>
 
-                        <th scope="col">
-                            Buổi sáng
-                        </th>
+                            <th scope="col">
+                                Buổi sáng
+                            </th>
 
-                        <th scope="col">
-                            Buổi chiều
-                        </th>
+                            <th scope="col">
+                                Buổi chiều
+                            </th>
 
-                        <th scope="col">
-                            Buổi tối
-                        </th>
+                            <th scope="col">
+                                Buổi tối
+                            </th>
 
-                    </tr>
+                        </tr>
 
-                </thead>
-
-
-                <tbody>
-
-                    <tr>
-
-                        <th scope="row">
-                            Thứ 2
-                        </th>
-
-                        <td>
-                            Cơ sở dữ liệu
-                        </td>
-
-                        <td>
-                            Lập trình C++
-                        </td>
-
-                        <td>
-                            Tự học
-                        </td>
-
-                    </tr>
+                    </thead>
 
 
-                    <tr>
+                    <tbody>
 
-                        <th scope="row">
-                            Thứ 3
-                        </th>
+                        <tr>
 
-                        <td>
-                            Khai phá dữ liệu
-                        </td>
+                            <th scope="row">
+                                Thứ 2
+                            </th>
 
-                        <td>
-                            Web/Phát triển Web
-                        </td>
+                            <td>
+                                Cơ sở dữ liệu
+                            </td>
 
-                        <td>
-                            Tự học
-                        </td>
+                            <td>
+                                Lập trình C++
+                            </td>
 
-                    </tr>
+                            <td>
+                                Tự học
+                            </td>
 
-
-                    <tr>
-
-                        <th scope="row">
-                            Thứ 4
-                        </th>
-
-                        <td>
-                            Trống
-                        </td>
-
-                        <td>
-                            Cơ sở dữ liệu
-                        </td>
-
-                        <td>
-                            Làm bài tập
-                        </td>
-
-                    </tr>
+                        </tr>
 
 
-                    <tr>
+                        <tr>
 
-                        <th scope="row">
-                            Thứ 5
-                        </th>
+                            <th scope="row">
+                                Thứ 3
+                            </th>
 
-                        <td>
-                            An toàn thông tin
-                        </td>
+                            <td>
+                                Khai phá dữ liệu
+                            </td>
 
-                        <td>
-                            Lập trình Python
-                        </td>
+                            <td>
+                                Web/Phát triển Web
+                            </td>
 
-                        <td>
-                            Tự học
-                        </td>
+                            <td>
+                                Tự học
+                            </td>
 
-                    </tr>
+                        </tr>
 
 
-                    <tr>
+                        <tr>
 
-                        <th scope="row">
-                            Thứ 6
-                        </th>
+                            <th scope="row">
+                                Thứ 4
+                            </th>
 
-                        <td>
-                            Trống
-                        </td>
+                            <td>
+                                Trống
+                            </td>
 
-                        <td>
-                            Trống
-                        </td>
+                            <td>
+                                Cơ sở dữ liệu
+                            </td>
 
-                        <td>
-                            Nghỉ
-                        </td>
+                            <td>
+                                Làm bài tập
+                            </td>
 
-                    </tr>
+                        </tr>
 
-                </tbody>
 
-            </table>
+                        <tr>
+
+                            <th scope="row">
+                                Thứ 5
+                            </th>
+
+                            <td>
+                                An toàn thông tin
+                            </td>
+
+                            <td>
+                                Lập trình Python
+                            </td>
+
+                            <td>
+                                Tự học
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th scope="row">
+                                Thứ 6
+                            </th>
+
+                            <td>
+                                Trống
+                            </td>
+
+                            <td>
+                                Trống
+                            </td>
+
+                            <td>
+                                Nghỉ
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+            </div>
 
         </section>
 
