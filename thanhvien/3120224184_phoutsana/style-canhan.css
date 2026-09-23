@@ -1,0 +1,345 @@
+/* ==========================================================
+   CSS DÀNH RIÊNG CHO TRANG CÁ NHÂN - Xayyatiew Phoutsana
+   - Kế thừa chuẩn bảng màu và hệ biến CSS chung của Nhóm 08
+   - Bố cục Grid & Flexbox
+   - Mobile-First với điểm ngắt @media (min-width: 768px)
+   - Ảnh chân dung co giãn theo khung
+   - Đầy đủ trạng thái :hover và :focus-visible
+   ========================================================== */
+
+/* 1. Reset cơ bản */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--phong-chu);
+    background-color: var(--mau-nen);
+    color: var(--mau-chu);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* 2. Quy chuẩn trạng thái :hover và :focus-visible cho TẤT CẢ liên kết và nút bấm */
+a, button {
+    transition: background-color 0.2s ease, color 0.2s ease, outline 0.15s ease;
+}
+
+a:focus-visible, button:focus-visible {
+    outline: 3px solid var(--mau-nhan); /* Dùng màu nhấn chung của nhóm làm viền */
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+/* Nút quay về trang chủ dạng Block trên Mobile */
+.dieu-huong-ngoai {
+    display: flex;
+    flex-direction: column; /* Xếp dọc trên điện thoại như của Chu */
+    align-items: center;
+    gap: 12px;
+    padding: 20px 15px;
+    background-color: var(--mau-nen);
+}
+
+.nut-bam-ngoai {
+    display: inline-block;
+    padding: 10px 18px;
+    background-color: var(--mau-chinh);
+    color: var(--mau-trang);
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    width: 100%; /* Trải dài nút trên Mobile */
+    max-width: 320px;
+    text-align: center;
+}
+
+.nut-bam-ngoai:hover {
+    background-color: var(--mau-chinh-dam);
+    color: var(--mau-trang);
+}
+
+/* 3. Phần đầu trang (Header) - Căn giữa Mobile */
+header.dau-trang {
+    background: linear-gradient(135deg, var(--mau-chinh-dam), var(--mau-chinh));
+    color: var(--mau-trang);
+    text-align: center;
+    padding: 30px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+header h1 {
+    font-size: 26px;
+    margin: 0;
+    color: var(--mau-trang);
+}
+
+header p {
+    font-size: 16px;
+    margin-top: 8px;
+}
+
+/* 4. Thanh điều hướng (Nav) - Xếp dọc màu đậm trên Mobile */
+nav.dieu-huong {
+    background-color: var(--mau-chinh-dam);
+    padding: 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.dieu-huong__danh-sach {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Menu dọc như thiết kế của Chu */
+    align-items: center;
+    gap: 8px;
+}
+
+.dieu-huong__lien-ket {
+    color: var(--mau-trang);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 8px 12px;
+    display: block;
+    width: 100%;
+    max-width: 280px;
+}
+
+.dieu-huong__lien-ket:hover {
+    color: #93c5fd;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+}
+
+/* 5. Nội dung chính - Dạng thẻ nổi (Cards) */
+main.noi-dung-chinh {
+    width: 92%;
+    max-width: 1100px;
+    margin: 20px auto;
+    flex: 1;
+}
+
+.khoi-noi-dung {
+    background-color: var(--mau-trang);
+    padding: 20px 16px;
+    margin-bottom: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06); /* Tạo bóng viền đẹp như của Chu */
+    border: none;
+}
+
+.khoi-noi-dung h2 {
+    color: var(--mau-chinh);
+    border-left: 6px solid var(--mau-chinh);
+    padding-left: 12px;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+/* 6. Thông tin cá nhân & Ảnh chân dung co giãn */
+#gioi-thieu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+}
+
+#gioi-thieu figure {
+    margin: 0;
+    width: 100%;
+    max-width: 220px;
+}
+
+#gioi-thieu img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid var(--mau-chinh);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.thong-tin-chi-tiet {
+    width: 100%;
+    text-align: left;
+}
+
+.thong-tin-chi-tiet p {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.thong-tin-chi-tiet strong {
+    color: var(--mau-chinh);
+    margin-right: 4px;
+}
+
+/* 7. Danh sách kỹ năng - CSS Grid (Thẻ xám có viền trái) */
+#ky-nang ul {
+    padding-left: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+#ky-nang li {
+    margin: 0;
+    font-size: 16px;
+    background-color: var(--mau-nen);
+    border: 1px solid var(--mau-vien);
+    border-left: 4px solid var(--mau-chinh);
+    padding: 10px 14px;
+    border-radius: 6px;
+}
+
+/* 8. Bảng thời khóa biểu cuộn ngang trên điện thoại */
+.hop-bang {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--mau-vien);
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    min-width: 520px; /* Ép độ rộng tối thiểu để tạo thanh cuộn */
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+caption {
+    font-size: 17px;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 5px;
+    color: var(--mau-chinh);
+    text-align: left;
+}
+
+th, td {
+    border: 1px solid var(--mau-vien);
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #dbeafe; /* Xanh nhạt giống mẫu của Chu */
+    color: #1e3a8a;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: var(--mau-nen);
+}
+
+/* 9. Chân trang */
+footer.chan-trang {
+    background-color: var(--mau-chinh-dam);
+    color: var(--mau-trang);
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+/* ==========================================================
+   10. ĐIỂM NGẮT RESPONSIVE MIN-WIDTH (Từ Tablet & Desktop trở lên)
+   ========================================================== */
+@media (min-width: 768px) {
+    .dieu-huong-ngoai {
+        flex-direction: row;
+        justify-content: center;
+        padding: 20px 5%;
+    }
+
+    .nut-bam-ngoai {
+        width: auto;
+    }
+
+    header.dau-trang {
+        padding: 45px 20px;
+    }
+
+    header h1 {
+        font-size: 38px;
+    }
+
+    header p {
+        font-size: 20px;
+    }
+
+    /* Menu mở ngang ra dạng hàng */
+    nav.dieu-huong {
+        padding: 15px;
+    }
+
+    .dieu-huong__danh-sach {
+        flex-direction: row;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .dieu-huong__lien-ket {
+        display: inline-block;
+        width: auto;
+        font-size: 17px;
+        margin: 0 10px;
+    }
+
+    main.noi-dung-chinh {
+        margin: 35px auto;
+    }
+
+    .khoi-noi-dung {
+        padding: 35px;
+        margin-bottom: 30px;
+    }
+
+    .khoi-noi-dung h2 {
+        font-size: 24px;
+        margin-bottom: 25px;
+    }
+
+    /* Bố cục Profile dàn 2 cột: Ảnh bên trái, Thông tin bên phải */
+    #gioi-thieu {
+        flex-direction: row;
+        text-align: left;
+        gap: 45px;
+        align-items: flex-start;
+    }
+
+    #gioi-thieu figure {
+        max-width: 260px;
+        flex-shrink: 0;
+    }
+
+    .thong-tin-chi-tiet p {
+        font-size: 18px;
+        margin: 12px 0;
+    }
+
+    table {
+        font-size: 16px;
+    }
+
+    th, td {
+        padding: 12px;
+    }
+}
