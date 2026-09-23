@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Giới thiệu cá nhân - Nguyễn Sơn Chu</title>
+
+    <meta name="description"
+          content="Trang giới thiệu cá nhân của Nguyễn Sơn Chu.">
+
+    <!-- Nạp tệp CSS riêng cho trang cá nhân -->
+    <link rel="stylesheet" href="style-canhan.css">
+</head>
+
+
+<body>
+
+    <!-- LIÊN KẾT QUAY VỀ TRANG CHỦ NHÓM (Dùng ../../index.html) -->
+    <a class="back-home" href="../../index.html">
+        ← Về trang chủ nhóm
+    </a>
+
+
+    <!-- PHẦN ĐẦU TRANG -->
+    <header>
+
+        <h1>
+            Trang giới thiệu cá nhân
+        </h1>
+
+        <p>
+            Xin chào! Rất vui được giới thiệu về bản thân tôi.
+        </p>
+
+    </header>
+
+
+    <!-- THANH ĐIỀU HƯỚNG -->
+    <nav aria-label="Điều hướng chính">
+
+        <a href="#gioi-thieu">
+            Giới thiệu
+        </a>
+
+        <a href="#so-thich">
+            Sở thích
+        </a>
+
+        <a href="#ky-nang">
+            Kỹ năng
+        </a>
+
+        <a href="#thoi-khoa-bieu">
+            Thời khóa biểu
+        </a>
+
+    </nav>
+
+
+    <!-- NỘI DUNG CHÍNH -->
+    <main>
+
+
+        <!-- GIỚI THIỆU BẢN THÂN -->
+        <section id="gioi-thieu">
+
+            <h2>
+                Giới thiệu bản thân
+            </h2>
+
+            <div class="profile">
+
+                <img
+                    src="../../images/avatar-SonChu.jpg"
+                    alt="Ảnh chân dung của Nguyễn Sơn Chu"
+                >
+
+                <div class="info">
+
+                    <p>
+                        <strong>Họ và tên:</strong>
+                        Nguyễn Sơn Chu
+                    </p>
+
+                    <p>
+                        <strong>Ngành học:</strong>
+                        Công nghệ thông tin
+                    </p>
+
+                    <p>
+                        <strong>Lớp:</strong>
+                        24CNTT2
+                    </p>
+
+                    <p>
+                        <strong>Trường:</strong>
+                        Trường Đại học Sư phạm - Đại học Đà Nẵng
+                    </p>
+
+                    <p>
+                        <strong>Quê quán:</strong>
+                        Nghệ An
+                    </p>
+
+                    <p>
+                        <strong>Mục tiêu:</strong>
+                        Nâng cao kiến thức lập trình và phát triển
+                        các sản phẩm công nghệ phục vụ học tập và
+                        cuộc sống.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SỞ THÍCH -->
+        <article id="so-thich">
+
+            <h2>
+                Sở thích
+            </h2>
+
+            <p>
+                Tôi thích lập trình, tìm hiểu công nghệ,
+                chơi game và nghe nhạc.
+            </p>
+
+            <p>
+                Ngoài ra, tôi cũng thích tìm hiểu những công nghệ
+                mới và áp dụng kiến thức đã học vào các dự án
+                thực tế.
+            </p>
+
+        </article>
+
+
+        <!-- KỸ NĂNG -->
+        <section id="ky-nang">
+
+            <h2>
+                Kỹ năng
+            </h2>
+
+            <ul class="luoi-ky-nang">
+
+                <li>
+                    Lập trình C/C++
+                </li>
+
+                <li>
+                    HTML và CSS
+                </li>
+
+                <li>
+                    SQL
+                </li>
+
+                <li>
+                    Làm việc nhóm
+                </li>
+
+                <li>
+                    Tìm hiểu và sử dụng công nghệ mới
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <!-- THỜI KHÓA BIỂU -->
+        <section id="thoi-khoa-bieu">
+
+            <h2>
+                Thời khóa biểu
+            </h2>
+
+            <!-- Khung cuộn ngang riêng cho bảng trên điện thoại -->
+            <div class="khung-cuon-bang">
+                <table>
+
+                    <caption>
+                        Thời khóa biểu trong tuần
+                    </caption>
+
+                    <thead>
+
+                        <tr>
+
+                            <th scope="col">
+                                Thứ
+                            </th>
+
+                            <th scope="col">
+                                Buổi sáng
+                            </th>
+
+                            <th scope="col">
+                                Buổi chiều
+                            </th>
+
+                            <th scope="col">
+                                Buổi tối
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <tr>
+
+                            <th scope="row">
+                                Thứ 2
+                            </th>
+
+                            <td>
+                                Cơ sở dữ liệu
+                            </td>
+
+                            <td>
+                                Lập trình C++
+                            </td>
+
+                            <td>
+                                Tự học
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th scope="row">
+                                Thứ 3
+                            </th>
+
+                            <td>
+                                Khai phá dữ liệu
+                            </td>
+
+                            <td>
+                                Web/Phát triển Web
+                            </td>
+
+                            <td>
+                                Tự học
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th scope="row">
+                                Thứ 4
+                            </th>
+
+                            <td>
+                                Trống
+                            </td>
+
+                            <td>
+                                Cơ sở dữ liệu
+                            </td>
+
+                            <td>
+                                Làm bài tập
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th scope="row">
+                                Thứ 5
+                            </th>
+
+                            <td>
+                                An toàn thông tin
+                            </td>
+
+                            <td>
+                                Lập trình Python
+                            </td>
+
+                            <td>
+                                Tự học
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <th scope="row">
+                                Thứ 6
+                            </th>
+
+                            <td>
+                                Trống
+                            </td>
+
+                            <td>
+                                Trống
+                            </td>
+
+                            <td>
+                                Nghỉ
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- CHÂN TRANG -->
+    <footer>
+
+        <p>
+            © 2026 Nguyễn Sơn Chu
+        </p>
+
+        <p>
+            Trang cá nhân - Fashion Store
+        </p>
+
+    </footer>
+
+
+</body>
+
+</html>
