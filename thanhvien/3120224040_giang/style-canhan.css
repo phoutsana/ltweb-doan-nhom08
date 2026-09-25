@@ -1,0 +1,341 @@
+/* ==========================================================================
+   1. BẢNG MÀU VÀ THIẾT LẬP CHUNG
+   ========================================================================== */
+:root {
+  --primary-blue: #2348b6;        /* Màu xanh thương hiệu của nhóm */
+  --banner-blue: #2a52be;         /* Xanh gradient của Hero Banner */
+  --nav-navy: #151a28;            /* Màu xanh đen thanh điều hướng */
+  --page-bg: #f8fafc;             /* Nền toàn trang */
+  --card-bg: #ffffff;             /* Nền thẻ trắng */
+  --text-dark: #1e293b;           /* Màu chữ chính */
+  --text-gray: #64748b;           /* Màu chữ phụ */
+  --border-light: #e2e8f0;       /* Màu đường viền */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--page-bg);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   2. HERO BANNER (CHỮ TRẮNG NỔI BẬT SÁT MÉP TRÊN)
+   ========================================================================== */
+.hero-banner {
+  background: linear-gradient(180deg, #2a52be 0%, #20419e 100%);
+  text-align: center;
+  padding: 60px 20px 50px 20px;
+}
+
+.hero-title {
+  color: #ffffff !important;
+  font-size: 2.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.hero-subtitle {
+  color: #ffffff !important;
+  font-size: 1.15rem;
+  font-weight: 400;
+  opacity: 0.95;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+   3. MENU CON (SUB-NAV XANH ĐEN)
+   ========================================================================== */
+.sub-nav {
+  background-color: var(--nav-navy);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 99;
+}
+
+.nav-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 16px 24px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #60a5fa;
+}
+
+/* ==========================================================================
+   4. THẺ CARD TRẮNG & BỐ CỤC GIỚI THIỆU
+   ========================================================================== */
+.content-wrapper {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.info-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 35px;
+  margin-bottom: 30px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+/* Kẻ sọc xanh đứng bên trái tiêu đề */
+.card-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  margin-bottom: 24px;
+  padding-left: 12px;
+  border-left: 5px solid var(--primary-blue);
+  line-height: 1.2;
+}
+
+.card-body-text {
+  color: var(--text-dark);
+  font-size: 1rem;
+}
+
+/* Bố cục giới thiệu bản thân (Flexbox) */
+.intro-flex {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.avatar-container {
+  flex-shrink: 0;
+}
+
+.profile-avatar {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--primary-blue);
+  box-shadow: 0 6px 16px rgba(35, 72, 182, 0.2);
+}
+
+.details-list {
+  flex: 1;
+}
+
+.details-list p {
+  margin-bottom: 12px;
+  font-size: 1.05rem;
+  display: flex;
+}
+
+.details-list p:last-child {
+  margin-bottom: 0;
+}
+
+.details-list .label {
+  font-weight: 700;
+  color: var(--primary-blue);
+  min-width: 140px;
+  flex-shrink: 0;
+}
+
+.details-list .value {
+  color: var(--text-dark);
+}
+
+/* ==========================================================================
+   5. BỐ CỤC KỸ NĂNG (CSS GRID)
+   ========================================================================== */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.skill-item {
+  background-color: #f8fafc;
+  border: 1px solid var(--border-light);
+  padding: 16px 20px;
+  border-radius: 8px;
+}
+
+.skill-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.skill-bar {
+  background-color: #e2e8f0;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.skill-progress {
+  background-color: var(--primary-blue);
+  height: 100%;
+}
+
+/* ==========================================================================
+   6. BẢNG THỜI KHÓA BIỂU & CUỘN NGANG CHO MOBILE
+   ========================================================================== */
+.scroll-note {
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  margin-bottom: 12px;
+  display: none;
+}
+
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+}
+
+.schedule-table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.schedule-table th,
+.schedule-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.schedule-table thead th {
+  background-color: var(--primary-blue);
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.schedule-table tbody th {
+  background-color: #f1f5f9;
+  font-weight: 600;
+  color: var(--primary-blue);
+}
+
+.schedule-table tbody tr:nth-child(even) td {
+  background-color: #f8fafc;
+}
+
+.schedule-table tbody tr:hover td {
+  background-color: rgba(35, 72, 182, 0.04);
+}
+
+/* ==========================================================================
+   7. NÚT QUAY LẠI DƯỚI THỜI KHÓA BIỂU (NHỎ GỌN + MŨI TÊN)
+   ========================================================================== */
+.bottom-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--border-light);
+}
+
+.action-btn-small {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--primary-blue);
+  color: #ffffff !important;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(35, 72, 182, 0.2);
+  transition: all 0.2s ease;
+}
+
+.action-btn-small:hover {
+  background-color: #1b3896;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(35, 72, 182, 0.3);
+}
+
+/* ==========================================================================
+   8. CHÂN TRANG (FOOTER)
+   ========================================================================== */
+.page-footer {
+  text-align: center;
+  padding: 30px 15px;
+  color: var(--text-gray);
+  font-size: 0.9rem;
+  border-top: 1px solid var(--border-light);
+  background-color: #ffffff;
+}
+
+/* ==========================================================================
+   9. RESPONSIVE CHO THIẾT BỊ DI ĐỘNG (DƯỚI 768PX)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .hero-banner {
+    padding: 40px 15px;
+  }
+
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .intro-flex {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .details-list p {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .details-list .label {
+    min-width: unset;
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scroll-note {
+    display: block;
+  }
+
+  .bottom-actions {
+    justify-content: center;
+  }
+
+  .action-btn-small {
+    width: 100%;
+    justify-content: center;
+  }
+}

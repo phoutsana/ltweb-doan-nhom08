@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Trang giới thiệu cá nhân của Ngô Hương Giang - Dự án Fashion Store">
+  <title>Trang giới thiệu cá nhân | Ngô Hương Giang</title>
+
+  <!-- CSS dùng chung của nhóm -->
+  <link rel="stylesheet" href="../../css/style.css">
+
+  <!-- CSS riêng cho trang cá nhân -->
+  <link rel="stylesheet" href="style-canhan.css">
+</head>
+<body>
+
+  <!-- Hero Banner xanh đậm sát mép trên cùng, chữ trắng nổi bật -->
+  <header class="hero-banner">
+    <h1 class="hero-title">Trang giới thiệu cá nhân</h1>
+    <p class="hero-subtitle">Sinh viên Công nghệ Thông tin - Đam mê Lập trình Web & UI/UX Design</p>
+  </header>
+
+  <!-- Menu điều hướng con -->
+  <nav class="sub-nav" aria-label="Menu cá nhân">
+    <div class="nav-container">
+      <a href="#gioi-thieu" class="nav-link active">Giới thiệu</a>
+      <a href="#so-thich" class="nav-link">Sở thích</a>
+      <a href="#ky-nang" class="nav-link">Kỹ năng</a>
+      <a href="#thoi-khoa-bieu" class="nav-link">Thời khóa biểu</a>
+    </div>
+  </nav>
+
+  <!-- Khung nội dung chính -->
+  <main class="content-wrapper">
+
+    <!-- 1. MỤC GIỚI THIỆU BẢN THÂN -->
+    <section id="gioi-thieu" class="info-card">
+      <h2 class="card-title">Giới thiệu bản thân</h2>
+      
+      <div class="intro-flex">
+        <div class="avatar-container">
+          <img src="../../images/Huong_Giang.jpg" alt="Ảnh chân dung Ngô Hương Giang" class="profile-avatar">
+        </div>
+
+        <div class="details-list">
+          <p><span class="label">Họ và tên:</span> <span class="value">Ngô Hương Giang</span></p>
+          <p><span class="label">Ngành học:</span> <span class="value">Công nghệ thông tin</span></p>
+          <p><span class="label">Lớp:</span> <span class="value">24CNTT2</span></p>
+          <p><span class="label">Trường:</span> <span class="value">Trường Đại học Sư phạm – Đại học Đà Nẵng</span></p>
+          <p><span class="label">Mã sinh viên:</span> <span class="value">3120224040</span></p>
+          <p><span class="label">Quê quán:</span> <span class="value">Quảng Nam</span></p>
+          <p><span class="label">Mục tiêu:</span> <span class="value">Nâng cao kiến thức lập trình và phát triển các sản phẩm công nghệ phục vụ học tập và công việc.</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. MỤC DỰ ÁN VÀ SỞ THÍCH -->
+    <section id="so-thich" class="info-card">
+      <h2 class="card-title">Dự án và sở thích</h2>
+      <div class="card-body-text">
+        <p>
+          Trong dự án <strong>Fashion Store</strong>, mình tham gia xây dựng website giới thiệu và cung cấp thông tin về các sản phẩm thời trang, tối ưu bố cục hiển thị trên đa thiết bị.
+        </p>
+        <p style="margin-top: 12px;">
+          Sở thích của mình là nghe nhạc, đọc sách và tìm hiểu về các công nghệ lập trình web hiện đại.
+        </p>
+      </div>
+    </section>
+
+    <!-- 3. MỤC KỸ NĂNG (BỐ CỤC CSS GRID) -->
+    <section id="ky-nang" class="info-card">
+      <h2 class="card-title">Kỹ năng</h2>
+      <div class="skills-grid">
+        <div class="skill-item">
+          <div class="skill-header">
+            <span>HTML5</span>
+            <span>85%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-progress" style="width: 85%;"></div></div>
+        </div>
+
+        <div class="skill-item">
+          <div class="skill-header">
+            <span>Lập trình web</span>
+            <span>80%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-progress" style="width: 80%;"></div></div>
+        </div>
+
+        <div class="skill-item">
+          <div class="skill-header">
+            <span>Làm việc nhóm</span>
+            <span>85%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-progress" style="width: 85%;"></div></div>
+        </div>
+
+        <div class="skill-item">
+          <div class="skill-header">
+            <span>Sử dụng Git và GitHub</span>
+            <span>80%</span>
+          </div>
+          <div class="skill-bar"><div class="skill-progress" style="width: 80%;"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. MỤC THỜI KHÓA BIỂU & NÚT ĐIỀU HƯỚNG DƯỚI BẢNG -->
+    <section id="thoi-khoa-bieu" class="info-card">
+      <h2 class="card-title">Thời khóa biểu tuần</h2>
+      <p class="scroll-note">*(Trên điện thoại: cuộn hoặc vuốt ngang bảng để xem đầy đủ thông tin)*</p>
+
+      <div class="table-responsive-wrapper">
+        <table class="schedule-table">
+          <thead>
+            <tr>
+              <th>Thời gian</th>
+              <th>Thứ 2</th>
+              <th>Thứ 3</th>
+              <th>Thứ 4</th>
+              <th>Thứ 5</th>
+              <th>Thứ 6</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Buổi sáng</th>
+              <td>Học tập</td>
+              <td>Học tập</td>
+              <td>Học tập</td>
+              <td>Học tập</td>
+              <td>Học tập</td>
+            </tr>
+            <tr>
+              <th scope="row">Buổi chiều</th>
+              <td>Tự học</td>
+              <td>Lập trình</td>
+              <td>Làm đồ án</td>
+              <td>Lập trình</td>
+              <td>Tự học</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 2 NÚT NHỎ GỌN CÓ MŨI TÊN ĐẶT DƯỚI BẢNG THỜI KHÓA BIỂU -->
+      <div class="bottom-actions">
+        <a href="../../index.html" class="action-btn-small">← Quay về trang chủ nhóm</a>
+        <a href="../../gioi-thieu.html" class="action-btn-small">← Quay về trang giới thiệu nhóm</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Chân trang -->
+  <footer class="page-footer">
+    <p>&copy; 2026 Nhóm 08 - Fashion Store. Thành viên: <strong>Ngô Hương Giang</strong> (3120224040)</p>
+  </footer>
+
+</body>
+</html>
