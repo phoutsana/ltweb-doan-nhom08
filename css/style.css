@@ -366,3 +366,8 @@ tbody tr:nth-child(even) {
     border-radius: 0 var(--bo-goc) var(--bo-goc) 0;
     margin: var(--khoang-cach) 0;
 }
+.phan-cach {
+    margin: 40px 0;
+    border: 0;
+    border-top: 1px solid #e5e7eb;
+}
