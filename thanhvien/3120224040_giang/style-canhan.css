@@ -1,21 +1,27 @@
 /* ==========================================================================
-   1. BẢNG MÀU VÀ THIẾT LẬP CHUNG
+   1. BẢNG MÀU VÀ TÁI SỬ DỤNG BIẾN CSS CHUNG CỦA NHÓM
    ========================================================================== */
 :root {
-  --primary-blue: #2348b6;        /* Màu xanh thương hiệu của nhóm */
-  --banner-blue: #2a52be;         /* Xanh gradient của Hero Banner */
-  --nav-navy: #151a28;            /* Màu xanh đen thanh điều hướng */
-  --page-bg: #f8fafc;             /* Nền toàn trang */
-  --card-bg: #ffffff;             /* Nền thẻ trắng */
-  --text-dark: #1e293b;           /* Màu chữ chính */
-  --text-gray: #64748b;           /* Màu chữ phụ */
-  --border-light: #e2e8f0;       /* Màu đường viền */
+  --primary-blue: var(--main-color, #2348b6);       /* Xanh dương đồng bộ nhóm */
+  --banner-blue: var(--primary, #2a52be);           /* Xanh gradient của Hero */
+  --nav-navy: #151a28;                             /* Xanh đen thanh menu */
+  --page-bg: var(--body-bg, #f8fafc);              /* Nền toàn trang */
+  --card-bg: var(--box-bg, #ffffff);               /* Nền thẻ card */
+  --text-dark: var(--text-color, #1e293b);         /* Màu chữ chính */
+  --text-gray: var(--text-sub, #64748b);           /* Màu chữ phụ */
+  --border-light: var(--border, #e2e8f0);          /* Đường viền */
+  --focus-ring: #f59e0b;                           /* Viền Accessibility focus */
 }
 
+/* Reset chuẩn CSS Validator */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -26,33 +32,43 @@ body {
 }
 
 /* ==========================================================================
-   2. HERO BANNER (CHỮ TRẮNG NỔI BẬT SÁT MÉP TRÊN)
+   2. HỖ TRỢ ACCESSIBILITY: :focus-visible VÀ :hover CHO TẤT CẢ PHÍM BẤM
+   ========================================================================== */
+a:focus-visible,
+button:focus-visible,
+.table-responsive-wrapper:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   3. HERO BANNER - CHỮ TRẮNG NỔI BẬT SÁT MÉP TRÊN
    ========================================================================== */
 .hero-banner {
-  background: linear-gradient(180deg, #2a52be 0%, #20419e 100%);
+  background: linear-gradient(180deg, #2a52be 0%, #1e3a8a 100%);
   text-align: center;
-  padding: 60px 20px 50px 20px;
+  padding: 55px 20px 45px 20px;
 }
 
 .hero-title {
-  color: #ffffff !important;
-  font-size: 2.3rem;
+  color: #ffffff;
+  font-size: 2.2rem;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   letter-spacing: -0.5px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .hero-subtitle {
-  color: #ffffff !important;
-  font-size: 1.15rem;
+  color: #ffffff;
+  font-size: 1.1rem;
   font-weight: 400;
   opacity: 0.95;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 /* ==========================================================================
-   3. MENU CON (SUB-NAV XANH ĐEN)
+   4. MENU ĐIỀU HƯỚNG CON (SUB-NAV)
    ========================================================================== */
 .sub-nav {
   background-color: var(--nav-navy);
@@ -74,41 +90,45 @@ body {
   color: #ffffff;
   text-decoration: none;
   font-weight: 600;
-  padding: 16px 24px;
+  padding: 15px 22px;
   font-size: 0.95rem;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .nav-link:hover,
+.nav-link:focus-visible {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #93c5fd;
+}
+
 .nav-link.active {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.08);
   color: #60a5fa;
 }
 
 /* ==========================================================================
-   4. THẺ CARD TRẮNG & BỐ CỤC GIỚI THIỆU
+   5. KHUNG NỘI DUNG VÀ THẺ CARD TRẮNG
    ========================================================================== */
 .content-wrapper {
   max-width: 1000px;
-  margin: 40px auto;
-  padding: 0 20px;
+  margin: 35px auto;
+  padding: 0 16px;
 }
 
 .info-card {
   background-color: var(--card-bg);
   border-radius: 12px;
-  padding: 35px;
-  margin-bottom: 30px;
+  padding: 30px;
+  margin-bottom: 25px;
   border: 1px solid var(--border-light);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
 }
 
-/* Kẻ sọc xanh đứng bên trái tiêu đề */
 .card-title {
   font-size: 1.45rem;
   font-weight: 700;
   color: var(--primary-blue);
-  margin-bottom: 24px;
+  margin-bottom: 22px;
   padding-left: 12px;
   border-left: 5px solid var(--primary-blue);
   line-height: 1.2;
@@ -119,34 +139,51 @@ body {
   font-size: 1rem;
 }
 
-/* Bố cục giới thiệu bản thân (Flexbox) */
-.intro-flex {
-  display: flex;
-  align-items: center;
-  gap: 40px;
+.text-spacing {
+  margin-top: 12px;
 }
 
+/* ==========================================================================
+   6. BỐ CỤC GIỚI THIỆU BẢN THÂN (MOBILE-FIRST FLEXBOX & ẢNH CO GIÃN)
+   ========================================================================== */
+.intro-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+}
+
+/* Khung ảnh co giãn linh hoạt theo vùng chứa */
 .avatar-container {
-  flex-shrink: 0;
+  width: 100%;
+  max-width: 200px;
+  display: flex;
+  justify-content: center;
 }
 
 .profile-avatar {
-  width: 200px;
-  height: 200px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  max-width: 200px;
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid var(--primary-blue);
   box-shadow: 0 6px 16px rgba(35, 72, 182, 0.2);
+  display: block;
 }
 
 .details-list {
-  flex: 1;
+  width: 100%;
 }
 
 .details-list p {
   margin-bottom: 12px;
-  font-size: 1.05rem;
+  font-size: 1.02rem;
   display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .details-list p:last-child {
@@ -156,8 +193,6 @@ body {
 .details-list .label {
   font-weight: 700;
   color: var(--primary-blue);
-  min-width: 140px;
-  flex-shrink: 0;
 }
 
 .details-list .value {
@@ -165,19 +200,25 @@ body {
 }
 
 /* ==========================================================================
-   5. BỐ CỤC KỸ NĂNG (CSS GRID)
+   7. BỐ CỤC KỸ NĂNG BẰNG CSS GRID
    ========================================================================== */
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 18px;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
 .skill-item {
-  background-color: #f8fafc;
+  background-color: var(--page-bg);
   border: 1px solid var(--border-light);
   padding: 16px 20px;
   border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.skill-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
 }
 
 .skill-header {
@@ -197,16 +238,28 @@ body {
 .skill-progress {
   background-color: var(--primary-blue);
   height: 100%;
+  border-radius: 4px;
 }
 
 /* ==========================================================================
-   6. BẢNG THỜI KHÓA BIỂU & CUỘN NGANG CHO MOBILE
+   8. BẢNG THỜI KHÓA BIỂU (CUỘN NGANG ĐỘC LẬP TRÁNH TRÀN 360PX)
    ========================================================================== */
 .scroll-note {
   font-size: 0.85rem;
   color: var(--text-gray);
-  margin-bottom: 12px;
-  display: none;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 
 .table-responsive-wrapper {
@@ -219,15 +272,16 @@ body {
 
 .schedule-table {
   width: 100%;
-  min-width: 620px;
+  min-width: 580px; /* Buộc giữ bề rộng vừa đủ để cuộn ngang trên mobile */
   border-collapse: collapse;
   text-align: center;
 }
 
 .schedule-table th,
 .schedule-table td {
-  padding: 14px 16px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--border-light);
+  font-size: 0.95rem;
 }
 
 .schedule-table thead th {
@@ -246,18 +300,14 @@ body {
   background-color: #f8fafc;
 }
 
-.schedule-table tbody tr:hover td {
-  background-color: rgba(35, 72, 182, 0.04);
-}
-
 /* ==========================================================================
-   7. NÚT QUAY LẠI DƯỚI THỜI KHÓA BIỂU (NHỎ GỌN + MŨI TÊN)
+   9. NÚT QUAY LẠI DƯỚI THỜI KHÓA BIỂU (NHỎ GỌN + MŨI TÊN + FOCUS)
    ========================================================================== */
 .bottom-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 12px;
-  margin-top: 25px;
+  margin-top: 24px;
   padding-top: 20px;
   border-top: 1px dashed var(--border-light);
 }
@@ -265,30 +315,32 @@ body {
 .action-btn-small {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   background-color: var(--primary-blue);
-  color: #ffffff !important;
+  color: #ffffff;
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 600;
-  padding: 8px 18px;
+  padding: 9px 18px;
   border-radius: 6px;
   box-shadow: 0 2px 6px rgba(35, 72, 182, 0.2);
   transition: all 0.2s ease;
 }
 
-.action-btn-small:hover {
+.action-btn-small:hover,
+.action-btn-small:focus-visible {
   background-color: #1b3896;
   transform: translateY(-1px);
   box-shadow: 0 4px 10px rgba(35, 72, 182, 0.3);
 }
 
 /* ==========================================================================
-   8. CHÂN TRANG (FOOTER)
+   10. CHÂN TRANG (FOOTER)
    ========================================================================== */
 .page-footer {
   text-align: center;
-  padding: 30px 15px;
+  padding: 28px 15px;
   color: var(--text-gray);
   font-size: 0.9rem;
   border-top: 1px solid var(--border-light);
@@ -296,46 +348,40 @@ body {
 }
 
 /* ==========================================================================
-   9. RESPONSIVE CHO THIẾT BỊ DI ĐỘNG (DƯỚI 768PX)
+   11. ĐIỂM NGẮT RESPONSIVE MIN-WIDTH (YÊU CẦU MỤC 3 & 4)
    ========================================================================== */
-@media (max-width: 768px) {
-  .hero-banner {
-    padding: 40px 15px;
+@media (min-width: 600px) {
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
+}
 
-  .hero-title {
-    font-size: 1.75rem;
-  }
-
+@media (min-width: 768px) {
   .intro-flex {
-    flex-direction: column;
-    text-align: center;
+    flex-direction: row;
+    text-align: left;
+    gap: 40px;
   }
 
   .details-list p {
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
+    flex-direction: row;
+    gap: 0;
   }
 
   .details-list .label {
-    min-width: unset;
-  }
-
-  .skills-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .scroll-note {
-    display: block;
+    min-width: 140px;
+    flex-shrink: 0;
   }
 
   .bottom-actions {
-    justify-content: center;
+    flex-direction: row;
   }
 
   .action-btn-small {
-    width: 100%;
-    justify-content: center;
+    width: auto;
+  }
+
+  .scroll-note {
+    display: none; /* Ẩn dòng nhắc cuộn trên máy tính */
   }
 }
