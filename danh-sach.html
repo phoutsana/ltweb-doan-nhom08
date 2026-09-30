@@ -1,113 +1,189 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Danh sách sản phẩm - Fashion Store</title>
-
-    <meta name="description"
-          content="Danh sách các sản phẩm quần áo đang được giới thiệu trên Fashion Store.">
+    <meta name="description" content="Danh sách các sản phẩm quần áo đang được giới thiệu trên Fashion Store.">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body class="bo-cuc-trang">
-
     <header class="dau-trang">
         <h1>Danh sách sản phẩm</h1>
         <p class="dau-trang__khau-hieu">Khám phá các sản phẩm thời trang</p>
     </header>
 
     <nav class="dieu-huong" aria-label="Điều hướng chính">
-        <ul class="dieu-huong__danh-sach">
+        <button type="button" class="nut-menu" aria-expanded="false" aria-controls="menu-chinh">☰ Menu</button>
+        <ul class="dieu-huong__danh-sach menu" id="menu-chinh">
             <li class="dieu-huong__muc"><a class="dieu-huong__lien-ket" href="index.html">Trang chủ</a></li>
             <li class="dieu-huong__muc"><a class="dieu-huong__lien-ket" href="danh-sach.html">Sản phẩm</a></li>
             <li class="dieu-huong__muc"><a class="dieu-huong__lien-ket" href="chi-tiet.html">Chi tiết sản phẩm</a></li>
             <li class="dieu-huong__muc"><a class="dieu-huong__lien-ket" href="gioi-thieu.html">Giới thiệu</a></li>
             <li class="dieu-huong__muc"><a class="dieu-huong__lien-ket" href="lien-he.html">Liên hệ</a></li>
+            <li class="dieu-huong__muc">
+                <a class="dieu-huong__lien-ket" href="#">Yêu thích (<span class="so-luong-yeu-thich"
+                        aria-live="polite">0</span>)</a>
+            </li>
         </ul>
     </nav>
 
     <main class="noi-dung-chinh">
+        <!-- Khối bộ lọc (Sẽ bị ẩn nếu không có JS, hiện khi JS chạy xong) -->
+        <section id="bo-loc-san-pham" class="khoi-noi-dung bo-loc-san-pham" hidden>
+            <h2>Bộ lọc sản phẩm</h2>
+            <label for="tim-kiem">Tìm kiếm:</label>
+            <input type="text" id="tim-kiem" placeholder="Nhập tên sản phẩm...">
+
+            <label for="loc-danh-muc">Danh mục:</label>
+            <select id="loc-danh-muc">
+                <option value="">Tất cả</option>
+                <option value="Áo">Áo</option>
+                <option value="Quần">Quần</option>
+                <option value="Váy">Váy</option>
+                <option value="Áo khoác">Áo khoác</option>
+            </select>
+
+            <label for="sap-xep">Sắp xếp:</label>
+            <select id="sap-xep">
+                <option value="">Mặc định</option>
+                <option value="gia-tang">Giá tăng dần</option>
+                <option value="gia-giam">Giá giảm dần</option>
+                <option value="ten-az">Tên A-Z</option>
+            </select>
+        </section>
 
         <section class="khoi-noi-dung">
             <h2>Các sản phẩm nổi bật</h2>
-
+            <p id="trang-thai-tai" aria-live="polite" style="color: blue; font-weight: bold;"></p>
             <div class="hop-bang">
-                <!-- Đã thêm class bang-san-pham để nhận CSS bo góc, tô màu sọc -->
                 <table class="bang-san-pham">
                     <caption>Danh sách sản phẩm Fashion Store</caption>
-
                     <thead>
                         <tr>
                             <th scope="col">STT</th>
-                            <!-- Đã thêm cột Hình ảnh -->
                             <th scope="col">Hình ảnh</th>
                             <th scope="col">Tên sản phẩm</th>
                             <th scope="col">Loại</th>
                             <th scope="col">Giá</th>
                             <th scope="col">Chi tiết</th>
+                            <th scope="col">Yêu thích</th>
                         </tr>
                     </thead>
-
-                    <tbody>
-
+                    <tbody id="than-bang-san-pham">
+                        <!-- 12 Sản phẩm tĩnh dự phòng khi tắt JS -->
                         <tr>
                             <td>1</td>
-                            <td><img src="images/ao-thun-nam.jpg" alt="Áo thun nam" class="anh-san-pham"></td>
-                            <td>Áo thun nam</td>
+                            <td><img src="images/ao-thun-nam.jpg" alt="Áo thun nam basic" class="anh-san-pham"></td>
+                            <td>Áo thun nam basic</td>
                             <td>Áo</td>
-                            <td>199.000 VNĐ</td>
-                            <td>
-                                <!-- Trỏ link đến id #ao-thun -->
-                                <a class="nut-bam nut-bam--chinh" href="chi-tiet.html#ao-thun">
-                                    Xem chi tiết
-                                </a>
-                            </td>
+                            <td>120.000 VNĐ</td>
+                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=1">Xem chi tiết</a></td>
+                            <td>-</td>
                         </tr>
-
                         <tr>
                             <td>2</td>
-                            <td><img src="images/ao-so-mi-nu.jpg" alt="Áo sơ mi nữ" class="anh-san-pham"></td>
-                            <td>Áo sơ mi nữ</td>
-                            <td>Áo</td>
-                            <td>299.000 VNĐ</td>
-                            <td>
-                                <!-- Trỏ link đến id #ao-so-mi -->
-                                <a class="nut-bam nut-bam--chinh" href="chi-tiet.html#ao-so-mi">
-                                    Xem chi tiết
-                                </a>
+                            <td><img src="images/ao-so-mi-nu.jpg" alt="Áo sơ mi nữ thanh lịch" class="anh-san-pham">
                             </td>
+                            <td>Áo sơ mi nữ thanh lịch</td>
+                            <td>Áo</td>
+                            <td>250.000 VNĐ</td>
+                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=2">Xem chi tiết</a></td>
+                            <td>-</td>
                         </tr>
-
                         <tr>
                             <td>3</td>
-                            <td><img src="images/quan-jean-nam.jpg" alt="Quần jean nam" class="anh-san-pham"></td>
-                            <td>Quần jean nam</td>
+                            <td><img src="images/quan-jean-nam.jpg" alt="Quần jean nam dáng suông" class="anh-san-pham">
+                            </td>
+                            <td>Quần jean nam dáng suông</td>
                             <td>Quần</td>
                             <td>399.000 VNĐ</td>
-                            <td>
-                                <!-- Trỏ link đến id #quan-jean -->
-                                <a class="nut-bam nut-bam--chinh" href="chi-tiet.html#quan-jean">
-                                    Xem chi tiết
-                                </a>
-                            </td>
+                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=3">Xem chi tiết</a></td>
+                            <td>-</td>
                         </tr>
-
                         <tr>
                             <td>4</td>
-                            <td><img src="images/chan-vay-nu.jpg" alt="Chân váy nữ" class="anh-san-pham"></td>
-                            <td>Chân váy nữ</td>
+                            <td><img src="images/chan-vay-nu.jpg" alt="Chân váy nữ chữ A" class="anh-san-pham"></td>
+                            <td>Chân váy nữ chữ A</td>
                             <td>Váy</td>
                             <td>349.000 VNĐ</td>
-                            <td>
-                                <!-- Trỏ link đến id #chan-vay -->
-                                <a class="nut-bam nut-bam--chinh" href="chi-tiet.html#chan-vay">
-                                    Xem chi tiết
-                                </a>
-                            </td>
+                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=4">Xem chi tiết</a></td>
+                            <td>-</td>
                         </tr>
-
+                        <tr>
+                            <td>5</td>
+                            <td><img src="images/Quan_kaki_nam.jpg" alt="Quần kaki nam" class="anh-san-pham"></td>
+                            <td>Quần kaki nam</td>
+                            <td>Quần</td>
+                            <td>320.000 VNĐ</td>
+                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=5">Xem chi tiết</a></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td><img src="images/Ao_polo_nam.jpg" alt="Áo polo nam" class="anh-san-pham"></td>
+                            <td>Áo polo nam</td>
+                            <td>Áo</td>
+                            <td>220.000 VNĐ</td>
+                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=6">Xem chi tiết</a></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td><img src="images/Quan_short_nam.jpg" alt="Quần short nam" class="anh-san-pham"></td>
+                            <td>Quần short nam</td>
+                            <td>Quần</td>
+                            <td>180.000 VNĐ</td>
+                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=7">Xem chi tiết</a></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td><img src="images/Ao_hoodie_nam.jpg" alt="Áo hoodie nam" class="anh-san-pham"></td>
+                            <td>Áo hoodie nam</td>
+                            <td>Áo khoác</td>
+                            <td>420.000 VNĐ</td>
+                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=8">Xem chi tiết</a></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td><img src="images/Ao_khoac_gio.jpg" alt="Áo khoác gió" class="anh-san-pham"></td>
+                            <td>Áo khoác gió</td>
+                            <td>Áo khoác</td>
+                            <td>350.000 VNĐ</td>
+                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=9">Xem chi tiết</a></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td><img src="images/quan-jogger-nam.jpg" alt="Quần jogger nam" class="anh-san-pham"></td>
+                            <td>Quần jogger nam</td>
+                            <td>Quần</td>
+                            <td>280.000 VNĐ</td>
+                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=10">Xem chi tiết</a></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td><img src="images/ao-bomber-nam.jpg" alt="Áo khoác bomber" class="anh-san-pham"></td>
+                            <td>Áo khoác bomber</td>
+                            <td>Áo khoác</td>
+                            <td>450.000 VNĐ</td>
+                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=11">Xem chi tiết</a></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td><img src="images/ao-thun-xanh.jpg" alt="Áo thun nam xanh" class="anh-san-pham"></td>
+                            <td>Áo thun nam xanh</td>
+                            <td>Áo</td>
+                            <td>150.000 VNĐ</td>
+                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=12">Xem chi tiết</a></td>
+                            <td>-</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -115,7 +191,6 @@
 
         <section class="khoi-noi-dung">
             <h2>Danh mục sản phẩm</h2>
-
             <ul>
                 <li>Áo</li>
                 <li>Quần</li>
@@ -123,12 +198,15 @@
                 <li>Phụ kiện</li>
             </ul>
         </section>
-
     </main>
 
     <footer class="chan-trang">
         <p>&copy; 2026 Fashion Store. All rights reserved.</p>
     </footer>
 
+    <!-- Nhúng Script -->
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/trang-danh-sach.js"></script>
 </body>
+
 </html>

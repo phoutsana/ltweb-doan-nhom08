@@ -1,0 +1,136 @@
+[
+  {
+    "id": 1,
+    "ten": "Áo thun nam basic",
+    "gia": 120000,
+    "soLuong": 25,
+    "danhMuc": "Áo",
+    "moTa": "Áo thun nam kiểu basic phù hợp mặc hằng ngày.",
+    "hinhAnh": "images/ao-thun-nam.jpg",
+    "mauSac": "Trắng",
+    "kichThuoc": "M, L, XL"
+    
+  },
+  {
+    "id": 2,
+    "ten": "Áo sơ mi nữ thanh lịch",
+    "gia": 250000,
+    "soLuong": 18,
+    "danhMuc": "Áo",
+    "moTa": "Áo sơ mi nữ màu trắng, phù hợp đi học và đi làm.",
+    "hinhAnh": "images/ao-so-mi-nu.jpg",
+    "mauSac": "Trắng",
+    "kichThuoc": "S, M, L"
+    
+  },
+  {
+    "id": 3,
+    "ten": "Quần jean nam dáng suông",
+    "gia": 399000,
+    "soLuong": 20,
+    "danhMuc": "Quần",
+    "moTa": "Quần jean form suông, chất bò cao cấp không phai màu.",
+    "hinhAnh": "images/quan-jean-nam.jpg",
+    "mauSac": "Xanh",
+    "kichThuoc": "29, 30, 31, 32"
+  },
+  {
+    "id": 4,
+    "ten": "Chân váy nữ chữ A",
+    "gia": 349000,
+    "soLuong": 12,
+    "danhMuc": "Váy",
+    "moTa": "Chân váy form chữ A tôn dáng, năng động và trẻ trung.",
+    "hinhAnh": "images/chan-vay-nu.jpg",
+    "mauSac": "Đen",
+    "kichThuoc": "S, M, L"
+  },
+  {
+    "id": 5,
+    "ten": "Quần kaki nam",
+    "gia": 320000,
+    "soLuong": 15,
+    "danhMuc": "Quần",
+    "moTa": "Quần kaki nam phù hợp đi học và đi làm.",
+    "hinhAnh": "images/Quan_kaki_nam.jpg",
+    "mauSac": "Vàng Đất",
+    "kichThuoc": "29, 30, 31, 32"
+  },
+  {
+    "id": 6,
+    "ten": "Áo polo nam",
+    "gia": 220000,
+    "soLuong": 17,
+    "danhMuc": "Áo",
+    "moTa": "Áo polo nam thiết kế đơn giản, dễ phối đồ.",
+    "hinhAnh": "images/Ao_polo_nam.jpg",
+    "mauSac": "Trắng",
+    "kichThuoc": "M, L, XL"
+  },
+  {
+    "id": 7,
+    "ten": "Quần short nam",
+    "gia": 180000,
+    "soLuong": 22,
+    "danhMuc": "Quần",
+    "moTa": "Quần short nam thoải mái cho hoạt động hằng ngày.",
+    "hinhAnh": "images/Quan_short_nam.jpg",
+    "mauSac": "Trắng",
+    "kichThuoc": "M, L, XL"
+  },
+  {
+    "id": 8,
+    "ten": "Áo hoodie nam",
+    "gia": 420000,
+    "soLuong": 10,
+    "danhMuc": "Áo khoác",
+    "moTa": "Áo hoodie nam phong cách trẻ trung.",
+    "hinhAnh": "images/ao-hoodie-nam.jpg",
+    "mauSac": "Đen",
+    "kichThuoc": "M, L, XL"
+  },
+  {
+    "id": 9,
+    "ten": "Áo khoác gió",
+    "gia": 350000,
+    "soLuong": 14,
+    "danhMuc": "Áo khoác",
+    "moTa": "Áo khoác gió nhẹ, phù hợp sử dụng khi đi ngoài trời.",
+    "hinhAnh": "images/Ao_khoac_gio.jpg",
+    "mauSac": "Đen",
+    "kichThuoc": "M, L, XL"
+  },
+  {
+    "id": 10,
+    "ten": "Quần jogger nam",
+    "gia": 280000,
+    "soLuong": 16,
+    "danhMuc": "Quần",
+    "moTa": "Quần jogger nam thoải mái cho phong cách năng động.",
+    "hinhAnh": "images/quan-jogger-nam.jpg",
+    "mauSac": "Đen",
+    "kichThuoc": "M, L, XL"
+  },
+  {
+    "id": 11,
+    "ten": "Áo khoác bomber",
+    "gia": 450000,
+    "soLuong": 8,
+    "danhMuc": "Áo khoác",
+    "moTa": "Áo khoác bomber phong cách trẻ trung.",
+    "hinhAnh": "images/ao-bomber-nam.jpg",
+    "mauSac": "Đen",
+    "kichThuoc": "M, L, XL"
+  },
+  {
+    "id": 12,
+    "ten": "Áo thun nam xanh",
+    "gia": 150000,
+    "soLuong": 30,
+    "danhMuc": "Áo",
+    "moTa": "Áo thun nam màu xanh đơn giản và dễ mặc.",
+    "hinhAnh": "images/ao-thun-xanh.jpg",
+    "mauSac": "Xanh",
+    "kichThuoc": "M, L, XL"
+  }
+]
