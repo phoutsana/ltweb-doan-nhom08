@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giới thiệu cá nhân - Xayyatiew Phoutsana</title>
-    <meta name="description" content="Trang giới thiệu cá nhân của Xayyatiew Phoutsana, sinh viên Công nghệ Thông tin, thành viên nhóm 08.">
+    <meta name="description"
+        content="Trang giới thiệu cá nhân của Xayyatiew Phoutsana, sinh viên Công nghệ Thông tin, thành viên nhóm 08.">
 
     <!-- Nhúng CSS chung của nhóm -->
     <link rel="stylesheet" href="../../css/style.css">
-    
+
     <!-- Nhúng CSS cá nhân -->
     <link rel="stylesheet" href="style-canhan.css">
 </head>
@@ -22,10 +23,13 @@
             Sinh viên Công nghệ Thông tin - Đam mê Lập trình Web & IoT
         </p>
     </header>
-
     <!-- THANH MENU ĐIỀU HƯỚNG TRONG TRANG (Cuộn xuống các phần) -->
     <nav class="dieu-huong" aria-label="Điều hướng trang cá nhân">
-        <ul class="dieu-huong__danh-sach">
+    <div class="dieu-huong__thanh">
+        <button type="button" id="nut-menu-mobile" class="dieu-huong__nut-menu"
+            aria-expanded="false" aria-controls="danh-sach-menu">☰ Menu</button>
+
+        <ul class="dieu-huong__danh-sach" id="danh-sach-menu">
             <li class="dieu-huong__muc">
                 <a href="#gioi-thieu" class="dieu-huong__lien-ket">Giới thiệu</a>
             </li>
@@ -39,7 +43,12 @@
                 <a href="#thoi-khoa-bieu" class="dieu-huong__lien-ket">Thời khóa biểu</a>
             </li>
         </ul>
-    </nav>
+
+        <button type="button" id="nut-giao-dien" class="dieu-huong__nut-giao-dien">
+            🌙 Chế độ tối
+        </button>
+    </div>
+</nav>
 
     <main class="noi-dung-chinh">
 
@@ -48,7 +57,7 @@
             <figure>
                 <img src="../../images/avatar-phoutsana.jpg" alt="Ảnh chân dung của Xayyatiew Phoutsana">
             </figure>
-            
+
             <div class="thong-tin-chi-tiet">
                 <h2>Giới thiệu bản thân</h2>
                 <p><strong>Họ và tên:</strong> Xayyatiew Phoutsana</p>
@@ -56,16 +65,28 @@
                 <p><strong>Lớp:</strong> 24CNTT2</p>
                 <p><strong>Trường:</strong> Trường Đại học Sư phạm – Đại học Đà Nẵng</p>
                 <p><strong>Quê quán:</strong> SeKong, Lào</p>
-                <p><strong>Mục tiêu:</strong> Phát triển bản thân trở thành một lập trình viên Full-stack chuyên nghiệp.</p>
+                <p><strong>Mục tiêu:</strong> Phát triển bản thân trở thành một lập trình viên Full-stack chuyên nghiệp.
+                </p>
+
+                <!-- Nhóm Email và nút Copy vào cùng một dòng để hiển thị đẹp hơn -->
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                    <p style="margin: 0;"><strong>Email:</strong> phoutsanaxayyatiew@gmail.com</p>
+                    <button type="button" id="nut-sao-chep-email" data-email="phoutsanaxayyatiew@gmail.com">
+                        📧 Sao chép email
+                    </button>
+                </div>
+
+                <p id="thong-bao-tuong-tac" aria-live="polite" style="margin-top: 5px; min-height: 24px;"></p>
             </div>
         </section>
-
         <!-- SỞ THÍCH & DỰ ÁN -->
         <article id="so-thich" class="khoi-noi-dung">
             <h2>Dự án tiêu biểu & Sở thích</h2>
             <p>
-                Mình thích áp dụng công nghệ vào thực tiễn. Mình từng phát triển hệ thống gợi ý phim sử dụng thuật toán TF-IDF và Cosine Similarity, cũng như xây dựng nguyên mẫu khóa cửa tự động bằng RFID và Arduino. 
-                Ngoài giờ code, mình có sở thích luyện tập kỹ năng thuyết trình, giao tiếp, xem phim, đọc sách và chạy bộ.
+                Mình thích áp dụng công nghệ vào thực tiễn. Mình từng phát triển hệ thống gợi ý phim sử dụng thuật toán
+                TF-IDF và Cosine Similarity, cũng như xây dựng nguyên mẫu khóa cửa tự động bằng RFID và Arduino.
+                Ngoài giờ code, mình có sở thích luyện tập kỹ năng thuyết trình, giao tiếp, xem phim, đọc sách và chạy
+                bộ.
             </p>
         </article>
 
@@ -80,7 +101,8 @@
                     <strong>Phần mềm & IoT:</strong> C++, Java, Python, Arduino, RFID, Servo và LCD.
                 </li>
                 <li>
-                    <strong>Ngoại ngữ:</strong> Tiếng Việt, Tiếng Lào, Tiếng Thái và đang trau dồi Tiếng Anh chuyên ngành IT.
+                    <strong>Ngoại ngữ:</strong> Tiếng Việt, Tiếng Lào, Tiếng Thái và đang trau dồi Tiếng Anh chuyên
+                    ngành IT.
                 </li>
             </ul>
         </section>
@@ -141,6 +163,7 @@
     <footer class="chan-trang">
         <p>&copy; 2026 Trang cá nhân của Xayyatiew Phoutsana - Đồ án Web Nhóm 08.</p>
     </footer>
-
+    <script type="module" src="js/canhan.js"></script>
 </body>
+
 </html>
