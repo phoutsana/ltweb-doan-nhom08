@@ -60,7 +60,7 @@
         </section>
 
         <!-- SỞ THÍCH & DỰ ÁN -->
-        <article id="so-thich" class="khoi-noi-dung">
+        <article id="so-thich" class="khoi-noi-dung" data-thu-gon>
             <h2>Dự án tiêu biểu & Sở thích</h2>
             <p>
                 Trong dự án Fashion Store, mình tham gia xây dựng website giới thiệu và cung cấp thông tin về các sản phẩm thời trang.
@@ -69,23 +69,55 @@ Ngoài giờ học tập và làm đồ án, mình có sở thích nghe nhạc, 
         </article>
 
         <!-- KỸ NĂNG -->
-        <section id="ky-nang" class="khoi-noi-dung">
-            <h2>Kỹ năng</h2>
-            <ul>
-                <li>
-                    <strong>Lập trình & Đánh dấu:</strong> HTML5, CSS3, căn bản về Lập trình web.
-                </li>
-                <li>
-                    <strong>Công cụ & Quản lý mã nguồn:</strong> Sử dụng thành thạo Git và GitHub để làm việc nhóm.
-                </li>
-                <li>
-                    <strong>Kỹ năng mềm:</strong> Kỹ năng làm việc nhóm, giao tiếp và lên kế hoạch dự án.
-                </li>
-            </ul>
-        </section>
+        <section id="ky-nang" class="khoi-noi-dung" data-thu-gon>
+    <h2>Kỹ năng</h2>
+
+    <!-- Bộ lọc kỹ năng -->
+    <div class="bo-loc-ky-nang">
+        <button type="button" class="nut-loc active" data-filter="tat-ca" aria-pressed="true">
+            Tất cả
+        </button>
+
+        <button type="button" class="nut-loc" data-filter="lap-trinh" aria-pressed="false">
+            Lập trình
+        </button>
+
+        <button type="button" class="nut-loc" data-filter="cong-cu" aria-pressed="false">
+            Công cụ
+        </button>
+
+        <button type="button" class="nut-loc" data-filter="ky-nang-mem" aria-pressed="false">
+            Kỹ năng mềm
+        </button>
+    </div>
+
+    <!-- Thông báo kết quả lọc -->
+    <p id="thong-bao-loc" class="thong-bao-loc" aria-live="polite">
+        Đang hiển thị tất cả kỹ năng.
+    </p>
+
+    <ul id="danh-sach-ky-nang">
+
+        <li class="ky-nang-item" data-category="lap-trinh">
+            <strong>Lập trình & Đánh dấu:</strong>
+            HTML5, CSS3, căn bản về Lập trình web.
+        </li>
+
+        <li class="ky-nang-item" data-category="cong-cu">
+            <strong>Công cụ & Quản lý mã nguồn:</strong>
+            Sử dụng thành thạo Git và GitHub để làm việc nhóm.
+        </li>
+
+        <li class="ky-nang-item" data-category="ky-nang-mem">
+            <strong>Kỹ năng mềm:</strong>
+            Kỹ năng làm việc nhóm, giao tiếp và lên kế hoạch dự án.
+        </li>
+
+    </ul>
+</section>
 
         <!-- THỜI KHÓA BIỂU -->
-        <section id="thoi-khoa-bieu" class="khoi-noi-dung">
+        <section id="thoi-khoa-bieu" class="khoi-noi-dung" data-thu-gon>
             <h2>Thời khóa biểu học kỳ này</h2>
             <div class="hop-bang">
                 <table>
@@ -137,9 +169,11 @@ Ngoài giờ học tập và làm đồ án, mình có sở thích nghe nhạc, 
     </main>
 
     <!-- CHÂN TRANG (Luôn nằm dưới cùng) -->
-    <footer class="chan-trang">
-        <p>&copy; 2026 Trang cá nhân của KEOPHOXAY Phaeva - Đồ án Web Nhóm 08.</p>
-    </footer>
+   <footer class="chan-trang"> 
+    <p>&copy; 2026 Trang cá nhân của KEOPHOXAY Phaeva - Đồ án Web Nhóm 08.</p> 
+</footer>
 
-</body>
+<script src="js/canhan.js"></script>
+
+</body> 
 </html>

@@ -344,3 +344,86 @@ justify-content: center;
         padding: 12px;
     }
 }
+
+/* ==========================================================
+   11. TƯƠNG TÁC LỌC KỸ NĂNG
+   ========================================================== */
+
+.bo-loc-ky-nang {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.nut-loc {
+    padding: 8px 14px;
+    border: 1px solid var(--mau-vien);
+    border-radius: 8px;
+    background-color: var(--mau-trang);
+    color: var(--mau-chu);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.nut-loc:hover {
+    background-color: var(--mau-nen);
+}
+
+.nut-loc.active {
+    background-color: var(--mau-chinh);
+    color: var(--mau-trang);
+}
+
+.nut-loc:focus-visible {
+    outline: 3px solid var(--mau-nhan);
+    outline-offset: 3px;
+}
+
+.thong-bao-loc {
+    margin-bottom: 12px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.ky-nang-item.an-ky-nang {
+    display: none;
+}
+
+
+/* ==========================================================
+   12. TƯƠNG TÁC THU GỌN / MỞ RỘNG
+   ========================================================== */
+
+[data-thu-gon] > h2 {
+    cursor: pointer;
+}
+
+[data-thu-gon] > h2:hover {
+    opacity: 0.8;
+}
+
+[data-thu-gon] > h2:focus-visible {
+    outline: 3px solid var(--mau-nhan);
+    outline-offset: 5px;
+}
+
+[data-thu-gon].thu-gon > *:not(h2) {
+    display: none;
+}
+
+
+/* ==========================================================
+   13. HIỂN THỊ TỐT TRÊN ĐIỆN THOẠI 360PX
+   ========================================================== */
+
+@media (max-width: 360px) {
+    .bo-loc-ky-nang {
+        flex-direction: column;
+    }
+
+    .nut-loc {
+        width: 100%;
+    }
+}
