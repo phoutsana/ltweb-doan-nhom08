@@ -1,9 +1,13 @@
 /* ==============================================================================
  * TỆP: js/canhan.js - Tương tác trang cá nhân của Nguyễn Sơn Chu (MSSV: 3120224020)
- * CHỨC NĂNG: Chuyển đổi giao diện Sáng/Tối lưu vào localStorage; Sao chép email kèm Toast.
+ * CHỨC NĂNG: 
+ * 1. Chuyển đổi giao diện Sáng/Tối lưu vào localStorage;
+ * 2. Sao chép email kèm thông báo Toast;
+ * 3. Tự động đếm và lưu số lượt ghé thăm trang qua localStorage kèm nút đặt lại.
  * CÁCH THỬ:
- * 1. Bấm nút "🌙 Chế độ tối" để đổi màu giao diện, sau đó tải lại trang (F5) để kiểm tra ghi nhớ.
- * 2. Bấm nút "Sao chép" cạnh email -> hộp thông báo xanh hiện 2.5s -> dán (Ctrl+V) để kiểm tra.
+ * 1. Bấm nút "🌙 Chế độ tối" để đổi màu giao diện, tải lại trang (F5) kiểm tra ghi nhớ.
+ * 2. Bấm nút "Sao chép" cạnh email -> thông báo xanh hiện 2.5s -> dán (Ctrl+V) kiểm tra.
+ * 3. F5 trang nhiều lần để thấy số lượt ghé thăm tăng dần; bấm "Đặt lại" để đưa về 1.
  * ============================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -61,6 +65,41 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             } catch (err) {
                 console.error("Lỗi khi sao chép clipboard:", err);
+            }
+        });
+    }
+
+    // ----------------------------------------------------
+    // TƯƠNG TÁC 3: BỘ ĐẾM SỐ LƯỢT GHÉ THĂM TRANG & NÚT ĐẶT LẠI
+    // ----------------------------------------------------
+    const counterEl = document.getElementById("so-luot-xem");
+    const resetBtn = document.getElementById("btn-reset-counter");
+    const VIEW_STORAGE_KEY = "views_3120224020";
+
+    // 3.1. Tự động tính toán và lưu số lượt xem khi vào trang
+    let currentViews = parseInt(localStorage.getItem(VIEW_STORAGE_KEY), 10);
+
+    if (isNaN(currentViews) || currentViews < 0) {
+        currentViews = 1;
+    } else {
+        currentViews += 1;
+    }
+
+    localStorage.setItem(VIEW_STORAGE_KEY, currentViews.toString());
+
+    if (counterEl) {
+        counterEl.textContent = currentViews.toString();
+    }
+
+    // 3.2. Xử lý sự kiện đặt lại bộ đếm về 1
+    if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+            const confirmReset = window.confirm("Bạn có chắc chắn muốn đặt lại số lượt xem trang về 1?");
+            if (confirmReset) {
+                localStorage.setItem(VIEW_STORAGE_KEY, "1");
+                if (counterEl) {
+                    counterEl.textContent = "1";
+                }
             }
         });
     }
