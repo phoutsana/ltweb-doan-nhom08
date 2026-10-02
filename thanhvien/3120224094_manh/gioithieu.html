@@ -3,66 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giới thiệu - Lê Văn Mạnh</title>
+    <title>Trang giới thiệu cá nhân - Lê Văn Mạnh</title>
     <link rel="stylesheet" href="style-canhan.css">
 </head>
 <body>
 
-<!-- Header theo giao diện Fashion Store -->
+<!-- Header Banner Xanh Dương -->
 <header class="header-banner">
-    <div class="logo-box">
-        <span class="logo-text">FS</span>
-    </div>
-    <div class="header-title">
-        <h1>Fashion Store</h1>
-        <p>Cửa hàng thời trang trực tuyến</p>
-    </div>
+    <h1>Trang giới thiệu cá nhân</h1>
+    <p>Sinh viên Công nghệ Thông tin - Đam mê Lập trình Web & UI/UX Design</p>
 </header>
 
-<!-- Thanh điều hướng nhóm -->
-<nav class="main-nav" aria-label="Điều hướng chính">
+<!-- Thanh điều hướng chính -->
+<nav class="main-nav">
     <ul>
-        <li><a href="../../index.html">Trang chủ</a></li>
-        <li><a href="../../danh-sach.html">Sản phẩm</a></li>
-        <li><a href="../../chi-tiet.html">Chi tiết sản phẩm</a></li>
-        <li><a href="../../gioi-thieu.html">Giới thiệu</a></li>
-        <li><a href="../../lien-he.html">Liên hệ</a></li>
+        <li><a href="#gioi-thieu" class="active">Giới thiệu</a></li>
+        <li><a href="#so-thich">Sở thích</a></li>
+        <li><a href="#ky-nang">Kỹ năng</a></li>
+        <li><a href="#thoi-khoa-bieu">Thời khóa biểu</a></li>
+        <li><a href="#tuong-tac">Góc tương tác</a></li>
     </ul>
 </nav>
 
 <main class="profile-container">
 
+    <!-- 1. Card Giới thiệu bản thân -->
     <section id="gioi-thieu" class="card">
         <h2 class="card-title">Giới thiệu bản thân</h2>
         <div class="bio-content">
             <div class="avatar-wrapper">
-                <img src="../../images/Mạnh_avata.jpg" alt="Ảnh chân dung của Lê Văn Mạnh" class="profile-avatar">
+                <img src="../../images/Mạnh_avata.jpg" alt="Lê Văn Mạnh" class="profile-avatar">
             </div>
-            <div class="bio-text">
-                <p>
-                    Xin chào! Tôi là <strong>Lê Văn Mạnh</strong>, sinh viên ngành Công nghệ thông tin. 
-                    Tôi yêu thích lập trình, thiết kế website và tìm hiểu các công nghệ mới.
-                </p>
+            <div class="bio-details">
+                <table class="info-table">
+                    <tr>
+                        <td class="label">Họ và tên:</td>
+                        <td class="value">Lê Văn Mạnh</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Ngành học:</td>
+                        <td class="value">Công nghệ thông tin</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Mã sinh viên:</td>
+                        <td class="value">3120224094</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Trường:</td>
+                        <td class="value">Trường Đại học Sư phạm – Đại học Đà Nẵng</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Mục tiêu:</td>
+                        <td class="value">Nâng cao kiến thức lập trình và phát triển các sản phẩm công nghệ phục vụ học tập và công việc.</td>
+                    </tr>
+                </table>
             </div>
-        </div>
-
-        <!-- Các nút bấm tương tác cho Phần C -->
-        <div class="interactive-tools" style="margin-top: 15px;">
-            <button id="theme-toggle-btn" type="button">🌙 Chế độ Tối</button>
-            <button id="copy-email-btn" type="button">📋 Sao chép Email</button>
-            <span id="toast-msg" class="toast" aria-live="polite"></span>
         </div>
     </section>
 
-    <article id="du-an" class="card">
-        <h2 class="card-title">Dự án / Sở thích</h2>
-        <h3>Thiết kế website</h3>
+    <!-- 2. Card Sở thích / Dự án -->
+    <article id="so-thich" class="card">
+        <h2 class="card-title">Sở thích / Dự án</h2>
         <p>
-            Tôi quan tâm đến phát triển website và xây dựng các giao diện web thân thiện với người dùng.
-            Tôi đang học và thực hành HTML, CSS, JavaScript cũng như các công nghệ lập trình khác.
+            Tôi đặc biệt quan tâm đến lĩnh vực phát triển website và xây dựng các giao diện web thân thiện, tối ưu trải nghiệm người dùng (UI/UX Design).
+        </p>
+        <p style="margin-top: 10px;">
+            Bên cạnh giờ học trên lớp, tôi thường xuyên tìm hiểu các công nghệ mới, thực hành với HTML, CSS, JavaScript, Python và xây dựng các dự án cá nhân để củng cố kỹ năng lập trình.
         </p>
     </article>
 
+    <!-- 3. Card Kỹ năng -->
     <section id="ky-nang" class="card">
         <h2 class="card-title">Kỹ năng</h2>
         <ul class="skills-list">
@@ -73,14 +83,11 @@
         </ul>
     </section>
 
+    <!-- 4. Card Thời khóa biểu tuần -->
     <section id="thoi-khoa-bieu" class="card">
         <h2 class="card-title">Thời khóa biểu tuần</h2>
-
-        <!-- Khung bao ngoài hỗ trợ cuộn ngang trên điện thoại -->
         <div class="table-responsive">
             <table class="schedule-table">
-                <caption>Thời khóa biểu học tập chi tiết trong tuần</caption>
-
                 <thead>
                     <tr>
                         <th scope="col">Thứ</th>
@@ -89,7 +96,6 @@
                         <th scope="col">Phòng</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     <tr>
                         <th scope="row" rowspan="2">Thứ 2</th>
@@ -102,14 +108,12 @@
                         <td>21221904 - 24-0123 Lịch sử Đảng Cộng sản Việt Nam</td>
                         <td>A5-404C</td>
                     </tr>
-
                     <tr>
                         <th scope="row">Thứ 4</th>
                         <td>2 - 3</td>
                         <td>31241283 - 24-0102 Hệ quản trị cơ sở dữ liệu</td>
                         <td>A5-404B</td>
                     </tr>
-
                     <tr>
                         <th scope="row" rowspan="2">Thứ 5</th>
                         <td>4 - 5</td>
@@ -121,14 +125,12 @@
                         <td>31231016 - 24-0103 Công nghệ phần mềm</td>
                         <td>B3-304</td>
                     </tr>
-
                     <tr>
                         <th scope="row">Thứ 6</th>
                         <td>1 - 3</td>
                         <td>31231398 - 24-0101 Lập trình mạng</td>
                         <td>A5-403</td>
                     </tr>
-
                     <tr>
                         <th scope="row">Thứ 7</th>
                         <td>1 - 3</td>
@@ -138,14 +140,40 @@
                 </tbody>
             </table>
         </div>
+    </section>
 
-        <!-- Đường kẻ nét đứt ngăn cách -->
-        <hr class="divider">
+    <!-- 5. Card Tương tác mới (Đồng hồ đếm ngược + Form gửi lời nhắn) -->
+    <section id="tuong-tac" class="card">
+        <h2 class="card-title">Góc tương tác cá nhân</h2>
+        
+        <!-- Tương tác 1: Đồng hồ đếm ngược -->
+        <div class="interactive-box">
+            <h3>⏳ Đếm ngược ngày thi môn Thiết kế & Lập trình Web</h3>
+            <div id="countdown-timer" class="timer-display">
+                <span id="days">00</span> ngày <span id="hours">00</span> giờ <span id="minutes">00</span> phút <span id="seconds">00</span> giây
+            </div>
+        </div>
 
-        <!-- 2 Nút quay lại nằm dưới thời khóa biểu -->
+        <hr style="margin: 20px 0; border: none; border-top: 1px dashed #cbd5e1;">
+
+        <!-- Tương tác 2: Form gửi tin nhắn nhanh -->
+        <div class="interactive-box">
+            <h3>💬 Gửi tin nhắn / Góp ý cho Mạnh</h3>
+            <form id="feedback-form" class="feedback-form">
+                <div class="form-group">
+                    <input type="text" id="user-name" placeholder="Tên của bạn..." required>
+                </div>
+                <div class="form-group">
+                    <textarea id="user-msg" rows="3" placeholder="Nhập lời nhắn hoặc góp ý..." required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Gửi lời nhắn</button>
+            </form>
+            <div id="form-response" class="form-response"></div>
+        </div>
+
+        <hr style="margin: 20px 0; border: none; border-top: 1px dashed #cbd5e1;">
         <div class="back-buttons">
-            <a href="../../index.html" class="btn-back">&larr; Quay về trang chủ nhóm</a>
-            <a href="../../gioi-thieu.html" class="btn-back">&larr; Quay về trang giới thiệu nhóm</a>
+            <a href="../../index.html" class="btn-back" style="text-decoration: none; color: #1e42a0; font-weight: 500;">&larr; Quay về trang chủ nhóm</a>
         </div>
     </section>
 
@@ -155,7 +183,6 @@
     <p>&copy; 2026 Lê Văn Mạnh</p>
 </footer>
 
-<!-- Liên kết file JavaScript cá nhân -->
 <script src="js/canhan.js"></script>
 </body>
 </html>

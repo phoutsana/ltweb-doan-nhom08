@@ -1,51 +1,60 @@
-/**
- * Tệp JavaScript cá nhân: thanhvien/3120224094_manh/js/canhan.js
- * Tác giả: Lê Văn Mạnh - MSSV: 3120224094
- */
-
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. ĐỔI GIAO DIỆN SÁNG / TỐI
-    const themeToggleBtn = document.getElementById('theme-toggle-btn');
-    const currentTheme = localStorage.getItem('theme');
 
-    if (currentTheme === 'dark') {
-        document.body.classList.add('dark-theme');
-        if (themeToggleBtn) themeToggleBtn.textContent = '☀️ Chế độ Sáng';
-    }
+    // --- TƯƠNG TÁC 1: ĐỒNG HỒ ĐẾM NGƯỢC THI CUỐI KỲ ---
+    // Đặt ngày thi mục tiêu (Ví dụ: 15/11/2026)
+    const targetDate = new Date('2026-11-15T08:00:00').getTime();
 
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', () => {
-            document.body.classList.toggle('dark-theme');
-            let theme = 'light';
-            
-            if (document.body.classList.contains('dark-theme')) {
-                theme = 'dark';
-                themeToggleBtn.textContent = '☀️ Chế độ Sáng';
-            } else {
-                themeToggleBtn.textContent = '🌙 Chế độ Tối';
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const difference = targetDate - now;
+
+        if (difference > 0) {
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days < 10 ? '0' + days : days;
+            document.getElementById('hours').textContent = hours < 10 ? '0' + hours : hours;
+            document.getElementById('minutes').textContent = minutes < 10 ? '0' + minutes : minutes;
+            document.getElementById('seconds').textContent = seconds < 10 ? '0' + seconds : seconds;
+        } else {
+            const timerContainer = document.getElementById('countdown-timer');
+            if (timerContainer) {
+                timerContainer.textContent = "🎉 Môn học đã hoàn thành!";
             }
-            localStorage.setItem('theme', theme);
-        });
+        }
     }
 
-    // 2. SAO CHÉP EMAIL VÀO CLIPBOARD
-    const copyEmailBtn = document.getElementById('copy-email-btn');
-    const userEmail = 'manh.levan.3120224094@example.com'; 
-    const toastMessage = document.getElementById('toast-msg');
+    // Chạy đếm ngược mỗi giây
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
 
-    if (copyEmailBtn) {
-        copyEmailBtn.addEventListener('click', async () => {
-            try {
-                await navigator.clipboard.writeText(userEmail);
-                if (toastMessage) {
-                    toastMessage.textContent = 'Đã sao chép email của Lê Văn Mạnh!';
-                    toastMessage.classList.add('show');
-                    setTimeout(() => {
-                        toastMessage.classList.remove('show');
-                    }, 2500);
-                }
-            } catch (err) {
-                console.error('Lỗi khi sao chép email:', err);
+
+    // --- TƯƠNG TÁC 2: FORM GỬI LỜI NHẮN VÀ VALIDATE ---
+    const feedbackForm = document.getElementById('feedback-form');
+    const formResponse = document.getElementById('form-response');
+
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // Ngăn load lại trang
+
+            const userName = document.getElementById('user-name').value.trim();
+            const userMsg = document.getElementById('user-msg').value.trim();
+
+            if (userName !== "" && userMsg !== "") {
+                formResponse.style.display = "block";
+                formResponse.style.color = "#15803d";
+                formResponse.style.backgroundColor = "#dcfce7";
+                formResponse.innerHTML = `Cảm ơn <strong>${userName}</strong> đã gửi lời nhắn! Mạnh sẽ phản hồi sớm nhé.`;
+
+                // Reset form
+                feedbackForm.reset();
+
+                // Ẩn thông báo sau 5 giây
+                setTimeout(() => {
+                    formResponse.style.display = "none";
+                }, 5000);
             }
         });
     }
