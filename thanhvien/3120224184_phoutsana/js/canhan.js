@@ -14,7 +14,7 @@ const cacLienKet = document.querySelectorAll('.dieu-huong__lien-ket');
 const KHOA_GIAO_DIEN = 'cheDoGiaoDien_Phoutsana';
 const manHinhNho = window.matchMedia('(max-width: 767px)');
 
-/* ===== 1. Đổi giao diện sáng/tối ===== */
+ /* ===== 1. Đổi giao diện sáng/tối ===== */
 
 function docLuaChon() {
     try {
