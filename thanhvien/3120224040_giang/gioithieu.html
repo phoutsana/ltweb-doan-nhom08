@@ -33,9 +33,33 @@
   <!-- Khung nội dung chính -->
   <main class="content-wrapper">
 
-    <!-- MỤC 1: GIỚI THIỆU BẢN THÂN (FLEXBOX + ẢNH CO GIÃN THEO KHUNG) -->
+    <!-- ==========================================================================
+         TÍNH NĂNG CÁ NHÂN: LỜI CHÀO THỜI GIAN THỰC & BỘ ĐIỀU CHỈNH CỠ CHỮ
+         ========================================================================== -->
+
+    <!-- 1. HỘP LỜI CHÀO THỜI GIAN THỰC -->
+    <div class="greeting-box" aria-label="Lời chào thời gian thực">
+      <div class="greeting-info">
+        <p id="realtime-greeting" class="greeting-text">Đang tải lời chào...</p>
+        <p id="realtime-date" class="greeting-date"></p>
+      </div>
+      <div id="realtime-clock" class="greeting-time">00:00:00</div>
+    </div>
+
+    <!-- 2. BỘ ĐIỀU CHỈNH CỠ CHỮ TOÀN TRANG -->
+    <div class="font-control-group" aria-label="Bộ điều chỉnh cỡ chữ toàn trang">
+      <span class="font-control-title">Cỡ chữ:</span>
+      <button type="button" id="decrease-font" class="action-btn-small" title="Thu nhỏ cỡ chữ">A-</button>
+      <span id="font-size-label" class="font-size-label">Vừa</span>
+      <button type="button" id="increase-font" class="action-btn-small" title="Phóng to cỡ chữ">A+</button>
+      <button type="button" id="reset-font" class="action-btn-small btn-secondary" title="Đặt lại cỡ chữ mặc định">Mặc định</button>
+    </div>
+
+    <!-- ==========================================================================
+         MỤC 1: GIỚI THIỆU BẢN THÂN (FLEXBOX + ẢNH CO GIÃN THEO KHUNG)
+         ========================================================================== -->
     <section id="gioi-thieu" class="info-card">
-      <h2 class="card-title">Giới thiệu bản thân</h2>
+<h2 class="card-title">Giới thiệu bản thân</h2>
       
       <div class="intro-flex">
         <div class="avatar-container">
@@ -58,7 +82,9 @@
       </div>
     </section>
 
-    <!-- MỤC 2: DỰ ÁN VÀ SỞ THÍCH -->
+    <!-- ==========================================================================
+         MỤC 2: DỰ ÁN VÀ SỞ THÍCH
+         ========================================================================== -->
     <section id="so-thich" class="info-card">
       <h2 class="card-title">Dự án và sở thích</h2>
       <div class="card-body-text">
@@ -71,7 +97,9 @@
       </div>
     </section>
 
-    <!-- MỤC 3: KỸ NĂNG (BỐ CỤC BẰNG CSS GRID) -->
+    <!-- ==========================================================================
+         MỤC 3: KỸ NĂNG (BỐ CỤC BẰNG CSS GRID)
+         ========================================================================== -->
     <section id="ky-nang" class="info-card">
       <h2 class="card-title">Kỹ năng</h2>
       <div class="skills-grid">
@@ -88,7 +116,7 @@
             <span>Lập trình web</span>
             <span>80%</span>
           </div>
-          <div class="skill-bar"><div class="skill-progress" style="width: 80%;"></div></div>
+<div class="skill-bar"><div class="skill-progress" style="width: 80%;"></div></div>
         </div>
 
         <div class="skill-item">
@@ -109,7 +137,9 @@
       </div>
     </section>
 
-    <!-- MỤC 4: THỜI KHÓA BIỂU (CUỘN NGANG ĐỘC LẬP TRÊN MOBILE) VÀ 2 NÚT ĐIỀU HƯỚNG -->
+    <!-- ==========================================================================
+         MỤC 4: THỜI KHÓA BIỂU (CUỘN NGANG ĐỘC LẬP TRÊN MOBILE) VÀ NÚT QUAY LẠI
+         ========================================================================== -->
     <section id="thoi-khoa-bieu" class="info-card">
       <h2 class="card-title">Thời khóa biểu tuần</h2>
       <p class="scroll-note">*(Trên điện thoại: cuộn hoặc vuốt ngang bảng để xem đầy đủ thông tin)*</p>
@@ -160,8 +190,10 @@
 
   <!-- Chân trang -->
   <footer class="page-footer">
-    <p>&copy; 2026 Nhóm 08 - Dự án Fashion Store. Thành viên: <strong>Ngô Hương Giang</strong> (3120224040)</p>
+<p>&copy; 2026 Nhóm 08 - Dự án Fashion Store. Thành viên: <strong>Ngô Hương Giang</strong> (3120224040)</p>
   </footer>
 
+  <!-- Liên kết JavaScript tương tác cá nhân -->
+  <script src="js/canhan.js"></script>
 </body>
 </html>
