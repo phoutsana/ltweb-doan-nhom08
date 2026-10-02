@@ -415,37 +415,6 @@ footer.chan-trang {
 }
 
 /* ==========================================================
-   11. TƯƠNG TÁC PHẦN C - ĐỔI GIAO DIỆN & SAO CHÉP EMAIL
-   ========================================================== */
-
-#nut-sao-chep-email {
-    border: none;
-    border-radius: 8px;
-    padding: 10px 16px;
-    background-color: var(--mau-chinh);
-    color: var(--mau-trang);
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-#nut-sao-chep-email:hover {
-    background-color: var(--mau-chinh-dam);
-}
-
-#nut-sao-chep-email:focus-visible {
-    outline: 3px solid var(--mau-nhan);
-    outline-offset: 3px;
-}
-
-#thong-bao-tuong-tac {
-    min-height: 24px;
-    margin-top: 8px;
-    color: var(--mau-chinh);
-    font-weight: bold;
-}
-
-/* ==========================================================
    CHẾ ĐỘ TỐI
    ========================================================== */
 
@@ -492,12 +461,7 @@ body.che-do-toi tbody tr:nth-child(even) {
     background-color: #334155;
 }
 
-body.che-do-toi #nut-sao-chep-email {
-    background-color: #2563eb;
-}
-
-body.che-do-toi caption,
-body.che-do-toi #thong-bao-tuong-tac {
+body.che-do-toi caption {
     color: #93c5fd;
 }
 
