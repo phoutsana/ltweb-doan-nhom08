@@ -37,8 +37,8 @@
          TÍNH NĂNG CÁ NHÂN: LỜI CHÀO THỜI GIAN THỰC & BỘ ĐIỀU CHỈNH CỠ CHỮ
          ========================================================================== -->
 
-    <!-- 1. HỘP LỜI CHÀO THỜI GIAN THỰC -->
-    <div class="greeting-box" aria-label="Lời chào thời gian thực">
+    <!-- 1. HỘP LỜI CHÀO THỜI GIAN THỰC (Đã thêm role="region" hợp lệ chuẩn W3C) -->
+    <div class="greeting-box" role="region" aria-label="Lời chào thời gian thực">
       <div class="greeting-info">
         <p id="realtime-greeting" class="greeting-text">Đang tải lời chào...</p>
         <p id="realtime-date" class="greeting-date"></p>
@@ -46,8 +46,8 @@
       <div id="realtime-clock" class="greeting-time">00:00:00</div>
     </div>
 
-    <!-- 2. BỘ ĐIỀU CHỈNH CỠ CHỮ TOÀN TRANG -->
-    <div class="font-control-group" aria-label="Bộ điều chỉnh cỡ chữ toàn trang">
+    <!-- 2. BỘ ĐIỀU CHỈNH CỠ CHỮ TOÀN TRANG (Đã thêm role="group" hợp lệ chuẩn W3C) -->
+    <div class="font-control-group" role="group" aria-label="Bộ điều chỉnh cỡ chữ toàn trang">
       <span class="font-control-title">Cỡ chữ:</span>
       <button type="button" id="decrease-font" class="action-btn-small" title="Thu nhỏ cỡ chữ">A-</button>
       <span id="font-size-label" class="font-size-label">Vừa</span>
@@ -57,9 +57,9 @@
 
     <!-- ==========================================================================
          MỤC 1: GIỚI THIỆU BẢN THÂN (FLEXBOX + ẢNH CO GIÃN THEO KHUNG)
-         ========================================================================== -->
+========================================================================== -->
     <section id="gioi-thieu" class="info-card">
-<h2 class="card-title">Giới thiệu bản thân</h2>
+      <h2 class="card-title">Giới thiệu bản thân</h2>
       
       <div class="intro-flex">
         <div class="avatar-container">
@@ -114,9 +114,9 @@
         <div class="skill-item">
           <div class="skill-header">
             <span>Lập trình web</span>
-            <span>80%</span>
+<span>80%</span>
           </div>
-<div class="skill-bar"><div class="skill-progress" style="width: 80%;"></div></div>
+          <div class="skill-bar"><div class="skill-progress" style="width: 80%;"></div></div>
         </div>
 
         <div class="skill-item">
@@ -145,7 +145,7 @@
       <p class="scroll-note">*(Trên điện thoại: cuộn hoặc vuốt ngang bảng để xem đầy đủ thông tin)*</p>
 
       <!-- Khung cuộn ngang độc lập không làm vỡ màn hình 360px -->
-      <div class="table-responsive-wrapper" tabindex="0" aria-label="Bảng thời khóa biểu có thể cuộn ngang">
+     <div class="table-responsive-wrapper" role="region" tabindex="0" aria-label="Bảng thời khóa biểu có thể cuộn ngang">
         <table class="schedule-table">
           <caption class="sr-only">Thời khóa biểu học tập trong tuần của Ngô Hương Giang</caption>
           <thead>
