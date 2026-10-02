@@ -62,6 +62,169 @@
             background-color: var(--mau-chinh-hover);
         }
 
+        /* Thanh chứa nút điều hướng & nút đổi giao diện */
+        .thanh-cong-cu-dau {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1100px;
+            margin: 15px auto 0;
+        }
+
+        .thanh-cong-cu-dau .back-home {
+            margin: 0;
+        }
+
+        /* Nút chuyển đổi Dark Mode */
+        .btn-theme-toggle {
+            background-color: var(--mau-chinh);
+            color: var(--mau-trang);
+            border: none;
+            padding: 9px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-theme-toggle:hover {
+            background-color: var(--mau-chinh-hover);
+        }
+
+        /* Nút sao chép Email */
+        .btn-copy-email {
+            background-color: var(--mau-chinh);
+            color: var(--mau-trang);
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-copy-email:hover {
+            background-color: var(--mau-chinh-hover);
+        }
+
+        /* Hộp hiển thị số lượt ghé thăm */
+        .hop-luot-xem {
+            margin-top: 15px;
+            padding: 12px 16px;
+            background-color: #eff6ff;
+            border-left: 4px solid var(--mau-chinh);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn-reset-counter {
+            background-color: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-reset-counter:hover {
+            background-color: #dc2626;
+        }
+
+        /* Hộp thông báo sao chép (Toast notification) */
+        .copy-toast {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #0e9f6e;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-size: 15px;
+            font-weight: bold;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 9999;
+        }
+
+        .copy-toast.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Chế độ nền tối (Dark Mode) */
+        body.dark-mode {
+            background-color: #121827;
+            color: #e5e7eb;
+        }
+
+        body.dark-mode section,
+        body.dark-mode article {
+            background-color: #1f2937;
+            color: #e5e7eb;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            border-color: #374151;
+        }
+
+        body.dark-mode h2,
+        body.dark-mode .info strong,
+        body.dark-mode caption {
+            color: #60a5fa;
+            border-left-color: #60a5fa;
+        }
+
+        body.dark-mode .profile img {
+            border-color: #3b82f6;
+        }
+
+        body.dark-mode .hop-luot-xem {
+            background-color: #374151;
+            border-color: #60a5fa;
+            color: #f3f4f6;
+        }
+
+        body.dark-mode #so-luot-xem {
+            color: #60a5fa !important;
+        }
+
+        body.dark-mode #ky-nang li {
+            background-color: #374151;
+            border-color: #4b5563;
+            border-left-color: #60a5fa;
+            color: #f3f4f6;
+        }
+
+        body.dark-mode .bang-cuon-ngang {
+            border-color: #4b5563;
+        }
+
+        body.dark-mode table,
+        body.dark-mode th,
+        body.dark-mode td {
+            border-color: #4b5563;
+        }
+
+        body.dark-mode th {
+            background-color: #1e3a8a;
+            color: #ffffff;
+        }
+
+        body.dark-mode tbody tr:nth-child(even) {
+            background-color: #283548;
+        }
+
         /* Phần đầu trang - Dùng Flexbox */
         header {
             background: linear-gradient(
@@ -288,10 +451,15 @@
 
 <body>
 
-    <!-- LIÊN KẾT QUAY VỀ TRANG CHỦ NHÓM (Dùng ../../index.html) -->
-    <a class="back-home" href="../../index.html">
-        ← Về trang chủ nhóm
-    </a>
+    <!-- KHU VỰC ĐIỀU HƯỚNG VÀ CHUYỂN ĐỔI CHẾ ĐỘ SÁNG / TỐI -->
+    <div class="thanh-cong-cu-dau">
+        <a class="back-home" href="../../index.html">
+            ← Về trang chủ nhóm
+        </a>
+        <button id="btn-toggle-theme" class="btn-theme-toggle" type="button">
+            🌙 Chế độ tối
+        </button>
+    </div>
 
 
     <!-- PHẦN ĐẦU TRANG -->
@@ -376,11 +544,28 @@
                     </p>
 
                     <p>
+                        <strong>Email:</strong>
+                        nchu3808@gmail.com
+                        <button id="btn-copy-email" class="btn-copy-email" type="button">Sao chép</button>
+                    </p>
+
+                    <p>
                         <strong>Mục tiêu:</strong>
                         Nâng cao kiến thức lập trình và phát triển
                         các sản phẩm công nghệ phục vụ học tập và
                         cuộc sống.
                     </p>
+
+                    <!-- HỘP ĐẾM SỐ LƯỢT GHÉ THĂM TRANG CÁ NHÂN -->
+                    <div class="hop-luot-xem">
+                        <span>
+                            👀 <strong>Số lượt ghé thăm trang:</strong> 
+                            <span id="so-luot-xem" style="font-weight: bold; color: var(--mau-chinh); font-size: 18px;">1</span> lượt
+                        </span>
+                        <button id="btn-reset-counter" class="btn-reset-counter" type="button">
+                            Đặt lại
+                        </button>
+                    </div>
 
                 </div>
 
@@ -600,6 +785,10 @@
     </main>
 
 
+    <!-- HỘP THÔNG BÁO SAO CHÉP EMAIL -->
+    <div id="copy-toast" class="copy-toast"></div>
+
+
     <!-- CHÂN TRANG -->
     <footer>
 
@@ -613,6 +802,9 @@
 
     </footer>
 
+
+    <!-- NẠP JAVASCRIPT TƯƠNG TÁC RIÊNG CỦA CÁ NHÂN -->
+    <script src="js/canhan.js"></script>
 
 </body>
 

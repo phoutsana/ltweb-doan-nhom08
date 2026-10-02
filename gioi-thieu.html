@@ -4,13 +4,11 @@
 <head>
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Giới thiệu - Fashion Store</title>
 
-    <meta name="description"
-          content="Giới thiệu về website Fashion Store và thành viên thực hiện dự án.">
+    <meta name="description" content="Giới thiệu về website Fashion Store và thành viên thực hiện dự án.">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -27,7 +25,11 @@
 
     <nav class="dieu-huong" aria-label="Điều hướng chính">
 
-        <ul class="dieu-huong__danh-sach">
+        <button type="button" class="nut-menu" aria-expanded="false" aria-controls="menu-chinh">
+            ☰ Menu
+        </button>
+
+        <ul class="dieu-huong__danh-sach menu" id="menu-chinh">
 
             <li class="dieu-huong__muc">
                 <a class="dieu-huong__lien-ket" href="index.html">
@@ -58,11 +60,17 @@
                     Liên hệ
                 </a>
             </li>
-
+            <li class="dieu-huong__muc">
+                <a class="dieu-huong__lien-ket" href="danh-sach.html">
+                    Yêu thích
+                    (
+                    <span class="so-luong-yeu-thich" aria-live="polite">0</span>
+                    )
+                </a>
+            </li>
         </ul>
 
     </nav>
-
 
     <main class="noi-dung-chinh">
 
@@ -128,15 +136,15 @@
 
                 <li>
                     <a href="thanhvien/3120224040_giang/gioithieu.html">
-                         Ngô Hương Giang
+                        Ngô Hương Giang
                     </a>
                 </li>
                 <li>
-                    <a href="thanhvien/phaeva/gioithieu.html">
+                    <a href="thanhvien/3120224182_phaeva/gioithieu.html">
                         Phaeva
                     </a>
                 </li>
-                 <li>
+                <li>
                     <a href="thanhvien/3120224094_manh/gioithieu.html">
                         Lê Văn Mạnh
                     </a>
@@ -156,6 +164,7 @@
         </p>
 
     </footer>
-
+    <script type="module" src="js/main.js"></script>
 </body>
+
 </html>

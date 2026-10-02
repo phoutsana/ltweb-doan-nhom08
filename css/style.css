@@ -3,12 +3,16 @@
    Đảm bảo độ tương phản màu chữ - nền >= 4.5:1
    ========================================================================== */
 :root {
-    --mau-chinh: #1e40af;       /* Xanh dương đậm chuẩn tương phản */
+    --mau-chinh: #1e40af;
+    /* Xanh dương đậm chuẩn tương phản */
     --mau-chinh-dam: #172554;
-    --mau-nhan: #d97706;        /* Vàng hổ phách */
-    --mau-chu: #0f172a;         /* Chữ đen than dễ đọc */
+    --mau-nhan: #d97706;
+    /* Vàng hổ phách */
+    --mau-chu: #0f172a;
+    /* Chữ đen than dễ đọc */
     --mau-chu-phu: #334155;
-    --mau-nen: #f8fafc;         /* Nền xám nhạt dịu mắt */
+    --mau-nen: #f8fafc;
+    /* Nền xám nhạt dịu mắt */
     --mau-trang: #ffffff;
     --mau-vien: #cbd5e1;
     --bo-goc: 8px;
@@ -21,7 +25,9 @@
 /* ==========================================================================
    02-chuan-hoa.css: box-sizing, lề của body và chuẩn hóa hình ảnh
    ========================================================================== */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -31,7 +37,6 @@ body {
     line-height: 1.6;
     color: var(--mau-chu);
     background-color: var(--mau-nen);
-    overflow-x: hidden; /* Không cho xuất hiện thanh cuộn ngang ở mọi kích thước màn hình */
 }
 
 /* Quy tắc ảnh theo đề bài: max-width 100%, height auto, display block */
@@ -48,12 +53,16 @@ img {
 .bo-cuc-trang {
     display: grid;
     min-height: 100vh;
+
     grid-template-areas:
         "dau"
         "menu"
         "chinh"
         "chan";
-    grid-template-rows: auto auto 1fr auto;
+
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
+
     gap: 0;
     width: 100%;
 }
@@ -65,6 +74,7 @@ img {
     padding: var(--khoang-cach);
     text-align: center;
 }
+
 /* Thêm đoạn này vào phần .dau-trang trong css/style.css */
 .dau-trang h1 {
     color: var(--mau-trang);
@@ -89,6 +99,7 @@ img {
     grid-area: chinh;
     width: 100%;
     max-width: 1140px;
+    min-width: 0;
     margin: 0 auto;
     padding: var(--khoang-cach);
 }
@@ -114,6 +125,7 @@ img {
     .dau-trang {
         padding: var(--khoang-cach-lon) var(--khoang-cach);
     }
+
     .dau-trang__khau-hieu {
         font-size: 1.35rem;
     }
@@ -133,6 +145,50 @@ img {
     gap: 6px;
 }
 
+/* Menu mobile */
+html.js .menu {
+    display: none;
+    flex-direction: column;
+}
+
+/* Menu mở khi bấm nút */
+html.js .menu.mo {
+    display: flex;
+}
+
+/* Nút Menu */
+.nut-menu {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border: 0;
+    border-radius: var(--bo-goc);
+    background-color: var(--mau-chinh);
+    color: var(--mau-trang);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 8px;
+}
+
+.nut-menu:focus-visible {
+    outline: 2px solid #fde047;
+    outline-offset: 2px;
+}
+
+/* Máy tính: menu luôn hiện */
+@media (min-width: 768px) {
+    html.js .menu {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .nut-menu {
+        display: none;
+    }
+}
+
 .dieu-huong__muc {
     margin: 0;
 }
@@ -145,7 +201,8 @@ img {
     font-size: 0.95rem;
     padding: 10px 14px;
     border-radius: var(--bo-goc);
-    transition: background-color 0.25s ease, color 0.25s ease; /* transition <= 0.3s */
+    transition: background-color 0.25s ease, color 0.25s ease;
+    /* transition <= 0.3s */
 }
 
 /* Trạng thái :hover, :active, :focus-visible đầy đủ, giữ viền focus */
@@ -244,6 +301,8 @@ figcaption {
 /* Bảng dữ liệu có bao bọc tránh tràn */
 .hop-bang {
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
     overflow-x: auto;
     margin: var(--khoang-cach) 0;
 }
@@ -261,7 +320,8 @@ caption {
     text-align: left;
 }
 
-th, td {
+th,
+td {
     padding: 12px 14px;
     border: 1px solid var(--mau-vien);
 }
@@ -293,8 +353,8 @@ tbody tr:nth-child(even) {
     font-weight: 600;
 }
 
-.bieu-mau__nhap, 
-.bieu-mau__lua-chon, 
+.bieu-mau__nhap,
+.bieu-mau__lua-chon,
 .bieu-mau__van-ban {
     width: 100%;
     padding: 10px 14px;
@@ -305,8 +365,8 @@ tbody tr:nth-child(even) {
     transition: border-color 0.25s ease;
 }
 
-.bieu-mau__nhap:focus-visible, 
-.bieu-mau__lua-chon:focus-visible, 
+.bieu-mau__nhap:focus-visible,
+.bieu-mau__lua-chon:focus-visible,
 .bieu-mau__van-ban:focus-visible {
     outline: 2px solid var(--mau-chinh);
     border-color: var(--mau-chinh);
@@ -329,7 +389,20 @@ tbody tr:nth-child(even) {
     border-radius: var(--bo-goc);
     border: 1px solid transparent;
     cursor: pointer;
+    white-space: nowrap;
     transition: background-color 0.25s ease;
+}
+
+table td:nth-child(3) {
+    white-space: nowrap;
+}
+
+table td:nth-child(4) {
+    white-space: nowrap;
+}
+
+table td:nth-child(5) {
+    white-space: nowrap;
 }
 
 .nut-bam--chinh {
@@ -366,8 +439,80 @@ tbody tr:nth-child(even) {
     border-radius: 0 var(--bo-goc) var(--bo-goc) 0;
     margin: var(--khoang-cach) 0;
 }
+
 .phan-cach {
     margin: 40px 0;
     border: 0;
     border-top: 1px solid #e5e7eb;
+}
+
+/* Bộ lọc sản phẩm */
+.bo-loc-san-pham {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 18px;
+    margin-bottom: 20px;
+    background-color: #f1f5f9;
+    border: 1px solid var(--mau-vien);
+    border-radius: var(--bo-goc);
+}
+
+.bo-loc-san-pham label {
+    font-weight: 600;
+    margin: 0;
+}
+
+.bo-loc-san-pham input,
+.bo-loc-san-pham select {
+    min-height: 40px;
+    padding: 8px 10px;
+    border: 1px solid var(--mau-vien);
+    border-radius: var(--bo-goc);
+    background-color: var(--mau-trang);
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.bo-loc-san-pham input {
+    width: 190px;
+}
+
+.bo-loc-san-pham select {
+    min-width: 120px;
+}
+
+.bo-loc-san-pham input:focus,
+.bo-loc-san-pham select:focus {
+    outline: 2px solid var(--mau-chinh);
+    outline-offset: 1px;
+}
+
+/* Điện thoại */
+@media (max-width: 767px) {
+    .bo-loc-san-pham {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 16px;
+    }
+
+    .bo-loc-san-pham label {
+        margin-top: 4px;
+    }
+
+    .bo-loc-san-pham input,
+    .bo-loc-san-pham select {
+        width: 100%;
+        min-height: 42px;
+        margin: 0;
+    }
+}
+
+/* Máy tính */
+@media (min-width: 768px) {
+    .bo-loc-san-pham {
+        display: flex;
+    }
 }

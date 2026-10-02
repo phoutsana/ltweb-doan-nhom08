@@ -5,6 +5,7 @@
    - Mobile-First với điểm ngắt @media (min-width: 768px)
    - Ảnh chân dung co giãn theo khung
    - Đầy đủ trạng thái :hover và :focus-visible cho mọi liên kết/nút
+   - Hỗ trợ chế độ Sáng / Tối (Dark Mode) và Thông báo Toast
    ========================================================== */
 
 /* 1. Bảng màu và hệ biến CSS kế thừa từ nhóm */
@@ -18,9 +19,15 @@
     --mau-vien: #e2e8f0;
     --mau-focus: #ff9800; /* Viền nổi bật khi dùng phím Tab */
     --font-chinh: Arial, sans-serif;
+
+    /* Biến dùng cho giao diện Dark / Light Mode */
+    --bg-body: var(--mau-nhat);
+    --text-body: #222222;
+    --bg-card: var(--mau-trang);
+    --border-card: var(--mau-vien);
 }
 
-/* 2. Reset cơ bản */
+/* 2. Reset cơ bản (Đã sửa lỗi ký tự) */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -29,17 +36,18 @@
 
 body {
     font-family: var(--font-chinh);
-    background-color: var(--mau-nhat);
-    color: #222;
+    background-color: var(--bg-body);
+    color: var(--text-body);
     line-height: 1.6;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* 3. Quy chuẩn trạng thái :hover và :focus-visible cho TẤT CẢ liên kết và nút bấm */
 a, button {
-    transition: background-color 0.2s ease, color 0.2s ease, outline 0.15s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, outline 0.15s ease, opacity 0.2s ease;
 }
 
 a:focus-visible, button:focus-visible {
@@ -48,16 +56,26 @@ a:focus-visible, button:focus-visible {
     border-radius: 4px;
 }
 
+/* Thanh công cụ đầu trang chứa nút quay về & nút đổi Dark Mode */
+.thanh-cong-cu-dau {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 92%;
+    max-width: 1100px;
+    margin: 15px auto 0;
+}
+
 /* Nút quay về trang chủ */
 .back-home {
     display: inline-block;
-    margin: 15px 5%;
-    padding: 10px 18px;
+    padding: 8px 16px;
     background-color: var(--mau-chinh);
     color: var(--mau-trang);
     text-decoration: none;
     border-radius: 6px;
     font-weight: bold;
+    font-size: 14px;
     width: fit-content;
 }
 
@@ -65,7 +83,63 @@ a:focus-visible, button:focus-visible {
     background-color: var(--mau-chinh-hover);
 }
 
-/* 4. Phần đầu trang (Header) - Thiết kế mặc định cho Mobile */
+/* Nút chuyển đổi Dark Mode */
+.btn-theme-toggle {
+    background-color: var(--mau-chinh);
+    color: var(--mau-trang);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-theme-toggle:hover {
+    background-color: var(--mau-chinh-hover);
+}
+
+/* Nút sao chép Email */
+.btn-copy-email {
+    background-color: var(--mau-chinh);
+    color: var(--mau-trang);
+    border: none;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.btn-copy-email:hover {
+    background-color: var(--mau-chinh-hover);
+}
+
+/* Hộp thông báo sao chép (Toast notification) */
+.copy-toast {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: #0e9f6e;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    font-size: 15px;
+    font-weight: bold;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 9999;
+}
+
+.copy-toast.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 4. Phần đầu trang (Header) - Mặc định cho Mobile */
 header {
     background: linear-gradient(135deg, #1e40af, var(--mau-chinh));
     color: var(--mau-trang);
@@ -124,11 +198,13 @@ main {
 }
 
 section, article {
-    background-color: var(--mau-trang);
+    background-color: var(--bg-card);
     padding: 20px 16px;
     margin-bottom: 24px;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--border-card);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 h2 {
@@ -149,7 +225,6 @@ h2 {
 }
 
 .profile img {
-    /* Đảm bảo ảnh chân dung co giãn theo khung linh hoạt */
     width: 100%;
     max-width: 220px;
     height: auto;
@@ -174,8 +249,8 @@ h2 {
     color: #1e40af;
 }
 
-/* 8. Danh sách kỹ năng - CSS Grid */
-.luoi-ky-nang {
+/* 8. Danh sách kỹ năng - CSS Grid (Hỗ trợ cả class lẫn thẻ lồng nhau) */
+#ky-nang ul, .luoi-ky-nang {
     padding-left: 0;
     list-style: none;
     display: grid;
@@ -183,22 +258,22 @@ h2 {
     gap: 12px;
 }
 
-.luoi-ky-nang li {
+#ky-nang li, .luoi-ky-nang li {
     margin: 0;
     font-size: 16px;
     background-color: #f8fafc;
-    border: 1px solid var(--mau-vien);
+    border: 1px solid var(--border-card);
     border-left: 4px solid var(--mau-chinh);
     padding: 10px 14px;
     border-radius: 6px;
 }
 
 /* 9. Bảng thời khóa biểu cuộn ngang trên điện thoại */
-.bang-cuon-bang {
+.bang-cuon-ngang, .bang-cuon-bang {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-card);
     border-radius: 8px;
     margin-top: 15px;
 }
@@ -220,7 +295,7 @@ caption {
 }
 
 th, td {
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-card);
     padding: 10px;
     text-align: center;
 }
@@ -235,7 +310,42 @@ tbody tr:nth-child(even) {
     background-color: #f8fafc;
 }
 
-/* 10. Chân trang */
+/* 10. Chế độ nền tối (Dark Mode) */
+body.dark-mode {
+    --bg-body: #111827;
+    --text-body: #e5e7eb;
+    --bg-card: #1f2937;
+    --border-card: #374151;
+}
+
+body.dark-mode h2,
+body.dark-mode .info strong,
+body.dark-mode caption {
+    color: #60a5fa;
+    border-left-color: #60a5fa;
+}
+
+body.dark-mode .profile img {
+    border-color: #3b82f6;
+}
+
+body.dark-mode #ky-nang li,
+body.dark-mode .luoi-ky-nang li {
+    background-color: #374151;
+    color: #f3f4f6;
+    border-left-color: #60a5fa;
+}
+
+body.dark-mode th {
+    background-color: #1e3a8a;
+    color: #ffffff;
+}
+
+body.dark-mode tbody tr:nth-child(even) {
+    background-color: #283548;
+}
+
+/* 11. Chân trang */
 footer {
     background-color: #172554;
     color: var(--mau-trang);
@@ -249,12 +359,11 @@ footer p {
 }
 
 /* ==========================================================
-   11. ĐIỂM NGẮT RESPONSIVE MIN-WIDTH (Từ Tablet & Desktop trở lên)
-   Áp dụng chuẩn yêu cầu min-width của Mục 3
+   12. ĐIỂM NGẮT RESPONSIVE MIN-WIDTH (Từ Tablet & Desktop >= 768px)
    ========================================================== */
 @media (min-width: 768px) {
-    .back-home {
-        margin: 20px 5%;
+    .thanh-cong-cu-dau {
+        margin: 20px auto 0;
     }
 
     header {
@@ -323,4 +432,3 @@ footer p {
         padding: 12px;
     }
 }
-/* Hoan thien commit trang ca nhan cua Chu */

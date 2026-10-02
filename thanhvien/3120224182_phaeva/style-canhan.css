@@ -1,5 +1,5 @@
 /* ==========================================================
-   CSS DÀNH RIÊNG CHO TRANG CÁ NHÂN - Xayyatiew Phoutsana
+   CSS DÀNH RIÊNG CHO TRANG CÁ NHÂN - KEOPHOXAY Phaeva
    - Kế thừa chuẩn bảng màu và hệ biến CSS chung của Nhóm 08
    - Bố cục Grid & Flexbox
    - Mobile-First với điểm ngắt @media (min-width: 768px)
@@ -14,9 +14,7 @@
     padding: 0;
 }
 
-/* Ép ưu tiên cấu trúc Flexbox cho trang này thay vì Grid của nhóm 
-   Đồng thời chuyển overflow-x thành auto để bỏ cách che lỗi cũ */
-body.bo-cuc-trang {
+body {
     font-family: var(--phong-chu);
     background-color: var(--mau-nen);
     color: var(--mau-chu);
@@ -24,19 +22,16 @@ body.bo-cuc-trang {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    overflow-x: auto;
+    scroll-behavior: smooth; /* Hiệu ứng cuộn mượt khi bấm menu */
 }
 
 /* 2. Quy chuẩn trạng thái :hover và :focus-visible cho TẤT CẢ liên kết và nút bấm */
-a,
-button {
+a, button {
     transition: background-color 0.2s ease, color 0.2s ease, outline 0.15s ease;
 }
 
-a:focus-visible,
-button:focus-visible {
-    outline: 3px solid var(--mau-nhan);
-    /* Dùng màu nhấn chung của nhóm làm viền */
+a:focus-visible, button:focus-visible {
+    outline: 3px solid var(--mau-nhan); 
     outline-offset: 3px;
     border-radius: 4px;
 }
@@ -44,8 +39,7 @@ button:focus-visible {
 /* Nút quay về trang chủ dạng Block trên Mobile */
 .dieu-huong-ngoai {
     display: flex;
-    flex-direction: column;
-    /* Xếp dọc trên điện thoại như của Chu */
+    flex-direction: column; 
     align-items: center;
     gap: 12px;
     padding: 20px 15px;
@@ -60,8 +54,7 @@ button:focus-visible {
     text-decoration: none;
     border-radius: 6px;
     font-weight: bold;
-    width: 100%;
-    /* Trải dài nút trên Mobile */
+    width: 100%; 
     max-width: 320px;
     text-align: center;
 }
@@ -94,111 +87,43 @@ header p {
     margin-top: 8px;
 }
 
-/* 4. Thanh điều hướng - dính trên cùng */
-html {
-    scroll-behavior: smooth;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    html {
-        scroll-behavior: auto;
-    }
-}
-
-/* Chừa chỗ để tiêu đề không bị thanh menu che khi cuộn tới */
-section[id],
-article[id] {
-    scroll-margin-top: 80px;
-}
-
+/* 4. Thanh điều hướng (Nav) - Xếp dọc màu đậm trên Mobile */
 nav.dieu-huong {
-    position: sticky;
-    top: 0;
-    z-index: 100;
     background-color: var(--mau-chinh-dam);
-    padding: 8px 12px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
-}
-
-.dieu-huong__thanh {
+    padding: 12px;
+    text-align: center;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     gap: 8px;
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-.dieu-huong__nut-menu,
-.dieu-huong__nut-giao-dien {
-    min-height: 44px;
-    padding: 8px 16px;
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    border-radius: 999px;
-    background-color: rgba(255, 255, 255, 0.12);
-    color: var(--mau-trang);
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.dieu-huong__nut-menu:hover,
-.dieu-huong__nut-giao-dien:hover {
-    background-color: rgba(255, 255, 255, 0.25);
-}
-
-/* Nút ☰ mặc định ẩn, JS sẽ hiện trên điện thoại */
-.dieu-huong__nut-menu {
-    display: none;
-    order: 1;
-}
-
-.dieu-huong__nut-giao-dien {
-    order: 2;
-}
-
-@media (max-width: 767px) {
-    .dieu-huong.co-js .dieu-huong__nut-menu {
-        display: inline-block;
-    }
 }
 
 .dieu-huong__danh-sach {
-    order: 3;
-    flex-basis: 100%;
     list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 6px 0 4px;
-}
-
-/* JS thêm class này để thu gọn menu trên điện thoại */
-.dieu-huong__danh-sach.an-menu-mobile {
-    display: none;
+    flex-direction: column; 
+    align-items: center;
+    gap: 8px;
 }
 
 .dieu-huong__lien-ket {
-    display: block;
-    padding: 12px 14px;
-    border-radius: 8px;
     color: var(--mau-trang);
     text-decoration: none;
     font-weight: bold;
     font-size: 16px;
+    padding: 8px 12px;
+    display: block;
+    width: 100%;
+    max-width: 280px;
 }
 
 .dieu-huong__lien-ket:hover {
-    background-color: rgba(255, 255, 255, 0.15);
     color: #93c5fd;
-}
-
-/* Mục đang xem */
-.dieu-huong__lien-ket.dang-xem {
-    background-color: rgba(255, 255, 255, 0.18);
-    box-shadow: inset 0 -3px 0 #93c5fd;
+    background-color: rgba(255, 255, 255, 0.08);
+border-radius: 4px;
 }
 
 /* 5. Nội dung chính - Dạng thẻ nổi (Cards) */
@@ -207,8 +132,6 @@ main.noi-dung-chinh {
     max-width: 1100px;
     margin: 20px auto;
     flex: 1;
-    min-width: 0;
-    /* THÊM DÒNG NÀY ĐỂ ÉP KHUNG CHÍNH CO LẠI THEO LỜI THẦY */
 }
 
 .khoi-noi-dung {
@@ -216,8 +139,7 @@ main.noi-dung-chinh {
     padding: 20px 16px;
     margin-bottom: 24px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-    /* Tạo bóng viền đẹp như của Chu */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06); 
     border: none;
 }
 
@@ -292,15 +214,14 @@ main.noi-dung-chinh {
 .hop-bang {
     width: 100%;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch; /* Hỗ trợ vuốt mượt trên iOS */
     border: 1px solid var(--mau-vien);
     border-radius: 8px;
 }
 
 table {
     width: 100%;
-    min-width: 520px;
-    /* Ép độ rộng tối thiểu để tạo thanh cuộn */
+    min-width: 520px; /* Ép độ rộng tối thiểu để tạo thanh cuộn */
     border-collapse: collapse;
     font-size: 14px;
 }
@@ -314,16 +235,14 @@ caption {
     text-align: left;
 }
 
-th,
-td {
+th, td {
     border: 1px solid var(--mau-vien);
     padding: 10px;
     text-align: center;
 }
 
 th {
-    background-color: #dbeafe;
-    /* Xanh nhạt giống mẫu của Chu */
+    background-color: #dbeafe; 
     color: #1e3a8a;
     font-weight: bold;
 }
@@ -347,7 +266,7 @@ footer.chan-trang {
 @media (min-width: 768px) {
     .dieu-huong-ngoai {
         flex-direction: row;
-        justify-content: center;
+justify-content: center;
         padding: 20px 5%;
     }
 
@@ -369,21 +288,34 @@ footer.chan-trang {
 
     /* Menu mở ngang ra dạng hàng */
     nav.dieu-huong {
-        padding: 6px 20px;
+        padding: 15px;
     }
 
     .dieu-huong__danh-sach {
-        order: 1;
-        flex: 1;
         flex-direction: row;
         justify-content: center;
-        gap: 6px;
-        padding: 0;
+        gap: 15px;
     }
 
     .dieu-huong__lien-ket {
-        padding: 12px 16px;
+        display: inline-block;
+        width: auto;
         font-size: 17px;
+        margin: 0 10px;
+    }
+
+    main.noi-dung-chinh {
+        margin: 35px auto;
+    }
+
+    .khoi-noi-dung {
+        padding: 35px;
+        margin-bottom: 30px;
+    }
+
+    .khoi-noi-dung h2 {
+        font-size: 24px;
+        margin-bottom: 25px;
     }
 
     /* Bố cục Profile dàn 2 cột: Ảnh bên trái, Thông tin bên phải */
@@ -408,63 +340,90 @@ footer.chan-trang {
         font-size: 16px;
     }
 
-    th,
-    td {
+    th, td {
         padding: 12px;
     }
 }
 
 /* ==========================================================
-     CHẾ ĐỘ TỐI
+   11. TƯƠNG TÁC LỌC KỸ NĂNG
    ========================================================== */
 
-body.che-do-toi {
-    background-color: #0f172a;
-    color: #e2e8f0;
+.bo-loc-ky-nang {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
 }
 
-body.che-do-toi .khoi-noi-dung {
-    background-color: #1e293b;
-    color: #e2e8f0;
+.nut-loc {
+    padding: 8px 14px;
+    border: 1px solid var(--mau-vien);
+    border-radius: 8px;
+    background-color: var(--mau-trang);
+    color: var(--mau-chu);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
 }
 
-body.che-do-toi .khoi-noi-dung h2 {
-    color: #93c5fd;
-    border-left-color: #60a5fa;
+.nut-loc:hover {
+    background-color: var(--mau-nen);
 }
 
-body.che-do-toi .thong-tin-chi-tiet strong {
-    color: #93c5fd;
+.nut-loc.active {
+    background-color: var(--mau-chinh);
+    color: var(--mau-trang);
 }
 
-body.che-do-toi #ky-nang li {
-    background-color: #334155;
-    border-color: #475569;
-    border-left-color: #60a5fa;
+.nut-loc:focus-visible {
+    outline: 3px solid var(--mau-nhan);
+    outline-offset: 3px;
 }
 
-body.che-do-toi .hop-bang {
-    border-color: #475569;
+.thong-bao-loc {
+    margin-bottom: 12px;
+    font-size: 15px;
+    font-weight: 600;
 }
 
-body.che-do-toi th,
-body.che-do-toi td {
-    border-color: #475569;
+.ky-nang-item.an-ky-nang {
+    display: none;
 }
 
-body.che-do-toi th {
-    background-color: #1e40af;
-    color: #ffffff;
+
+/* ==========================================================
+   12. TƯƠNG TÁC THU GỌN / MỞ RỘNG
+   ========================================================== */
+
+[data-thu-gon] > h2 {
+    cursor: pointer;
 }
 
-body.che-do-toi tbody tr:nth-child(even) {
-    background-color: #334155;
+[data-thu-gon] > h2:hover {
+    opacity: 0.8;
 }
 
-body.che-do-toi caption {
-    color: #93c5fd;
+[data-thu-gon] > h2:focus-visible {
+    outline: 3px solid var(--mau-nhan);
+    outline-offset: 5px;
 }
 
-body.che-do-toi .dieu-huong-ngoai {
-    background-color: transparent;
+[data-thu-gon].thu-gon > *:not(h2) {
+    display: none;
+}
+
+
+/* ==========================================================
+   13. HIỂN THỊ TỐT TRÊN ĐIỆN THOẠI 360PX
+   ========================================================== */
+
+@media (max-width: 360px) {
+    .bo-loc-ky-nang {
+        flex-direction: column;
+    }
+
+    .nut-loc {
+        width: 100%;
+    }
 }
