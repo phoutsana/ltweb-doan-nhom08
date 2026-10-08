@@ -11,6 +11,10 @@ body {
     line-height: 1.6;
 }
 
+body.bo-cuc-trang {
+    display: block;
+}
+
 /* Header Banner Xanh */
 .header-banner {
     background-color: #1e42a0;
@@ -20,6 +24,7 @@ body {
 }
 
 .header-banner h1 {
+    color: #ffffff;
     font-size: 2.2rem;
     font-weight: bold;
     margin-bottom: 10px;
