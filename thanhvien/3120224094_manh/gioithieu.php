@@ -1,7 +1,7 @@
 <?php
 /**
- * Trang giới thiệu cá nhân, sổ lưu bút và máy tính điểm học phần.
- * Dùng chung phần đầu/chân trang trong inc/; giữ CSS và JavaScript riêng.
+ * Trang cá nhân Mạnh, giữ tương tác Bài 4 và thêm bộ đếm lượt xem, máy tính điểm.
+ * Dùng header/footer chung; máy tính điểm kiểm tra phía máy chủ và dùng PRG.
  * Thử tại http://localhost:8000/thanhvien/3120224094_manh/gioithieu.php
  */
 
@@ -10,9 +10,6 @@ require __DIR__ . '/../../inc/config.php';
 $goc = '../../';
 $tieuDe = 'Trang giới thiệu cá nhân - Lê Văn Mạnh';
 $cssRieng = 'style-canhan.css';
-
-$loiLuuBut = [];
-$duLieuLuuBut = ['ten' => '', 'noidung' => ''];
 
 $loiDiem = [];
 $diemA1 = $diemA2 = $diemA3 = '';
@@ -27,51 +24,10 @@ if (isset($_SESSION['du_lieu_diem']) && is_array($_SESSION['du_lieu_diem'])) {
     unset($_SESSION['du_lieu_diem']);
 }
 
-$danhSachLuuBut = [];
-$thongBaoLuuBut = is_string($_SESSION['flash_luubut'] ?? null)
-    ? $_SESSION['flash_luubut']
-    : '';
-unset($_SESSION['flash_luubut']);
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = is_string($_POST['action'] ?? null) ? $_POST['action'] : '';
 
-    if ($action === 'luubut') {
-        foreach (['ten', 'noidung'] as $field) {
-            $value = $_POST[$field] ?? '';
-            $duLieuLuuBut[$field] = is_string($value) ? trim($value) : '';
-        }
-
-        if ($duLieuLuuBut['ten'] === '') {
-            $loiLuuBut['ten'] = 'Vui lòng nhập họ tên của bạn.';
-        } elseif (mb_strlen($duLieuLuuBut['ten'], 'UTF-8') > 50) {
-            $loiLuuBut['ten'] = 'Họ tên không được vượt quá 50 ký tự.';
-        }
-
-        if ($duLieuLuuBut['noidung'] === '') {
-            $loiLuuBut['noidung'] = 'Vui lòng nhập lời nhắn hoặc góp ý.';
-        } elseif (mb_strlen($duLieuLuuBut['noidung'], 'UTF-8') > 500) {
-            $loiLuuBut['noidung'] = 'Lời nhắn không được vượt quá 500 ký tự.';
-        }
-
-        if ($loiLuuBut === []) {
-            $tepLuuBut = __DIR__ . '/../../storage/3120224094_luubut.jsonl';
-            $dongData = json_encode([
-                'thoiGian' => date('Y-m-d H:i:s'),
-                'ten' => $duLieuLuuBut['ten'],
-                'noiDung' => $duLieuLuuBut['noidung'],
-            ], JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
-
-            if (file_put_contents($tepLuuBut, $dongData . PHP_EOL, FILE_APPEND | LOCK_EX) === false) {
-                http_response_code(500);
-                $loiLuuBut['noidung'] = 'Không thể lưu lời nhắn. Vui lòng thử lại sau.';
-            } else {
-                $_SESSION['flash_luubut'] = 'Cảm ơn bạn đã gửi lời nhắn cho Mạnh!';
-                header('Location: gioithieu.php#tuong-tac', true, 303);
-                exit;
-            }
-        }
-    } elseif ($action === 'tinhdiem') {
+    if ($action === 'tinhdiem') {
         $tenCotDiem = [
             'a1' => 'Điểm Chuyên cần (A1)',
             'a2' => 'Điểm Giữa kỳ (A2)',
@@ -105,30 +61,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$tepLuuButPath = __DIR__ . '/../../storage/3120224094_luubut.jsonl';
-if (is_file($tepLuuButPath)) {
-    if (!is_readable($tepLuuButPath)) {
-        throw new RuntimeException('Không thể đọc sổ lưu bút.');
+$tepLuotXem = __DIR__ . '/../../storage/3120224094_luotxem.txt';
+$tepDem = @fopen($tepLuotXem, 'c+');
+if ($tepDem === false) {
+    throw new RuntimeException('Không thể mở tệp lưu lượt xem.');
+}
+
+$daKhoaTep = false;
+try {
+    if (!@flock($tepDem, LOCK_EX)) {
+        throw new RuntimeException('Không thể khóa tệp lưu lượt xem.');
+    }
+    $daKhoaTep = true;
+
+    $duLieuLuotXem = @stream_get_contents($tepDem);
+    if ($duLieuLuotXem === false) {
+        throw new RuntimeException('Không thể đọc số lượt xem.');
     }
 
-    $dongs = file($tepLuuButPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    if ($dongs === false) {
-        throw new RuntimeException('Không thể đọc sổ lưu bút.');
+    $duLieuLuotXem = trim($duLieuLuotXem);
+    if ($duLieuLuotXem !== '' && !ctype_digit($duLieuLuotXem)) {
+        throw new RuntimeException('Dữ liệu lượt xem không hợp lệ.');
     }
 
-    foreach ($dongs as $dong) {
-        $tinNhan = json_decode($dong, true, 512, JSON_THROW_ON_ERROR);
-        if (
-            is_array($tinNhan)
-            && is_string($tinNhan['ten'] ?? null)
-            && is_string($tinNhan['noiDung'] ?? null)
-            && is_string($tinNhan['thoiGian'] ?? null)
-        ) {
-            $danhSachLuuBut[] = $tinNhan;
+    $soLuotXem = $duLieuLuotXem === '' ? 0 : (int) $duLieuLuotXem;
+    if (empty($_SESSION['da_tinh_luot_xem_3120224094'])) {
+        if ($soLuotXem === PHP_INT_MAX) {
+            throw new OverflowException('Số lượt xem đã vượt giới hạn lưu trữ.');
         }
-    }
 
-    $danhSachLuuBut = array_slice(array_reverse($danhSachLuuBut), 0, 5);
+        $soLuotXem++;
+        $duLieuMoi = $soLuotXem . PHP_EOL;
+        if (!@rewind($tepDem) || !@ftruncate($tepDem, 0)) {
+            throw new RuntimeException('Không thể cập nhật số lượt xem.');
+        }
+
+        $soByteDaGhi = @fwrite($tepDem, $duLieuMoi);
+        if ($soByteDaGhi !== strlen($duLieuMoi) || !@fflush($tepDem)) {
+            throw new RuntimeException('Không thể ghi số lượt xem.');
+        }
+
+        $_SESSION['da_tinh_luot_xem_3120224094'] = true;
+    }
+} finally {
+    if ($daKhoaTep && !@flock($tepDem, LOCK_UN)) {
+        fclose($tepDem);
+        throw new RuntimeException('Không thể mở khóa tệp lưu lượt xem.');
+    }
+    fclose($tepDem);
 }
 
 require __DIR__ . '/../../inc/header.php';
@@ -316,7 +296,7 @@ require __DIR__ . '/../../inc/header.php';
         <?php endif; ?>
     </section>
 
-    <!-- 6. CHỨC NĂNG PHP 2: Góc tương tác (Sổ lưu bút) & Đồng hồ đếm ngược -->
+    <!-- 6. CHỨC NĂNG PHP 2: Góc tương tác và bộ đếm lượt xem -->
     <section id="tuong-tac" class="card">
         <h2 class="card-title">Góc tương tác cá nhân</h2>
 
@@ -326,6 +306,14 @@ require __DIR__ . '/../../inc/header.php';
             <div id="countdown-timer" class="timer-display">
                 <span id="days">00</span> ngày <span id="hours">00</span> giờ <span id="minutes">00</span> phút <span id="seconds">00</span> giây
             </div>
+        </div>
+
+        <div class="interactive-box">
+            <h3>👁️ Lượt xem trang cá nhân</h3>
+            <p class="timer-display">
+                Tổng lượt xem (mỗi phiên tính một lần):
+                <span><?= e(number_format($soLuotXem)) ?></span>
+            </p>
         </div>
 
         <hr style="margin: 20px 0; border: none; border-top: 1px dashed #cbd5e1;">
@@ -345,58 +333,6 @@ require __DIR__ . '/../../inc/header.php';
                 <button type="submit" class="btn-submit">Gửi lời nhắn nhanh</button>
             </form>
             <div id="form-response" class="form-response" role="status" aria-live="polite"></div>
-        </div>
-
-        <hr style="margin: 20px 0; border: none; border-top: 1px dashed #cbd5e1;">
-
-        <!-- Sổ lưu bút được lưu và kiểm tra bằng PHP -->
-        <div class="interactive-box">
-            <h3>📖 Sổ lưu bút cá nhân (PHP)</h3>
-
-            <?php if ($thongBaoLuuBut !== ''): ?>
-                <div style="padding: 12px; background-color: #e0f2fe; border: 1px solid #7dd3fc; border-radius: 6px; color: #0369a1; margin-bottom: 15px; font-weight: 500;">
-                    <?= e($thongBaoLuuBut) ?>
-                </div>
-            <?php endif; ?>
-
-            <form method="post" action="gioithieu.php#tuong-tac" class="feedback-form">
-                <input type="hidden" name="action" value="luubut">
-
-                <div class="form-group">
-                    <label for="php-user-name">Tên của bạn</label>
-                    <input type="text" id="php-user-name" name="ten" value="<?= e($duLieuLuuBut['ten']) ?>" maxlength="50" required>
-                    <?php if (isset($loiLuuBut['ten'])): ?>
-                        <span style="color: #dc2626; font-size: 0.85rem; margin-top: 4px; display: block;"><?= e($loiLuuBut['ten']) ?></span>
-                    <?php endif; ?>
-                </div>
-
-                <div class="form-group">
-                    <label for="php-user-msg">Lời nhắn hoặc góp ý</label>
-                    <textarea id="php-user-msg" name="noidung" rows="3" maxlength="500" required><?= e($duLieuLuuBut['noidung']) ?></textarea>
-                    <?php if (isset($loiLuuBut['noidung'])): ?>
-                        <span style="color: #dc2626; font-size: 0.85rem; margin-top: 4px; display: block;"><?= e($loiLuuBut['noidung']) ?></span>
-                    <?php endif; ?>
-                </div>
-
-                <button type="submit" class="btn-submit">Gửi lời nhắn</button>
-            </form>
-
-            <h4 style="margin-top: 25px; margin-bottom: 12px; color: #1e293b; font-size: 1rem;">📋 5 lời nhắn mới nhất trong sổ lưu bút:</h4>
-            <?php if (empty($danhSachLuuBut)): ?>
-                <p style="color: #64748b; font-style: italic; font-size: 0.9rem;">Chưa có lời nhắn nào. Hãy là người đầu tiên để lại lưu bút nhé!</p>
-            <?php else: ?>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <?php foreach ($danhSachLuuBut as $msg): ?>
-                        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                                <strong style="color: #1e42a0;"><?= e($msg['ten']) ?></strong>
-                                <small style="color: #94a3b8; font-size: 0.8rem;"><?= e($msg['thoiGian']) ?></small>
-                            </div>
-                            <p style="margin: 0; color: #334155; font-size: 0.95rem; word-break: break-word;"><?= e($msg['noiDung']) ?></p>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
         </div>
 
         <hr style="margin: 20px 0; border: none; border-top: 1px dashed #cbd5e1;">
