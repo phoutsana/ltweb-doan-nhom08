@@ -35,18 +35,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const feedbackForm = document.getElementById('feedback-form');
     const formResponse = document.getElementById('form-response');
 
-    if (feedbackForm) {
+    if (feedbackForm && formResponse) {
         feedbackForm.addEventListener('submit', (e) => {
             e.preventDefault(); // Ngăn load lại trang
 
-            const userName = document.getElementById('user-name').value.trim();
-            const userMsg = document.getElementById('user-msg').value.trim();
+            const nameInput = document.getElementById('user-name');
+            const messageInput = document.getElementById('user-msg');
+            if (!nameInput || !messageInput) {
+                return;
+            }
+
+            const userName = nameInput.value.trim();
+            const userMsg = messageInput.value.trim();
 
             if (userName !== "" && userMsg !== "") {
                 formResponse.style.display = "block";
                 formResponse.style.color = "#15803d";
                 formResponse.style.backgroundColor = "#dcfce7";
-                formResponse.innerHTML = `Cảm ơn <strong>${userName}</strong> đã gửi lời nhắn! Mạnh sẽ phản hồi sớm nhé.`;
+                const nameElement = document.createElement('strong');
+                nameElement.textContent = userName;
+                formResponse.replaceChildren(
+                    document.createTextNode('Cảm ơn '),
+                    nameElement,
+                    document.createTextNode(' đã gửi lời nhắn! Mạnh sẽ phản hồi sớm nhé.')
+                );
 
                 // Reset form
                 feedbackForm.reset();

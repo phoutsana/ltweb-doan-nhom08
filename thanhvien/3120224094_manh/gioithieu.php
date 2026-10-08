@@ -330,9 +330,28 @@ require __DIR__ . '/../../inc/header.php';
 
         <hr style="margin: 20px 0; border: none; border-top: 1px dashed #cbd5e1;">
 
-        <!-- Form gửi tin nhắn / Sổ lưu bút PHP -->
+        <!-- Biểu mẫu góp ý JavaScript được giữ lại từ Bài 4 -->
         <div class="interactive-box">
-            <h3>💬 Sổ lưu bút / Gửi lời nhắn cho Mạnh (PHP)</h3>
+            <h3>💬 Gửi tin nhắn / Góp ý cho Mạnh</h3>
+            <form id="feedback-form" class="feedback-form">
+                <div class="form-group">
+                    <label for="user-name">Tên của bạn</label>
+                    <input type="text" id="user-name" maxlength="50" placeholder="Tên của bạn..." required>
+                </div>
+                <div class="form-group">
+                    <label for="user-msg">Lời nhắn hoặc góp ý</label>
+                    <textarea id="user-msg" rows="3" maxlength="500" placeholder="Nhập lời nhắn hoặc góp ý..." required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Gửi lời nhắn nhanh</button>
+            </form>
+            <div id="form-response" class="form-response" role="status" aria-live="polite"></div>
+        </div>
+
+        <hr style="margin: 20px 0; border: none; border-top: 1px dashed #cbd5e1;">
+
+        <!-- Sổ lưu bút được lưu và kiểm tra bằng PHP -->
+        <div class="interactive-box">
+            <h3>📖 Sổ lưu bút cá nhân (PHP)</h3>
 
             <?php if ($thongBaoLuuBut !== ''): ?>
                 <div style="padding: 12px; background-color: #e0f2fe; border: 1px solid #7dd3fc; border-radius: 6px; color: #0369a1; margin-bottom: 15px; font-weight: 500;">
@@ -344,16 +363,16 @@ require __DIR__ . '/../../inc/header.php';
                 <input type="hidden" name="action" value="luubut">
 
                 <div class="form-group">
-                    <label for="user-name">Tên của bạn</label>
-                    <input type="text" id="user-name" name="ten" value="<?= e($duLieuLuuBut['ten']) ?>" maxlength="50" required>
+                    <label for="php-user-name">Tên của bạn</label>
+                    <input type="text" id="php-user-name" name="ten" value="<?= e($duLieuLuuBut['ten']) ?>" maxlength="50" required>
                     <?php if (isset($loiLuuBut['ten'])): ?>
                         <span style="color: #dc2626; font-size: 0.85rem; margin-top: 4px; display: block;"><?= e($loiLuuBut['ten']) ?></span>
                     <?php endif; ?>
                 </div>
 
                 <div class="form-group">
-                    <label for="user-msg">Lời nhắn hoặc góp ý</label>
-                    <textarea id="user-msg" name="noidung" rows="3" maxlength="500" required><?= e($duLieuLuuBut['noidung']) ?></textarea>
+                    <label for="php-user-msg">Lời nhắn hoặc góp ý</label>
+                    <textarea id="php-user-msg" name="noidung" rows="3" maxlength="500" required><?= e($duLieuLuuBut['noidung']) ?></textarea>
                     <?php if (isset($loiLuuBut['noidung'])): ?>
                         <span style="color: #dc2626; font-size: 0.85rem; margin-top: 4px; display: block;"><?= e($loiLuuBut['noidung']) ?></span>
                     <?php endif; ?>
