@@ -1,2 +1,13 @@
 
 .vscode/
+# Composer
+/vendor/
+
+# Files generated at runtime
+/uploads/*
+/storage/*
+/logs/*
+
+# Keep required protection files
+!/storage/.htaccess
+!/logs/.htaccess
