@@ -1,212 +1,123 @@
-<!DOCTYPE html>
-<html lang="vi">
+<?php
+require_once __DIR__ . '/inc/config.php';
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh sách sản phẩm - Fashion Store</title>
-    <meta name="description" content="Danh sách các sản phẩm quần áo đang được giới thiệu trên Fashion Store.">
-    <link rel="stylesheet" href="css/style.css">
-</head>
 
-<body class="bo-cuc-trang">
-    <header class="dau-trang">
-        <h1>Danh sách sản phẩm</h1>
-        <p class="dau-trang__khau-hieu">Khám phá các sản phẩm thời trang</p>
-    </header>
+// Gọi lớp KhoSanPham để lấy dữ liệu
+use App\Data\KhoSanPham;
 
-    <nav class="dieu-huong" aria-label="Điều hướng chính">
-        <button type="button" class="nut-menu" aria-expanded="false" aria-controls="menu-chinh">☰ Menu</button>
-        <ul class="dieu-huong__danh-sach menu" id="menu-chinh">
-            <li class="dieu-huong__muc"><a class="dieu-huong__lien-ket" href="index.html">Trang chủ</a></li>
-            <li class="dieu-huong__muc"><a class="dieu-huong__lien-ket" href="danh-sach.html">Sản phẩm</a></li>
-            <li class="dieu-huong__muc"><a class="dieu-huong__lien-ket" href="chi-tiet.html">Chi tiết sản phẩm</a></li>
-            <li class="dieu-huong__muc"><a class="dieu-huong__lien-ket" href="gioi-thieu.html">Giới thiệu</a></li>
-            <li class="dieu-huong__muc"><a class="dieu-huong__lien-ket" href="lien-he.html">Liên hệ</a></li>
-            <li class="dieu-huong__muc">
-                <a class="dieu-huong__lien-ket" href="#">Yêu thích (<span class="so-luong-yeu-thich"
-                        aria-live="polite">0</span>)</a>
-            </li>
-        </ul>
-    </nav>
+$kho = new KhoSanPham();
+$danhSach = $kho->tatCa();
 
-    <main class="noi-dung-chinh">
-        <!-- Khối bộ lọc (Sẽ bị ẩn nếu không có JS, hiện khi JS chạy xong) -->
-        <section id="bo-loc-san-pham" class="khoi-noi-dung bo-loc-san-pham" hidden>
-            <h2>Bộ lọc sản phẩm</h2>
-            <label for="tim-kiem">Tìm kiếm:</label>
-            <input type="text" id="tim-kiem" placeholder="Nhập tên sản phẩm...">
+// --- XỬ LÝ TÌM KIẾM, LỌC VÀ SẮP XẾP TỪ BIỂU MẪU GET ---
+$tuKhoa = trim($_GET['q'] ?? '');
+$danhMuc = trim($_GET['dm'] ?? '');
+$sapXep = trim($_GET['sx'] ?? '');
 
-            <label for="loc-danh-muc">Danh mục:</label>
-            <select id="loc-danh-muc">
+// 1. Tìm theo từ khóa (tên sản phẩm)
+if ($tuKhoa !== '') {
+    $danhSach = array_filter($danhSach, function ($sp) use ($tuKhoa) {
+        // mb_stripos giúp tìm kiếm không phân biệt hoa thường có dấu tiếng Việt
+        return mb_stripos($sp->getTen(), $tuKhoa) !== false;
+    });
+}
+
+// 2. Lọc theo danh mục
+if ($danhMuc !== '') {
+    $danhSach = array_filter($danhSach, function ($sp) use ($danhMuc) {
+        return $sp->getDanhMuc() === $danhMuc;
+    });
+}
+
+// 3. Sắp xếp giá hoặc tên
+if ($sapXep === 'gia-tang') {
+    usort($danhSach, fn($a, $b) => $a->getGia() <=> $b->getGia());
+} elseif ($sapXep === 'gia-giam') {
+    usort($danhSach, fn($a, $b) => $b->getGia() <=> $a->getGia());
+} elseif ($sapXep === 'ten-az') {
+    // Sắp xếp theo tên A-Z
+    usort($danhSach, fn($a, $b) => strcasecmp($a->getTen(), $b->getTen()));
+}
+
+$tieuDe = 'Danh sách sản phẩm - Fashion Store';
+$trang = 'san-pham';
+require_once __DIR__ . '/inc/header.php';
+?>
+
+<main class="noi-dung-chinh" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+
+    <!-- Khối bộ lọc -->
+    <form method="GET" action="danh-sach.php" class="khoi-noi-dung bo-loc-san-pham" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 30px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+
+        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 200px;">
+            <label for="tim-kiem" style="font-weight: bold; color: #374151;">Tìm kiếm</label>
+            <input type="text" id="tim-kiem" name="q" value="<?= e($tuKhoa) ?>" placeholder="Tên sản phẩm..." style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none;">
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px;">
+            <label for="loc-danh-muc" style="font-weight: bold; color: #374151;">Danh mục</label>
+            <select id="loc-danh-muc" name="dm" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; background: white;">
                 <option value="">Tất cả</option>
-                <option value="Áo">Áo</option>
-                <option value="Quần">Quần</option>
-                <option value="Váy">Váy</option>
-                <option value="Áo khoác">Áo khoác</option>
+                <option value="Áo" <?= $danhMuc === 'Áo' ? 'selected' : '' ?>>Áo</option>
+                <option value="Quần" <?= $danhMuc === 'Quần' ? 'selected' : '' ?>>Quần</option>
+                <option value="Váy" <?= $danhMuc === 'Váy' ? 'selected' : '' ?>>Váy</option>
+                <option value="Áo khoác" <?= $danhMuc === 'Áo khoác' ? 'selected' : '' ?>>Áo khoác</option>
             </select>
+        </div>
 
-            <label for="sap-xep">Sắp xếp:</label>
-            <select id="sap-xep">
+        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px;">
+            <label for="sap-xep" style="font-weight: bold; color: #374151;">Sắp xếp</label>
+            <select id="sap-xep" name="sx" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; background: white;">
                 <option value="">Mặc định</option>
-                <option value="gia-tang">Giá tăng dần</option>
-                <option value="gia-giam">Giá giảm dần</option>
-                <option value="ten-az">Tên A-Z</option>
+                <option value="gia-tang" <?= $sapXep === 'gia-tang' ? 'selected' : '' ?>>Giá tăng dần</option>
+                <option value="gia-giam" <?= $sapXep === 'gia-giam' ? 'selected' : '' ?>>Giá giảm dần</option>
+                <option value="ten-az" <?= $sapXep === 'ten-az' ? 'selected' : '' ?>>Tên A-Z</option>
             </select>
-        </section>
+        </div>
 
-        <section class="khoi-noi-dung">
-            <h2>Các sản phẩm nổi bật</h2>
-            <p id="trang-thai-tai" aria-live="polite" style="color: blue; font-weight: bold;"></p>
-            <div class="hop-bang">
-                <table class="bang-san-pham">
-                    <caption>Danh sách sản phẩm Fashion Store</caption>
-                    <thead>
-                        <tr>
-                            <th scope="col">STT</th>
-                            <th scope="col">Hình ảnh</th>
-                            <th scope="col">Tên sản phẩm</th>
-                            <th scope="col">Loại</th>
-                            <th scope="col">Giá</th>
-                            <th scope="col">Chi tiết</th>
-                            <th scope="col">Yêu thích</th>
-                        </tr>
-                    </thead>
-                    <tbody id="than-bang-san-pham">
-                        <!-- 12 Sản phẩm tĩnh dự phòng khi tắt JS -->
-                        <tr>
-                            <td>1</td>
-                            <td><img src="images/ao-thun-nam.jpg" alt="Áo thun nam basic" class="anh-san-pham"></td>
-                            <td>Áo thun nam basic</td>
-                            <td>Áo</td>
-                            <td>120.000 VNĐ</td>
-                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=1">Xem chi tiết</a></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td><img src="images/ao-so-mi-nu.jpg" alt="Áo sơ mi nữ thanh lịch" class="anh-san-pham">
-                            </td>
-                            <td>Áo sơ mi nữ thanh lịch</td>
-                            <td>Áo</td>
-                            <td>250.000 VNĐ</td>
-                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=2">Xem chi tiết</a></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td><img src="images/quan-jean-nam.jpg" alt="Quần jean nam dáng suông" class="anh-san-pham">
-                            </td>
-                            <td>Quần jean nam dáng suông</td>
-                            <td>Quần</td>
-                            <td>399.000 VNĐ</td>
-                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=3">Xem chi tiết</a></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td><img src="images/chan-vay-nu.jpg" alt="Chân váy nữ chữ A" class="anh-san-pham"></td>
-                            <td>Chân váy nữ chữ A</td>
-                            <td>Váy</td>
-                            <td>349.000 VNĐ</td>
-                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=4">Xem chi tiết</a></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td><img src="images/Quan_kaki_nam.jpg" alt="Quần kaki nam" class="anh-san-pham"></td>
-                            <td>Quần kaki nam</td>
-                            <td>Quần</td>
-                            <td>320.000 VNĐ</td>
-                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=5">Xem chi tiết</a></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td><img src="images/Ao_polo_nam.jpg" alt="Áo polo nam" class="anh-san-pham"></td>
-                            <td>Áo polo nam</td>
-                            <td>Áo</td>
-                            <td>220.000 VNĐ</td>
-                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=6">Xem chi tiết</a></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>7</td>
-                            <td><img src="images/Quan_short_nam.jpg" alt="Quần short nam" class="anh-san-pham"></td>
-                            <td>Quần short nam</td>
-                            <td>Quần</td>
-                            <td>180.000 VNĐ</td>
-                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=7">Xem chi tiết</a></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>8</td>
-                            <td><img src="images/ao-hoodie-nam.jpg" alt="Áo hoodie nam" class="anh-san-pham"></td>
-                            <td>Áo hoodie nam</td>
-                            <td>Áo khoác</td>
-                            <td>420.000 VNĐ</td>
-                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=8">Xem chi tiết</a></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>9</td>
-                            <td><img src="images/Ao_khoac_gio.jpg" alt="Áo khoác gió" class="anh-san-pham"></td>
-                            <td>Áo khoác gió</td>
-                            <td>Áo khoác</td>
-                            <td>350.000 VNĐ</td>
-                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=9">Xem chi tiết</a></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>10</td>
-                            <td><img src="images/quan-jogger-nam.jpg" alt="Quần jogger nam" class="anh-san-pham"></td>
-                            <td>Quần jogger nam</td>
-                            <td>Quần</td>
-                            <td>280.000 VNĐ</td>
-                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=10">Xem chi tiết</a></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>11</td>
-                            <td><img src="images/ao-bomber-nam.jpg" alt="Áo khoác bomber" class="anh-san-pham"></td>
-                            <td>Áo khoác bomber</td>
-                            <td>Áo khoác</td>
-                            <td>450.000 VNĐ</td>
-                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=11">Xem chi tiết</a></td>
-                            <td>-</td>
-                        </tr>
-                        <tr>
-                            <td>12</td>
-                            <td><img src="images/ao-thun-xanh.jpg" alt="Áo thun nam xanh" class="anh-san-pham"></td>
-                            <td>Áo thun nam xanh</td>
-                            <td>Áo</td>
-                            <td>150.000 VNĐ</td>
-                            <td><a class="nut-bam nut-bam--chinh" href="chi-tiet.html?id=12">Xem chi tiết</a></td>
-                            <td>-</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <button type="submit" style="padding: 10px 25px; background-color: #2563eb; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; height: 42px; transition: background 0.3s;">Lọc</button>
+    </form>
+
+    <!-- Khu vực hiển thị sản phẩm -->
+    <section>
+        <?php if (empty($danhSach)): ?>
+            <div style="text-align: center; padding: 50px; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <p style="font-weight: bold; color: #dc2626; font-size: 1.2rem;">Không có sản phẩm nào phù hợp với tìm kiếm của bạn.</p>
+                <a href="danh-sach.php" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px;">Xem tất cả sản phẩm</a>
             </div>
-        </section>
+        <?php else: ?>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px;">
+                <?php foreach ($danhSach as $sp): ?>
+                    <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column;"
+                        onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';">
 
-        <section class="khoi-noi-dung">
-            <h2>Danh mục sản phẩm</h2>
-            <ul>
-                <li>Áo</li>
-                <li>Quần</li>
-                <li>Váy</li>
-                <li>Phụ kiện</li>
-            </ul>
-        </section>
-    </main>
+                        <!-- Ảnh sản phẩm -->
+                        <div style="width: 100%; height: 250px; background-color: #f3f4f6; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            <img src="<?= e($sp->getHinhAnh()) ?>" alt="<?= e($sp->getTen()) ?>" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain; padding: 10px;">
+                        </div>
 
-    <footer class="chan-trang">
-        <p>&copy; 2026 Fashion Store. All rights reserved.</p>
-    </footer>
+                        <!-- Thông tin sản phẩm -->
+                        <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <h2 style="font-size: 1.1rem; color: #111827; margin: 0 0 10px 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    <?= e($sp->getTen()) ?>
+                                </h2>
+                                <p style="color: #dc2626; font-size: 1.25rem; font-weight: 700; margin: 0 0 15px 0;">
+                                    <?= vnd($sp->getGia()) ?>
+                                </p>
+                            </div>
 
-    <!-- Nhúng Script -->
-    <script type="module" src="js/main.js"></script>
-    <script type="module" src="js/trang-danh-sach.js"></script>
-</body>
+                            <a href="chi-tiet.php?id=<?= e($sp->getId()) ?>" style="display: block; text-align: center; width: 100%; padding: 10px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; transition: background-color 0.3s;" onmouseover="this.style.backgroundColor='#1d4ed8';" onmouseout="this.style.backgroundColor='#2563eb';">
+                                Xem chi tiết
+                            </a>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </section>
+</main>
 
-</html>
+<?php
+require_once __DIR__ . '/inc/footer.php';
+?>

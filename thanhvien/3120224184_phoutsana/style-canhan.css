@@ -468,3 +468,78 @@ body.che-do-toi caption {
 body.che-do-toi .dieu-huong-ngoai {
     background-color: transparent;
 }
+/* ==========================================================
+   CSS DÀNH RIÊNG CHO TRANG CÁ NHÂN - Xayyatiew Phoutsana
+   - Kế thừa chuẩn bảng màu và hệ biến CSS chung của Nhóm 08
+   - Bố cục Grid & Flexbox
+   - Mobile-First với điểm ngắt @media (min-width: 768px)
+   ========================================================== */
+
+/* 1. Reset cơ bản */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body.bo-cuc-trang {
+    font-family: var(--phong-chu);
+    background-color: var(--mau-nen);
+    color: var(--mau-chu);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: auto;
+}
+
+/* 2. Trạng thái hover/focus chung */
+a, button { transition: background-color 0.2s ease, color 0.2s ease, outline 0.15s ease; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--mau-nhan); outline-offset: 3px; border-radius: 4px; }
+
+/* Nút quay về trang chủ */
+.dieu-huong-ngoai { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 20px 15px; background-color: transparent; }
+.nut-bam-ngoai { display: inline-block; padding: 10px 18px; background-color: var(--mau-chinh); color: var(--mau-trang); text-decoration: none; border-radius: 6px; font-weight: bold; width: 100%; max-width: 320px; text-align: center; }
+.nut-bam-ngoai:hover { background-color: var(--mau-chinh-dam); color: var(--mau-trang); }
+
+/* 3. Khối nội dung */
+.khoi-noi-dung { background-color: var(--mau-trang); padding: 20px 16px; margin-bottom: 24px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06); border: none; }
+.khoi-noi-dung h2 { color: var(--mau-chinh); border-left: 6px solid var(--mau-chinh); padding-left: 12px; margin-bottom: 20px; font-size: 22px; }
+
+/* 4. Danh sách kỹ năng */
+#ky-nang ul { padding-left: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+#ky-nang li { margin: 0; font-size: 16px; background-color: var(--mau-nen); border: 1px solid var(--mau-vien); border-left: 4px solid var(--mau-chinh); padding: 10px 14px; border-radius: 6px; }
+
+/* 5. Bảng thời khóa biểu */
+.hop-bang { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--mau-vien); border-radius: 8px; }
+table { width: 100%; min-width: 520px; border-collapse: collapse; font-size: 14px; }
+caption { font-size: 17px; font-weight: bold; padding: 10px; margin-bottom: 5px; color: var(--mau-chinh); text-align: left; }
+th, td { border: 1px solid var(--mau-vien); padding: 10px; text-align: center; }
+th { background-color: #dbeafe; color: #1e3a8a; font-weight: bold; }
+tbody tr:nth-child(even) { background-color: var(--mau-nen); }
+
+@media (min-width: 768px) {
+    .dieu-huong-ngoai { flex-direction: row; justify-content: center; padding: 20px 5%; }
+    .nut-bam-ngoai { width: auto; }
+    table { font-size: 16px; }
+    th, td { padding: 12px; }
+}
+
+/* =======================================================
+   6. CSS GIAO DIỆN TỐI & SỔ LƯU BÚT ĐỘC LẬP
+======================================================= */
+/* Ép Chế độ tối thắng CSS của nhóm bằng !important */
+body.che-do-toi { background-color: #0f172a !important; color: #e2e8f0 !important; transition: all 0.3s ease; }
+body.che-do-toi .khoi-noi-dung { background-color: #1e293b !important; color: #e2e8f0 !important; border: 1px solid #334155 !important; box-shadow: none !important; }
+body.che-do-toi h2 { color: #93c5fd !important; border-left-color: #3b82f6 !important; }
+body.che-do-toi .hop-bang table, body.che-do-toi .hop-bang th, body.che-do-toi .hop-bang td { background-color: #1e293b !important; color: white !important; border-color: #475569 !important; }
+body.che-do-toi th { background-color: #1e40af !important; }
+body.che-do-toi .cn-nav { background-color: #0f172a !important; border: 1px solid #334155 !important; }
+
+/* ĐỊNH DẠNG LẠI MENU CÁ NHÂN VỚI MÀU SẮC ĐỒNG BỘ NHÓM */
+.cn-header { background: linear-gradient(135deg, var(--mau-chinh-dam, #1e3a8a), var(--mau-chinh, #2563eb)); color: white; text-align: center; padding: 30px 15px; margin-top: 20px; border-radius: 8px 8px 0 0; }
+.cn-nav { background-color: var(--mau-chinh-dam, #1e40af); padding: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; border-radius: 0 0 8px 8px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+.cn-nav a { color: var(--mau-trang, white); text-decoration: none; padding: 8px 15px; font-weight: bold; border-radius: 20px; transition: background 0.2s, color 0.2s; font-size: 15px; }
+.cn-nav a:hover { background-color: rgba(255, 255, 255, 0.15); color: #bfdbfe; }
+.cn-btn-darkmode { background-color: rgba(255, 255, 255, 0.12) !important; color: #fff !important; border: 1px solid rgba(255, 255, 255, 0.3) !important; }
+.cn-btn-darkmode:hover { background-color: rgba(255, 255, 255, 0.25) !important; }
+
+/* CSS cho Sổ lưu bút */
+.form-nhap { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
+body.che-do-toi .form-nhap { background: #0f172a; border-color: #475569; color: #fff; }

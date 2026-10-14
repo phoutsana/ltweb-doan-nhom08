@@ -1,170 +1,43 @@
-<!DOCTYPE html>
-<html lang="vi">
+<?php
+require_once __DIR__ . '/inc/config.php';
+$tieuDe = 'Giới thiệu - Fashion Store';
+$trang = 'gioi-thieu';
+require_once __DIR__ . '/inc/header.php';
+?>
 
-<head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Giới thiệu - Fashion Store</title>
-
-    <meta name="description" content="Giới thiệu về website Fashion Store và thành viên thực hiện dự án.">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-
-<body class="bo-cuc-trang">
-
-    <header class="dau-trang">
-        <h1>Giới thiệu Fashion Store</h1>
-
-        <p class="dau-trang__khau-hieu">
-            Thông tin về dự án và người thực hiện
-        </p>
-    </header>
-
-
-    <nav class="dieu-huong" aria-label="Điều hướng chính">
-
-        <button type="button" class="nut-menu" aria-expanded="false" aria-controls="menu-chinh">
-            ☰ Menu
-        </button>
-
-        <ul class="dieu-huong__danh-sach menu" id="menu-chinh">
-
-            <li class="dieu-huong__muc">
-                <a class="dieu-huong__lien-ket" href="index.html">
-                    Trang chủ
-                </a>
-            </li>
-
-            <li class="dieu-huong__muc">
-                <a class="dieu-huong__lien-ket" href="danh-sach.html">
-                    Sản phẩm
-                </a>
-            </li>
-
-            <li class="dieu-huong__muc">
-                <a class="dieu-huong__lien-ket" href="chi-tiet.html">
-                    Chi tiết sản phẩm
-                </a>
-            </li>
-
-            <li class="dieu-huong__muc">
-                <a class="dieu-huong__lien-ket" href="gioi-thieu.html">
-                    Giới thiệu
-                </a>
-            </li>
-
-            <li class="dieu-huong__muc">
-                <a class="dieu-huong__lien-ket" href="lien-he.html">
-                    Liên hệ
-                </a>
-            </li>
-            <li class="dieu-huong__muc">
-                <a class="dieu-huong__lien-ket" href="danh-sach.html">
-                    Yêu thích
-                    (
-                    <span class="so-luong-yeu-thich" aria-live="polite">0</span>
-                    )
-                </a>
-            </li>
-        </ul>
-
-    </nav>
-
-    <main class="noi-dung-chinh">
-
-        <section class="khoi-noi-dung">
-
-            <h2>Về Fashion Store</h2>
-
-            <p>
-                Fashion Store là website bán quần áo trực tuyến
-                được xây dựng nhằm cung cấp cho người dùng
-                một cách thuận tiện để tìm hiểu và lựa chọn
-                sản phẩm thời trang.
-            </p>
-
-        </section>
-
-
-        <section class="khoi-noi-dung">
-
-            <h2>Mục tiêu của dự án</h2>
-
-            <ul>
-
-                <li>
-                    Giới thiệu các sản phẩm thời trang.
-                </li>
-
-                <li>
-                    Hỗ trợ người dùng tìm kiếm sản phẩm.
-                </li>
-
-                <li>
-                    Cung cấp thông tin chi tiết về sản phẩm.
-                </li>
-
-                <li>
-                    Tạo giao diện website dễ sử dụng.
-                </li>
-
-            </ul>
-
-        </section>
-
-
-        <section class="khoi-noi-dung">
-
-            <h2>Thành viên thực hiện</h2>
-
-            <ul>
-
-                <li>
-                    <a href="thanhvien/3120224184_phoutsana/gioithieu.html">
-                        Xayyatiew Phoutsana
-                    </a>
-                </li>
-
-
-                <li>
-                    <a href="thanhvien/3120224020_chu/gioithieu.html">
-                        Nguyễn Sơn Chu
-                    </a>
-                </li>
-
-                <li>
-                    <a href="thanhvien/3120224040_giang/gioithieu.html">
-                        Ngô Hương Giang
-                    </a>
-                </li>
-                <li>
-                    <a href="thanhvien/3120224182_phaeva/gioithieu.html">
-                        Phaeva
-                    </a>
-                </li>
-                <li>
-                    <a href="thanhvien/3120224094_manh/gioithieu.html">
-                        Lê Văn Mạnh
-                    </a>
-                </li>
-            </ul>
-
-        </section>
-
-    </main>
-
-
-    <footer class="chan-trang">
-
+<main class="noi-dung-chinh">
+    <section class="khoi-noi-dung">
+        <h2>Về Fashion Store</h2>
         <p>
-            &copy; 2026 Fashion Store.
-            All rights reserved.
+            Fashion Store là website bán quần áo trực tuyến
+            được xây dựng nhằm cung cấp cho người dùng
+            một cách thuận tiện để tìm hiểu và lựa chọn
+            sản phẩm thời trang.
         </p>
+    </section>
 
-    </footer>
-    <script type="module" src="js/main.js"></script>
-</body>
+    <section class="khoi-noi-dung">
+        <h2>Mục tiêu của dự án</h2>
+        <ul>
+            <li>Giới thiệu các sản phẩm thời trang.</li>
+            <li>Hỗ trợ người dùng tìm kiếm sản phẩm.</li>
+            <li>Cung cấp thông tin chi tiết về sản phẩm.</li>
+            <li>Tạo giao diện website dễ sử dụng.</li>
+        </ul>
+    </section>
 
-</html>
+    <section class="khoi-noi-dung">
+        <h2>Thành viên thực hiện</h2>
+        <ul>
+            <li><a href="thanhvien/3120224184_phoutsana/gioithieu.php">Xayyatiew Phoutsana</a></li>
+            <li><a href="thanhvien/3120224020_chu/gioithieu.php">Nguyễn Sơn Chu</a></li>
+            <li><a href="thanhvien/3120224040_giang/gioithieu.php">Ngô Hương Giang</a></li>
+            <li><a href="thanhvien/3120224182_phaeva/gioithieu.php">Phaeva</a></li>
+            <li><a href="thanhvien/3120224094_manh/gioithieu.php">Lê Văn Mạnh</a></li>
+        </ul>
+    </section>
+</main>
+
+<?php
+require_once __DIR__ . '/inc/footer.php';
+?>

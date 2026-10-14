@@ -8,8 +8,8 @@
     "moTa": "Áo thun nam kiểu basic phù hợp mặc hằng ngày.",
     "hinhAnh": "images/ao-thun-nam.jpg",
     "mauSac": "Trắng",
-    "kichThuoc": "M, L, XL"
-    
+    "kichThuoc": "M, L, XL",
+    "video": "https://www.youtube.com/embed/Q4T5uVfQ03w?si=dF3zYc-sNa3FOJVl"
   },
   {
     "id": 2,
@@ -20,8 +20,8 @@
     "moTa": "Áo sơ mi nữ màu trắng, phù hợp đi học và đi làm.",
     "hinhAnh": "images/ao-so-mi-nu.jpg",
     "mauSac": "Trắng",
-    "kichThuoc": "S, M, L"
-    
+    "kichThuoc": "S, M, L",
+    "video": "https://www.youtube.com/embed/Hf_dMGhF7zM?si=63-j2AgRkYY17aDy"
   },
   {
     "id": 3,
@@ -32,7 +32,8 @@
     "moTa": "Quần jean form suông, chất bò cao cấp không phai màu.",
     "hinhAnh": "images/quan-jean-nam.jpg",
     "mauSac": "Xanh",
-    "kichThuoc": "29, 30, 31, 32"
+    "kichThuoc": "29, 30, 31, 32",
+    "video": "https://www.youtube.com/embed/yUdXs2msI_s?si=fwErv-M-9olib0PX"
   },
   {
     "id": 4,
@@ -43,7 +44,8 @@
     "moTa": "Chân váy form chữ A tôn dáng, năng động và trẻ trung.",
     "hinhAnh": "images/chan-vay-nu.jpg",
     "mauSac": "Đen",
-    "kichThuoc": "S, M, L"
+    "kichThuoc": "S, M, L",
+    "video": "https://www.youtube.com/embed/7IO8IB0DCvY?si=0tS1NXcnzt20UhJ_"
   },
   {
     "id": 5,
@@ -54,7 +56,8 @@
     "moTa": "Quần kaki nam phù hợp đi học và đi làm.",
     "hinhAnh": "images/Quan_kaki_nam.jpg",
     "mauSac": "Vàng Đất",
-    "kichThuoc": "29, 30, 31, 32"
+    "kichThuoc": "29, 30, 31, 32",
+    "video": "https://www.youtube.com/embed/CRd_dkot4BM?si=XNjcglVwoKsfcnN4"
   },
   {
     "id": 6,
@@ -65,7 +68,8 @@
     "moTa": "Áo polo nam thiết kế đơn giản, dễ phối đồ.",
     "hinhAnh": "images/Ao_polo_nam.jpg",
     "mauSac": "Trắng",
-    "kichThuoc": "M, L, XL"
+    "kichThuoc": "M, L, XL",
+    "video": "https://www.youtube.com/embed/1at4WHmWhzA?si=oY-qAgdjuLnLYGux"
   },
   {
     "id": 7,
@@ -76,7 +80,8 @@
     "moTa": "Quần short nam thoải mái cho hoạt động hằng ngày.",
     "hinhAnh": "images/Quan_short_nam.jpg",
     "mauSac": "Trắng",
-    "kichThuoc": "M, L, XL"
+    "kichThuoc": "M, L, XL",
+    "video": "https://www.youtube.com/embed/ABYuNdnU7Jk?si=v4j2jiIHc-M6HOrG"
   },
   {
     "id": 8,
@@ -87,7 +92,8 @@
     "moTa": "Áo hoodie nam phong cách trẻ trung.",
     "hinhAnh": "images/ao-hoodie-nam.jpg",
     "mauSac": "Đen",
-    "kichThuoc": "M, L, XL"
+    "kichThuoc": "M, L, XL",
+    "video": "https://www.youtube.com/embed/U08_Wu7wPn8?si=imH9DASAIDKMcKSP"
   },
   {
     "id": 9,
@@ -98,7 +104,8 @@
     "moTa": "Áo khoác gió nhẹ, phù hợp sử dụng khi đi ngoài trời.",
     "hinhAnh": "images/Ao_khoac_gio.jpg",
     "mauSac": "Đen",
-    "kichThuoc": "M, L, XL"
+    "kichThuoc": "M, L, XL",
+    "video": "https://www.youtube.com/embed/C8373DrkI0w?si=BDVWzNU5Fe57z0c3"
   },
   {
     "id": 10,
@@ -109,7 +116,8 @@
     "moTa": "Quần jogger nam thoải mái cho phong cách năng động.",
     "hinhAnh": "images/quan-jogger-nam.jpg",
     "mauSac": "Đen",
-    "kichThuoc": "M, L, XL"
+    "kichThuoc": "M, L, XL",
+    "video": "https://www.youtube.com/embed/g1aicLHOiks?si=qB_2YpZ0JTyFlWNv"
   },
   {
     "id": 11,
@@ -120,7 +128,8 @@
     "moTa": "Áo khoác bomber phong cách trẻ trung.",
     "hinhAnh": "images/ao-bomber-nam.jpg",
     "mauSac": "Đen",
-    "kichThuoc": "M, L, XL"
+    "kichThuoc": "M, L, XL",
+    "video": "https://www.youtube.com/embed/lwOYguJR95Y?si=acGZD6ajZKHAKmp4"
   },
   {
     "id": 12,
@@ -131,6 +140,7 @@
     "moTa": "Áo thun nam màu xanh đơn giản và dễ mặc.",
     "hinhAnh": "images/ao-thun-xanh.jpg",
     "mauSac": "Xanh",
-    "kichThuoc": "M, L, XL"
+    "kichThuoc": "M, L, XL",
+    "video": "https://www.youtube.com/embed/Mpii6eYHSqk?si=Mkt3-09k-iAwNHdU"
   }
 ]
