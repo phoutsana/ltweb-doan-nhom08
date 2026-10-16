@@ -1,106 +1,153 @@
-/* ==========================================================
-   CSS DÀNH RIÊNG CHO TRANG CÁ NHÂN (MSSV: 3120224020_chu)
-   - Kế thừa bảng màu và hệ biến CSS chung của Nhóm 08
-   - Bố cục Grid & Flexbox
-   - Mobile-First với điểm ngắt @media (min-width: 768px)
-   - Ảnh chân dung co giãn theo khung
-   - Đầy đủ trạng thái :hover và :focus-visible cho mọi liên kết/nút
-   - Hỗ trợ chế độ Sáng / Tối (Dark Mode) và Thông báo Toast
-   ========================================================== */
-
-/* 1. Bảng màu và hệ biến CSS kế thừa từ nhóm */
-:root {
+/* CSS rieng cua Nguyen Son Chu: chi ap dung cho khu vuc .trang-ca-nhan,
+   khong ghi de header, menu va footer dung chung cua nhom. */
+.trang-ca-nhan {
     --mau-chinh: #1a56db;
     --mau-chinh-hover: #1e429f;
     --mau-phu: #0e9f6e;
+    --mau-phu-hover: #046c4e;
     --mau-dam: #111928;
-    --mau-nhat: #f1f5f9;
+    --mau-nhat: #f9fafb;
     --mau-trang: #ffffff;
-    --mau-vien: #e2e8f0;
-    --mau-focus: #ff9800; /* Viền nổi bật khi dùng phím Tab */
-    --font-chinh: Arial, sans-serif;
+    --mau-vien: #e5e7eb;
+    --mau-chu-phu: #6b7280;
+    --khoang-cach-goc: 16px;
+    --bo-goc-khung: 12px;
+    --do-bong-nhe: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --font-chu-chinh: Arial, sans-serif;
 
-    /* Biến dùng cho giao diện Dark / Light Mode */
-    --bg-body: var(--mau-nhat);
-    --text-body: #222222;
-    --bg-card: var(--mau-trang);
-    --border-card: var(--mau-vien);
-}
-
-/* 2. Reset cơ bản (Đã sửa lỗi ký tự) */
-* {
-    box-sizing: border-box;
-    margin: 0;
+    width: 90%;
+    max-width: 1100px;
+    margin: 35px auto;
     padding: 0;
-}
-
-body {
-    font-family: var(--font-chinh);
-    background-color: var(--bg-body);
-    color: var(--text-body);
+    color: var(--mau-dam);
+    font-family: var(--font-chu-chinh);
     line-height: 1.6;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* 3. Quy chuẩn trạng thái :hover và :focus-visible cho TẤT CẢ liên kết và nút bấm */
-a, button {
-    transition: background-color 0.2s ease, color 0.2s ease, outline 0.15s ease, opacity 0.2s ease;
-}
+.trang-ca-nhan,
+.trang-ca-nhan * { box-sizing: border-box; }
 
-a:focus-visible, button:focus-visible {
-    outline: 3px solid var(--mau-focus);
-    outline-offset: 3px;
-    border-radius: 4px;
-}
-
-/* Thanh công cụ đầu trang chứa nút quay về & nút đổi Dark Mode */
-.thanh-cong-cu-dau {
+/* Thanh cong cu o dau trang ca nhan */
+.trang-ca-nhan .thanh-cong-cu-dau {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 92%;
-    max-width: 1100px;
-    margin: 15px auto 0;
+    width: 100%;
+    gap: 12px;
+    margin: 15px auto 20px;
 }
 
-/* Nút quay về trang chủ */
-.back-home {
+.trang-ca-nhan .back-home {
     display: inline-block;
-    padding: 8px 16px;
+    margin: 0;
+    padding: 10px 18px;
     background-color: var(--mau-chinh);
     color: var(--mau-trang);
     text-decoration: none;
     border-radius: 6px;
     font-weight: bold;
-    font-size: 14px;
-    width: fit-content;
+    transition: background-color 0.2s ease;
 }
+.trang-ca-nhan .back-home:hover { background-color: var(--mau-chinh-hover); }
 
-.back-home:hover {
-    background-color: var(--mau-chinh-hover);
-}
-
-/* Nút chuyển đổi Dark Mode */
-.btn-theme-toggle {
+.trang-ca-nhan .btn-theme-toggle {
     background-color: var(--mau-chinh);
     color: var(--mau-trang);
     border: none;
-    padding: 8px 16px;
+    padding: 9px 16px;
     border-radius: 6px;
     font-weight: bold;
     font-size: 14px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.trang-ca-nhan .btn-theme-toggle:hover { background-color: var(--mau-chinh-hover); }
+
+/* Tieu de rieng: khong can thiep .dau-trang cua nhom */
+.trang-ca-nhan .dau-trang-ca-nhan {
+    background: linear-gradient(135deg, #1e40af, var(--mau-chinh));
+    color: var(--mau-trang);
+    text-align: center;
+    padding: 45px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--bo-goc-khung);
+}
+.trang-ca-nhan .dau-trang-ca-nhan h1 {
+    margin: 0;
+    font-size: 36px;
+    color: var(--mau-trang);
+}
+.trang-ca-nhan .dau-trang-ca-nhan p {
+    font-size: 18px;
+    margin: 10px 0 0;
 }
 
-.btn-theme-toggle:hover {
-    background-color: var(--mau-chinh-hover);
+/* Menu muc luc noi bo trang ca nhan */
+.trang-ca-nhan .nav-ca-nhan {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 15px;
+    margin: 0 0 30px;
+    background-color: #172554;
+    border-radius: 8px;
+    text-align: center;
+}
+.trang-ca-nhan .nav-ca-nhan a {
+    color: var(--mau-trang);
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 10px;
+    font-size: 17px;
+    transition: color 0.2s ease;
+}
+.trang-ca-nhan .nav-ca-nhan a:hover { color: #93c5fd; }
+
+/* Cac khoi noi dung ca nhan */
+.trang-ca-nhan > section,
+.trang-ca-nhan > article {
+    background-color: var(--mau-trang);
+    padding: 30px;
+    margin-bottom: 30px;
+    border-radius: var(--bo-goc-khung);
+    box-shadow: var(--do-bong-nhe);
+    border: 1px solid var(--mau-vien);
+}
+.trang-ca-nhan > section.dau-trang-ca-nhan {
+    background: linear-gradient(135deg, #1e40af, var(--mau-chinh));
+    border: none;
+}
+.trang-ca-nhan h2 {
+    color: var(--mau-chinh);
+    border-left: 6px solid var(--mau-chinh);
+    padding-left: 15px;
+    margin-top: 0;
+    margin-bottom: 25px;
 }
 
-/* Nút sao chép Email */
-.btn-copy-email {
+/* Thong tin ca nhan - flexbox */
+.trang-ca-nhan .profile {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+.trang-ca-nhan .profile img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid var(--mau-chinh);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+}
+.trang-ca-nhan .info { flex: 1; min-width: 0; }
+.trang-ca-nhan .info p { font-size: 17px; margin: 10px 0; }
+.trang-ca-nhan .info strong { color: var(--mau-chinh); }
+.trang-ca-nhan .btn-copy-email {
     background-color: var(--mau-chinh);
     color: var(--mau-trang);
     border: none;
@@ -109,15 +156,100 @@ a:focus-visible, button:focus-visible {
     font-size: 13px;
     font-weight: bold;
     cursor: pointer;
-    margin-left: 8px;
+    margin-left: 10px;
+    transition: background-color 0.2s ease;
+}
+.trang-ca-nhan .btn-copy-email:hover { background-color: var(--mau-chinh-hover); }
+
+.trang-ca-nhan .hop-luot-xem {
+    margin-top: 15px;
+    padding: 12px 16px;
+    background-color: #eff6ff;
+    border-left: 4px solid var(--mau-chinh);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.trang-ca-nhan .so-luot-xem {
+    font-weight: bold;
+    color: var(--mau-chinh);
+    font-size: 18px;
+}
+.trang-ca-nhan .btn-reset-counter {
+    background-color: #ef4444;
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.trang-ca-nhan .btn-reset-counter:hover { background-color: #dc2626; }
+
+/* Ky nang - CSS grid */
+.trang-ca-nhan #ky-nang ul {
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+.trang-ca-nhan #ky-nang li {
+    margin: 0;
+    font-size: 16px;
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-left: 4px solid var(--mau-chinh);
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-weight: 500;
 }
 
-.btn-copy-email:hover {
-    background-color: var(--mau-chinh-hover);
+/* Thoi khoa bieu */
+.trang-ca-nhan .bang-cuon-ngang {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--mau-vien);
+    border-radius: 8px;
+    margin-top: 15px;
 }
+.trang-ca-nhan table {
+    width: 100%;
+    min-width: 550px;
+    border-collapse: collapse;
+    margin-top: 0;
+}
+.trang-ca-nhan caption {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 5px;
+    color: var(--mau-chinh);
+    text-align: left;
+}
+.trang-ca-nhan th,
+.trang-ca-nhan td {
+    border: 1px solid var(--mau-vien);
+    padding: 12px;
+    text-align: center;
+}
+.trang-ca-nhan th {
+    background-color: #dbeafe;
+    color: #1e3a8a;
+    font-weight: bold;
+}
+.trang-ca-nhan tbody tr:nth-child(even) { background-color: #f8fafc; }
+.trang-ca-nhan .chu-thich-ca-nhan { text-align: center; margin: 20px 0; }
 
-/* Hộp thông báo sao chép (Toast notification) */
-.copy-toast {
+/* Toast khi sao chep email */
+.trang-ca-nhan .copy-toast {
     position: fixed;
     bottom: 25px;
     right: 25px;
@@ -133,302 +265,300 @@ a:focus-visible, button:focus-visible {
     transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 9999;
 }
+.trang-ca-nhan .copy-toast.show { opacity: 1; visibility: visible; }
 
-.copy-toast.show {
-    opacity: 1;
-    visibility: visible;
+/* Ho tro Dark Mode: JS ca nhan co the gan class dark-mode len body */
+body.dark-mode { background-color: #121827; color: #e5e7eb; }
+body.dark-mode .trang-ca-nhan { color: #e5e7eb; }
+body.dark-mode .trang-ca-nhan > section:not(.dau-trang-ca-nhan),
+body.dark-mode .trang-ca-nhan > article {
+    background-color: #1f2937;
+    color: #e5e7eb;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    border-color: #374151;
 }
-
-/* 4. Phần đầu trang (Header) - Mặc định cho Mobile */
-header {
-    background: linear-gradient(135deg, #1e40af, var(--mau-chinh));
-    color: var(--mau-trang);
-    text-align: center;
-    padding: 30px 15px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-header h1 {
-    font-size: 26px;
-    margin: 0;
-}
-
-header p {
-    font-size: 16px;
-    margin-top: 8px;
-}
-
-/* 5. Thanh điều hướng (Nav) - Mobile xếp dọc */
-nav {
-    background-color: #172554;
-    padding: 12px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-}
-
-nav a {
-    color: var(--mau-trang);
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 6px 12px;
-    display: block;
-    width: 100%;
-    max-width: 280px;
-}
-
-nav a:hover {
-    color: #93c5fd;
-    background-color: rgba(255, 255, 255, 0.08);
-    border-radius: 4px;
-}
-
-/* 6. Nội dung chính */
-main {
-    width: 92%;
-    max-width: 1100px;
-    margin: 20px auto;
-    flex: 1;
-}
-
-section, article {
-    background-color: var(--bg-card);
-    padding: 20px 16px;
-    margin-bottom: 24px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
-    border: 1px solid var(--border-card);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-h2 {
-    color: #1e40af;
-    border-left: 6px solid var(--mau-chinh);
-    padding-left: 12px;
-    margin-bottom: 20px;
-    font-size: 22px;
-}
-
-/* 7. Thông tin cá nhân & Ảnh chân dung co giãn theo khung */
-.profile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 20px;
-}
-
-.profile img {
-    width: 100%;
-    max-width: 220px;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 5px solid var(--mau-chinh);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.info {
-    width: 100%;
-}
-
-.info p {
-    font-size: 16px;
-    margin: 10px 0;
-    text-align: left;
-}
-
-.info strong {
-    color: #1e40af;
-}
-
-/* 8. Danh sách kỹ năng - CSS Grid (Hỗ trợ cả class lẫn thẻ lồng nhau) */
-#ky-nang ul, .luoi-ky-nang {
-    padding-left: 0;
-    list-style: none;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 12px;
-}
-
-#ky-nang li, .luoi-ky-nang li {
-    margin: 0;
-    font-size: 16px;
-    background-color: #f8fafc;
-    border: 1px solid var(--border-card);
-    border-left: 4px solid var(--mau-chinh);
-    padding: 10px 14px;
-    border-radius: 6px;
-}
-
-/* 9. Bảng thời khóa biểu cuộn ngang trên điện thoại */
-.bang-cuon-ngang, .bang-cuon-bang {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border: 1px solid var(--border-card);
-    border-radius: 8px;
-    margin-top: 15px;
-}
-
-table {
-    width: 100%;
-    min-width: 520px;
-    border-collapse: collapse;
-    font-size: 14px;
-}
-
-caption {
-    font-size: 17px;
-    font-weight: bold;
-    padding: 10px;
-    margin-bottom: 5px;
-    color: #1e40af;
-    text-align: left;
-}
-
-th, td {
-    border: 1px solid var(--border-card);
-    padding: 10px;
-    text-align: center;
-}
-
-th {
-    background-color: #dbeafe;
-    color: #1e3a8a;
-    font-weight: bold;
-}
-
-tbody tr:nth-child(even) {
-    background-color: #f8fafc;
-}
-
-/* 10. Chế độ nền tối (Dark Mode) */
-body.dark-mode {
-    --bg-body: #111827;
-    --text-body: #e5e7eb;
-    --bg-card: #1f2937;
-    --border-card: #374151;
-}
-
-body.dark-mode h2,
-body.dark-mode .info strong,
-body.dark-mode caption {
+body.dark-mode .trang-ca-nhan h2,
+body.dark-mode .trang-ca-nhan .info strong,
+body.dark-mode .trang-ca-nhan caption {
     color: #60a5fa;
     border-left-color: #60a5fa;
 }
-
-body.dark-mode .profile img {
-    border-color: #3b82f6;
-}
-
-body.dark-mode #ky-nang li,
-body.dark-mode .luoi-ky-nang li {
+body.dark-mode .trang-ca-nhan .profile img { border-color: #3b82f6; }
+body.dark-mode .trang-ca-nhan .hop-luot-xem {
     background-color: #374151;
+    border-color: #60a5fa;
     color: #f3f4f6;
+}
+body.dark-mode .trang-ca-nhan .so-luot-xem { color: #60a5fa; }
+body.dark-mode .trang-ca-nhan #ky-nang li {
+    background-color: #374151;
+    border-color: #4b5563;
     border-left-color: #60a5fa;
+    color: #f3f4f6;
+}
+body.dark-mode .trang-ca-nhan .bang-cuon-ngang,
+body.dark-mode .trang-ca-nhan th,
+body.dark-mode .trang-ca-nhan td { border-color: #4b5563; }
+body.dark-mode .trang-ca-nhan th { background-color: #1e3a8a; color: #ffffff; }
+body.dark-mode .trang-ca-nhan tbody tr:nth-child(even) { background-color: #283548; }
+
+@media (max-width: 768px) {
+    .trang-ca-nhan { width: 94%; margin: 20px auto; }
+    .trang-ca-nhan .dau-trang-ca-nhan h1 { font-size: 26px; }
+    .trang-ca-nhan .nav-ca-nhan { flex-direction: column; gap: 8px; }
+    .trang-ca-nhan .nav-ca-nhan a { margin: 5px 0; }
+    .trang-ca-nhan .profile { flex-direction: column; text-align: center; gap: 20px; }
+    .trang-ca-nhan .profile img { width: 180px; height: 180px; }
+    .trang-ca-nhan > section,
+    .trang-ca-nhan > article { padding: 20px 15px; }
+    .trang-ca-nhan table { font-size: 14px; }
 }
 
-body.dark-mode th {
-    background-color: #1e3a8a;
-    color: #ffffff;
+@media (max-width: 430px) {
+    .trang-ca-nhan .thanh-cong-cu-dau { flex-wrap: wrap; }
 }
 
-body.dark-mode tbody tr:nth-child(even) {
-    background-color: #283548;
-}
-
-/* 11. Chân trang */
-footer {
-    background-color: #172554;
-    color: var(--mau-trang);
-    text-align: center;
-    padding: 20px;
-    margin-top: 30px;
-}
-
-footer p {
-    margin: 4px 0;
-}
 
 /* ==========================================================
-   12. ĐIỂM NGẮT RESPONSIVE MIN-WIDTH (Từ Tablet & Desktop >= 768px)
+   HAI CHUC NANG PHP MOI: MUC TIEU HOC TAP & TRAC NGHIEM
+   Tat ca bo chon duoc gioi han trong .trang-ca-nhan.
    ========================================================== */
+.trang-ca-nhan .chu-chuc-nang p {
+    line-height: 1.65;
+}
+.trang-ca-nhan .chu-hang-nhap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 10px 0;
+}
+.trang-ca-nhan .chu-form-muc-tieu label {
+    display: block;
+    font-weight: 600;
+}
+.trang-ca-nhan .chu-hang-nhap input {
+    flex: 1 1 240px;
+    min-width: 0;
+    padding: 11px 12px;
+    font: inherit;
+    border: 1px solid #94a3b8;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #111827;
+}
+.trang-ca-nhan .chu-nut {
+    display: inline-block;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background-color: var(--mau-chinh);
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+}
+.trang-ca-nhan .chu-nut:hover {
+    background-color: var(--mau-chinh-hover);
+}
+.trang-ca-nhan .chu-nut-phu {
+    background: #0e766e;
+}
+.trang-ca-nhan .chu-nut-phu:hover {
+    background: #115e59;
+}
+.trang-ca-nhan .chu-nut-xoa {
+    background-color: #b91c1c;
+}
+.trang-ca-nhan .chu-nut-xoa:hover {
+    background-color: #991b1b;
+}
+.trang-ca-nhan .chu-chuc-nang a:focus-visible,
+.trang-ca-nhan .chu-chuc-nang button:focus-visible,
+.trang-ca-nhan .chu-chuc-nang input:focus-visible {
+    outline: 3px solid #ff9800;
+    outline-offset: 3px;
+}
+.trang-ca-nhan .chu-thong-bao-loi {
+    padding: 12px 15px;
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-left: 4px solid #dc2626;
+    border-radius: 6px;
+}
+.trang-ca-nhan .chu-thong-bao-thanh-cong {
+    padding: 12px 15px;
+    background-color: #dcfce7;
+    color: #14532d;
+    border-left: 4px solid #16a34a;
+    border-radius: 6px;
+}
+.trang-ca-nhan .chu-goi-y {
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 8px;
+}
+.trang-ca-nhan .chu-tom-tat {
+    margin: 16px 0;
+}
+.trang-ca-nhan .chu-danh-sach-muc-tieu {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.trang-ca-nhan .chu-muc-tieu {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-left: 4px solid #2563eb;
+    border-radius: 8px;
+}
+.trang-ca-nhan .chu-muc-tieu.chu-da-xong {
+    border-left-color: #16a34a;
+    background-color: #f0fdf4;
+}
+.trang-ca-nhan .chu-da-xong .chu-noi-dung-muc-tieu strong {
+    text-decoration: line-through;
+    color: #475569;
+}
+.trang-ca-nhan .chu-noi-dung-muc-tieu {
+    flex: 1 1 220px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.trang-ca-nhan .chu-noi-dung-muc-tieu strong,
+.trang-ca-nhan .chu-noi-dung-muc-tieu small {
+    display: block;
+}
+.trang-ca-nhan .chu-noi-dung-muc-tieu small {
+    color: #64748b;
+    margin-top: 4px;
+}
+.trang-ca-nhan .chu-thao-tac {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.trang-ca-nhan .chu-thao-tac form {
+    margin: 0;
+}
+.trang-ca-nhan .chu-cau-hoi {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 18px 0;
+    min-width: 0;
+}
+.trang-ca-nhan .chu-cau-hoi legend {
+    display: block;
+    width: 100%;
+    padding: 0 5px;
+    font-weight: 700;
+    color: #1e3a8a;
+}
+.trang-ca-nhan .chu-lua-chon {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 5px;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+}
+.trang-ca-nhan .chu-lua-chon input {
+    flex: 0 0 auto;
+    margin-top: 6px;
+    accent-color: #1a56db;
+}
+.trang-ca-nhan .chu-ket-qua-trac-nghiem {
+    margin-top: 22px;
+    padding: 18px;
+    border-left: 4px solid #0e9f6e;
+    background-color: #f0fdf4;
+    border-radius: 8px;
+    color: #14532d;
+}
+.trang-ca-nhan .chu-ket-qua-trac-nghiem h3 {
+    margin-top: 0;
+}
+.trang-ca-nhan .chu-ket-qua-trac-nghiem li {
+    padding: 8px 0;
+    overflow-wrap: anywhere;
+}
+.trang-ca-nhan .chu-ket-qua-trac-nghiem li p {
+    margin: 5px 0;
+}
+
+/* Dark Mode chi ap dung vao phan ca nhan. */
+body.dark-mode .trang-ca-nhan .chu-muc-tieu,
+body.dark-mode .trang-ca-nhan .chu-cau-hoi {
+    background-color: #263445;
+    border-color: #64748b;
+    color: #f1f5f9;
+}
+body.dark-mode .trang-ca-nhan .chu-muc-tieu.chu-da-xong {
+    background-color: #164e3b;
+    border-left-color: #4ade80;
+}
+body.dark-mode .trang-ca-nhan .chu-da-xong .chu-noi-dung-muc-tieu strong,
+body.dark-mode .trang-ca-nhan .chu-noi-dung-muc-tieu small,
+body.dark-mode .trang-ca-nhan .chu-goi-y {
+    color: #cbd5e1;
+}
+body.dark-mode .trang-ca-nhan .chu-hang-nhap input {
+    background-color: #111827;
+    color: #f9fafb;
+    border-color: #94a3b8;
+}
+body.dark-mode .trang-ca-nhan .chu-cau-hoi legend {
+    color: #93c5fd;
+}
+body.dark-mode .trang-ca-nhan .chu-thong-bao-loi {
+    background-color: #450a0a;
+    color: #fecaca;
+}
+body.dark-mode .trang-ca-nhan .chu-thong-bao-thanh-cong,
+body.dark-mode .trang-ca-nhan .chu-ket-qua-trac-nghiem {
+    background-color: #14532d;
+    color: #dcfce7;
+}
+body.dark-mode .trang-ca-nhan #ky-nang li {
+    color: #f1f5f9;
+}
+
+@media (max-width: 520px) {
+    .trang-ca-nhan .chu-hang-nhap input,
+    .trang-ca-nhan .chu-hang-nhap button {
+        flex-basis: 100%;
+        width: 100%;
+    }
+    .trang-ca-nhan .chu-thao-tac,
+    .trang-ca-nhan .chu-thao-tac form {
+        width: 100%;
+    }
+    .trang-ca-nhan .chu-thao-tac button {
+        width: 100%;
+    }
+}
+/* Tiêu đề trang cá nhân - chuẩn cấu trúc heading */
+.trang-ca-nhan .dau-trang-ca-nhan #tieu-de-ca-nhan {
+    color: #ffffff;
+    font-size: 26px;
+    text-align: center;
+    border: none;
+    padding-left: 0;
+    margin: 0;
+}
+
 @media (min-width: 768px) {
-    .thanh-cong-cu-dau {
-        margin: 20px auto 0;
-    }
-
-    header {
-        padding: 45px 20px;
-    }
-
-    header h1 {
+    .trang-ca-nhan .dau-trang-ca-nhan #tieu-de-ca-nhan {
         font-size: 38px;
-    }
-
-    header p {
-        font-size: 20px;
-    }
-
-    /* Menu mở ngang ra dạng hàng */
-    nav {
-        flex-direction: row;
-        justify-content: center;
-        gap: 15px;
-        padding: 15px;
-    }
-
-    nav a {
-        display: inline-block;
-        width: auto;
-        font-size: 17px;
-        margin: 0 10px;
-    }
-
-    main {
-        margin: 35px auto;
-    }
-
-    section, article {
-        padding: 35px;
-        margin-bottom: 30px;
-    }
-
-    h2 {
-        font-size: 24px;
-        margin-bottom: 25px;
-    }
-
-    /* Bố cục Profile dàn 2 cột: Ảnh bên trái, Thông tin bên phải */
-    .profile {
-        flex-direction: row;
-        text-align: left;
-        gap: 45px;
-    }
-
-    .profile img {
-        max-width: 260px;
-        flex-shrink: 0;
-    }
-
-    .info p {
-        font-size: 18px;
-        margin: 12px 0;
-    }
-
-    table {
-        font-size: 16px;
-    }
-
-    th, td {
-        padding: 12px;
     }
 }
