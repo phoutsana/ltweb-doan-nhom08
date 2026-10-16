@@ -1,0 +1,306 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Header Banner Xanh */
+.header-banner {
+    background-color: #1e42a0;
+    color: #ffffff;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.header-banner h1 {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.header-banner p {
+    font-size: 1.05rem;
+    opacity: 0.9;
+}
+
+/* Nav Bar Đen */
+.main-nav {
+    background-color: #1a1d24;
+    display: flex;
+    justify-content: center;
+}
+
+.main-nav ul {
+    list-style: none;
+    display: flex;
+}
+
+.main-nav a {
+    display: block;
+    color: #ffffff;
+    padding: 14px 24px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+    background-color: #2b303c;
+    color: #4c8bf5;
+}
+
+/* Main Container */
+.profile-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 15px;
+}
+
+/* Card Trắng */
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.card-title {
+    color: #1e42a0;
+    font-size: 1.4rem;
+    margin-bottom: 25px;
+    border-left: 4px solid #1e42a0;
+    padding-left: 10px;
+}
+
+/* Bố cục Giới thiệu & Ảnh Tròn */
+.bio-content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    margin-bottom: 20px;
+}
+
+.avatar-wrapper {
+    flex-shrink: 0;
+}
+
+/* Ảnh tròn viền xanh chuẩn như hình */
+.profile-avatar {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #1e42a0;
+    box-shadow: 0 4px 12px rgba(30, 66, 160, 0.2);
+}
+
+.bio-details {
+    flex: 1;
+}
+
+.profile-views {
+    display: inline-block;
+    padding: 12px 16px;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    background-color: #eff6ff;
+    color: #475569;
+    font-size: 1rem;
+}
+
+.profile-views strong {
+    color: #1e42a0;
+}
+
+/* Bảng thông tin cá nhân */
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.info-table td {
+    padding: 6px 0;
+    vertical-align: top;
+    font-size: 1rem;
+}
+
+.info-table .label {
+    font-weight: bold;
+    color: #1e42a0;
+    width: 130px;
+}
+
+.info-table .value {
+    color: #444;
+}
+
+/* Bảng Thời khóa biểu (không bị đè chữ) */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.schedule-table th, 
+.schedule-table td {
+    border: 1px solid #e2e8f0;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.schedule-table thead th {
+    background-color: #2563eb;
+    color: white;
+}
+
+.schedule-table tbody th {
+    background-color: #1d4ed8;
+    color: white;
+}
+
+/* Interactive Tools */
+.interactive-tools {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.interactive-tools button {
+    padding: 8px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #ffffff;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* --- DARK MODE --- */
+body.dark-mode {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+}
+
+body.dark-mode .card {
+    background-color: #1e293b !important;
+    box-shadow: none !important;
+}
+
+body.dark-mode .info-table .label {
+    color: #60a5fa !important;
+}
+
+body.dark-mode .info-table .value {
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .schedule-table td {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+    border-color: #334155 !important;
+}
+
+body.dark-mode button {
+    background-color: #334155 !important;
+    color: #ffffff !important;
+    border-color: #475569 !important;
+}
+/* --- GÓC TƯƠNG TÁC CÁ NHÂN --- */
+.interactive-box {
+    margin-top: 10px;
+}
+
+.interactive-box h3 {
+    font-size: 1.1rem;
+    color: #1e42a0;
+    margin-bottom: 12px;
+}
+
+/* Kiểu dáng đồng hồ đếm ngược */
+.timer-display {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #1e3a8a;
+    display: inline-block;
+}
+
+.timer-display span {
+    color: #dc2626;
+    font-size: 1.2rem;
+}
+
+/* Kiểu dáng Form phản hồi */
+.feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 500px;
+}
+
+.feedback-form input,
+.feedback-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.feedback-form input:focus,
+.feedback-form textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.btn-submit {
+    background-color: #1e42a0;
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: background 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #1d4ed8;
+}
+
+.form-response {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}

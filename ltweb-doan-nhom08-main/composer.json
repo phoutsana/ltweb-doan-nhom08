@@ -1,0 +1,12 @@
+{
+    "name": "nhom08/ltweb-doan",
+    "require": {
+        "php": ">=8.1",
+        "monolog/monolog": "^3.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
