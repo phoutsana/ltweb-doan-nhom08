@@ -657,3 +657,9 @@ button.action-btn-small:disabled {
     gap: 20px;
   }
 }
+/* Bố cục riêng cho trang cá nhân Giang.
+   Giữ đúng thứ tự hiển thị header, nội dung và footer. */
+body.bo-cuc-trang {
+    display: block;
+    min-height: 100vh;
+}

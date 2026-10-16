@@ -8,6 +8,9 @@
     <title><?= isset($tieuDe) ? e($tieuDe) : e('Fashion Store') ?></title>
     <meta name="description" content="Fashion Store - Website bán quần áo trực tuyến với nhiều sản phẩm thời trang dành cho nam và nữ.">
     <link rel="stylesheet" type="text/css" href="<?= $goc ?? '' ?>css/style.css">
+    <?php if (!empty($cssRieng)): ?>
+    <link rel="stylesheet" href="<?= e($cssRieng) ?>">
+<?php endif; ?>
 </head>
 
 <body class="bo-cuc-trang">

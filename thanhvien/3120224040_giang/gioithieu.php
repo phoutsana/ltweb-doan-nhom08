@@ -1,18 +1,102 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Trang giới thiệu cá nhân của Ngô Hương Giang - Thành viên thực hiện dự án Fashion Store.">
-  <title>Giới thiệu Ngô Hương Giang | Fashion Store</title>
+<?php
+declare(strict_types=1);
 
-  <!-- 1. CSS dùng chung của nhóm -->
-  <link rel="stylesheet" href="../../css/style.css">
+/*
+ * Tệp: gioithieu.php - Trang cá nhân của Ngô Hương Giang.
+ * Sử dụng cấu hình, header và footer dùng chung của nhóm.
+ * Giữ nguyên giao diện, CSS và JavaScript từ Bài thực hành 4.
+ * Cách thử: Mở trang trên localhost và kiểm tra giao diện, tương tác.
+ */
 
-  <!-- 2. CSS riêng của trang cá nhân -->
-  <link rel="stylesheet" href="style-canhan.css">
-</head>
-<body>
+require_once __DIR__ . '/../../inc/config.php';
+
+$goc = '../../';
+$tieuDe = 'Giới thiệu Ngô Hương Giang | Fashion Store';
+$trang = '';
+$cssRieng = 'style-canhan.css';
+// Chức năng PHP 1: Tra cứu thời khóa biểu theo thứ.
+$lichTheoThu = [
+    'thu2' => [
+        'ten' => 'Thứ 2',
+        'sang' => 'Học tập',
+        'chieu' => 'Tự học'
+    ],
+    'thu3' => [
+        'ten' => 'Thứ 3',
+        'sang' => 'Học tập',
+        'chieu' => 'Lập trình'
+    ],
+    'thu4' => [
+        'ten' => 'Thứ 4',
+        'sang' => 'Học tập',
+        'chieu' => 'Làm đồ án'
+    ],
+    'thu5' => [
+        'ten' => 'Thứ 5',
+        'sang' => 'Học tập',
+        'chieu' => 'Lập trình'
+    ],
+    'thu6' => [
+        'ten' => 'Thứ 6',
+        'sang' => 'Học tập',
+        'chieu' => 'Tự học'
+    ]
+];
+
+/*
+ * Chức năng PHP 2: Xuất thời khóa biểu thành CSV.
+ * Sử dụng dữ liệu có sẵn từ chức năng 1.
+ * Xử lý trước khi xuất HTML để tránh lỗi header.
+ */
+if (isset($_GET['xuat']) && is_string($_GET['xuat']) && $_GET['xuat'] === 'csv') {
+    $duLieuCSV = [
+        ['Thời gian'],
+        ['Buổi sáng'],
+        ['Buổi chiều']
+    ];
+
+    foreach ($lichTheoThu as $lich) {
+        $duLieuCSV[0][] = $lich['ten'];
+        $duLieuCSV[1][] = $lich['sang'];
+        $duLieuCSV[2][] = $lich['chieu'];
+    }
+
+    $output = fopen('php://output', 'wb');
+
+    if ($output === false) {
+        throw new RuntimeException('Không thể tạo tệp CSV.');
+    }
+
+    header('Content-Type: text/csv; charset=UTF-8');
+    header('Content-Disposition: attachment; filename="thoi-khoa-bieu-giang.csv"');
+    header('Cache-Control: no-store');
+    header('X-Content-Type-Options: nosniff');
+
+    // UTF-8 BOM giúp Excel nhận diện tiếng Việt.
+    fwrite($output, "\xEF\xBB\xBF");
+
+    foreach ($duLieuCSV as $dong) {
+        fputcsv($output, $dong, ';', '"', '');
+    }
+
+    fclose($output);
+    exit;
+}
+
+$thuDuocChon = null;
+$loiTraCuu = '';
+
+if (array_key_exists('thu', $_GET)) {
+    $thu = $_GET['thu'];
+
+    if (is_string($thu) && isset($lichTheoThu[$thu])) {
+        $thuDuocChon = $thu;
+    } else {
+        $loiTraCuu = 'Ngày không hợp lệ. Vui lòng chọn từ Thứ 2 đến Thứ 6.';
+    }
+}
+require __DIR__ . '/../../inc/header.php';
+?>
 
   <!-- Hero Banner xanh đậm sát mép trên cùng, chữ trắng rõ nét -->
   <header class="hero-banner">
@@ -180,21 +264,78 @@
       </div>
 
       <!-- 2 nút quay lại nhỏ gọn có mũi tên đặt ngay dưới bảng thời khóa biểu -->
-      <div class="bottom-actions">
-        <a href="../../index.html" class="action-btn-small">← Quay về trang chủ nhóm</a>
-        <a href="../../gioi-thieu.html" class="action-btn-small">← Quay về trang giới thiệu nhóm</a>
-      </div>
-    </section>
+      
+<div class="bottom-actions">
+    <a href="../../index.php" class="action-btn-small">
+        ← Quay về trang chủ nhóm
+    </a>
 
+    <a href="../../gioi-thieu.php" class="action-btn-small">
+        ← Quay về trang giới thiệu nhóm
+    </a>
+
+    <a href="gioithieu.php?xuat=csv" class="action-btn-small">
+        ↓ Tải thời khóa biểu CSV
+    </a>
+</div>
+    </section>
+    <!-- Chức năng PHP 1: Xem thời khóa biểu theo thứ -->
+<section id="tra-cuu-lich" class="info-card">
+    <h2 class="card-title">Xem thời khóa biểu theo thứ</h2>
+
+    <form method="get" action="gioithieu.php#tra-cuu-lich">
+        <label for="thu-hoc">Chọn thứ trong tuần:</label>
+
+        <select name="thu" id="thu-hoc" required>
+            <option value="">-- Chọn thứ --</option>
+
+            <?php foreach ($lichTheoThu as $maThu => $lich): ?>
+                <option
+                    value="<?= e($maThu) ?>"
+                    <?= $thuDuocChon === $maThu ? 'selected' : '' ?>
+                >
+                    <?= e($lich['ten']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <button type="submit" class="action-btn-small">
+            Xem lịch
+        </button>
+    </form>
+
+    <?php if ($loiTraCuu !== ''): ?>
+        <p role="alert" style="color: red;">
+            <?= e($loiTraCuu) ?>
+        </p>
+    <?php endif; ?>
+
+    <?php if ($thuDuocChon !== null): ?>
+        <div class="card-body-text">
+            <h3>
+                Lịch học <?= e($lichTheoThu[$thuDuocChon]['ten']) ?>
+            </h3>
+
+            <p>
+                <strong>Buổi sáng:</strong>
+                <?= e($lichTheoThu[$thuDuocChon]['sang']) ?>
+            </p>
+
+            <p>
+                <strong>Buổi chiều:</strong>
+                <?= e($lichTheoThu[$thuDuocChon]['chieu']) ?>
+            </p>
+        </div>
+    <?php endif; ?>
+</section>
   </main>
 
   <!-- Chân trang -->
-  <footer class="page-footer">
-<p>&copy; 2026 Nhóm 08 - Dự án Fashion Store. Thành viên: <strong>Ngô Hương Giang</strong> (3120224040)</p>
-  </footer>
+  <p class="page-footer">
+    &copy; 2026 Nhóm 08 - Dự án Fashion Store.
+    Thành viên: <strong>Ngô Hương Giang</strong> (3120224040)
+</p>
 
-  <!-- Liên kết JavaScript tương tác cá nhân -->
-  <script src="js/canhan.js"></script>
-</body>
-</html>
-<!-- Cap nhat tuong tac bo tang giam co chu va thoi gian thuc - Giang176 -->
+<script src="js/canhan.js"></script>
+
+<?php require __DIR__ . '/../../inc/footer.php'; ?>
