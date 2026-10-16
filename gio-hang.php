@@ -6,38 +6,42 @@ use App\Services\GioHang;
 // Khởi tạo dịch vụ giỏ hàng
 $gioHang = new GioHang();
 
-// --- XỬ LÝ CÁC HÀNH ĐỘNG CỦA NGƯỜI DÙNG (THÊM, XÓA, XÓA TẤT CẢ) ---
+// --- XỬ LÝ CÁC HÀNH ĐỘNG CỦA NGƯỜI DÙNG ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hanhDong = $_POST['hanh_dong'] ?? '';
     $id = $_POST['id'] ?? '';
+    // Lấy số lượng từ form cập nhật
+    $soLuongMoi = filter_input(INPUT_POST, 'so_luong', FILTER_VALIDATE_INT);
 
     try {
         if ($hanhDong === 'them' && $id !== '') {
             $gioHang->them($id);
         } elseif ($hanhDong === 'xoa' && $id !== '') {
             $gioHang->xoa($id);
+        } elseif ($hanhDong === 'cap_nhat' && $id !== '' && $soLuongMoi !== false) {
+            // Sửa lỗi: Đã gọi phương thức capNhat()
+            if ($soLuongMoi > 0) {
+                $gioHang->capNhat($id, $soLuongMoi);
+            } else {
+                $gioHang->xoa($id);
+            }
         } elseif ($hanhDong === 'xoa_tat_ca') {
             $gioHang->lamTrong();
         }
     } catch (InvalidArgumentException $e) {
-        // Bỏ qua lỗi hoặc lưu thông báo lỗi tùy ý
     }
 
-    // Tải lại trang để cập nhật giao diện và tránh lỗi F5
     header('Location: gio-hang.php');
     exit;
 }
 
-// Lấy danh sách chi tiết sản phẩm để in ra bảng
 $chiTietGio = $gioHang->chiTiet();
-
 $tieuDe = 'Giỏ hàng của bạn - Fashion Store';
 $trang = 'gio-hang';
 require_once __DIR__ . '/inc/header.php';
 ?>
 
 <main class="noi-dung-chinh">
-    <!-- ĐOẠN CSS XỬ LÝ ĐỘC LẬP CHO TRANG GIỎ HÀNG CHỐNG VỠ KHUNG TRÊN MOBILE -->
     <style>
         @scope {
             .khung-nut-gio-hang {
@@ -53,11 +57,9 @@ require_once __DIR__ . '/inc/header.php';
                 gap: 10px;
             }
 
-            /* Chế độ điện thoại */
             @media (max-width: 768px) {
                 .hop-bang {
                     margin: 0 -20px;
-                    /* Trải rộng bảng ra sát mép điện thoại */
                     width: calc(100% + 40px);
                     border-radius: 0;
                     border-left: none;
@@ -67,7 +69,6 @@ require_once __DIR__ . '/inc/header.php';
                 .bang-san-pham th,
                 .bang-san-pham td {
                     padding: 10px 8px;
-                    /* Giảm khoảng cách ô cho gọn */
                 }
 
                 .khung-nut-gio-hang {
@@ -99,9 +100,7 @@ require_once __DIR__ . '/inc/header.php';
 
         <?php if (empty($chiTietGio)): ?>
             <div style="background: white; padding: 40px 20px; text-align: center; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <p style="font-size: 1.2em; color: #dc2626; font-weight: bold; margin-bottom: 20px;">
-                    Bạn chưa chọn sản phẩm nào!
-                </p>
+                <p style="font-size: 1.2em; color: #dc2626; font-weight: bold; margin-bottom: 20px;">Bạn chưa chọn sản phẩm nào!</p>
                 <a href="danh-sach.php" class="nut-bam nut-bam--chinh" style="padding: 10px 25px;">Quay lại mua sắm</a>
             </div>
         <?php else: ?>
@@ -129,15 +128,21 @@ require_once __DIR__ . '/inc/header.php';
                                     </a>
                                 </td>
                                 <td style="padding: 15px; color: #4b5563;"><?= vnd($item['sanPham']->gia) ?></td>
-                                <td style="padding: 15px; text-align: center; font-weight: bold; font-size: 1.1em; color: #111827;"><?= $item['soLuong'] ?></td>
+
+                                <!-- Sửa ô hiển thị Số lượng thành Form cập nhật -->
+                                <td style="padding: 15px; text-align: center;">
+                                    <form method="POST" action="gio-hang.php" style="margin: 0; display: inline-flex; gap: 5px; align-items: center;">
+                                        <input type="hidden" name="id" value="<?= e($item['sanPham']->id) ?>">
+                                        <input type="number" name="so_luong" value="<?= e((string)$item['soLuong']) ?>" min="1" style="width: 60px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px; padding: 5px;">
+                                        <button type="submit" name="hanh_dong" value="cap_nhat" style="padding: 5px 10px; border: 1px solid #0ea5e9; color: white; background: #0ea5e9; border-radius: 4px; cursor: pointer;">Sửa</button>
+                                    </form>
+                                </td>
+
                                 <td style="padding: 15px; color: #dc2626; font-weight: bold;"><?= vnd($item['thanhTien']) ?></td>
                                 <td style="padding: 15px; text-align: center;">
-                                    <!-- Nút xóa 1 sản phẩm -->
                                     <form method="POST" action="gio-hang.php" style="margin: 0;">
                                         <input type="hidden" name="id" value="<?= e($item['sanPham']->id) ?>">
-                                        <button type="submit" name="hanh_dong" value="xoa" class="nut-bam nut-bam--phu" style="padding: 6px 12px; border: 1px solid #dc2626; color: #dc2626; background: #fee2e2; font-size: 0.9em;">
-                                            Xóa
-                                        </button>
+                                        <button type="submit" name="hanh_dong" value="xoa" class="nut-bam nut-bam--phu" style="padding: 6px 12px; border: 1px solid #dc2626; color: #dc2626; background: #fee2e2; font-size: 0.9em;">Xóa</button>
                                     </form>
                                 </td>
                             </tr>
@@ -154,7 +159,6 @@ require_once __DIR__ . '/inc/header.php';
                 </table>
             </div>
 
-            <!-- Nút điều hướng -->
             <div class="khung-nut-gio-hang">
                 <form method="POST" action="gio-hang.php" style="margin: 0;">
                     <button type="submit" name="hanh_dong" value="xoa_tat_ca" class="nut-bam nut-bam--phu" style="border: 1px solid #64748b; color: #475569; background: white;">Xóa toàn bộ giỏ hàng</button>
@@ -166,7 +170,6 @@ require_once __DIR__ . '/inc/header.php';
                 </div>
             </div>
         <?php endif; ?>
-
     </section>
 </main>
 

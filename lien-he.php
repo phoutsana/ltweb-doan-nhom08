@@ -3,7 +3,8 @@ require_once __DIR__ . '/inc/config.php';
 
 use App\Data\KhoLienHe;
 
-$du  = ['hoten' => '', 'email' => '', 'sdt' => '', 'noidung' => ''];
+// Đã bổ sung 3 trường dữ liệu mới vào mảng
+$du  = ['hoten' => '', 'email' => '', 'sdt' => '', 'tuoi' => '', 'ngay' => '', 'chude' => '', 'noidung' => ''];
 $loi = [];
 $tenAnh = null;
 
@@ -14,7 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $du['sdt']     = trim($_POST['sdt'] ?? '');
     $du['noidung'] = trim($_POST['noidung'] ?? '');
 
-    // 2. Kiểm tra lỗi từng ô
+    // Lấy dữ liệu 3 trường mới
+    $du['tuoi']    = trim($_POST['tuoi'] ?? '');
+    $du['ngay']    = trim($_POST['ngay'] ?? '');
+    $du['chude']   = trim($_POST['chude'] ?? '');
+
+    // 2. Kiểm tra lỗi
     if (mb_strlen($du['hoten']) < 3) {
         $loi['hoten'] = 'Họ tên phải có ít nhất 3 ký tự.';
     }
@@ -28,15 +34,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $loi['noidung'] = 'Nội dung liên hệ quá ngắn (ít nhất 10 ký tự).';
     }
 
-    // 3. Xử lý Upload file ảnh (nếu có)
+    // 3. Xử lý Upload file ảnh
     if (isset($_FILES['anh']) && $_FILES['anh']['error'] !== UPLOAD_ERR_NO_FILE) {
         $file = $_FILES['anh'];
         if ($file['error'] !== UPLOAD_ERR_OK) {
             $loi['anh'] = 'Có lỗi xảy ra khi tải tệp lên.';
-        } elseif ($file['size'] > 2 * 1024 * 1024) { // Tối đa 2MB
+        } elseif ($file['size'] > 2 * 1024 * 1024) {
             $loi['anh'] = 'Kích thước tệp không được vượt quá 2MB.';
         } else {
-            // Kiểm tra kiểu MIME thật bằng finfo
             $finfo = new finfo(FILEINFO_MIME_TYPE);
             $mime = $finfo->file($file['tmp_name']);
             $choPhep = ['image/jpeg' => '.jpg', 'image/png' => '.png', 'image/webp' => '.webp'];
@@ -44,16 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!array_key_exists($mime, $choPhep)) {
                 $loi['anh'] = 'Chỉ chấp nhận tệp hình ảnh (JPG, PNG, WebP).';
             } else {
-                // Tạo tên ngẫu nhiên
                 $duoiFile = $choPhep[$mime];
                 $tenAnh = uniqid('lienhe_', true) . $duoiFile;
             }
         }
     }
 
-    // 4. Nếu không có lỗi, lưu vào JSONL và chuyển hướng (PRG)
+    // 4. Lưu vào JSONL
     if (empty($loi)) {
-        // Nếu có ảnh hợp lệ, di chuyển ảnh vào thư mục uploads
         if ($tenAnh !== null) {
             move_uploaded_file($_FILES['anh']['tmp_name'], __DIR__ . '/uploads/' . $tenAnh);
         }
@@ -64,17 +67,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'hoTen'    => $du['hoten'],
             'email'    => $du['email'],
             'sdt'      => $du['sdt'],
+            'tuoi'     => $du['tuoi'],     // Ghi dữ liệu mới
+            'ngay'     => $du['ngay'],     // Ghi dữ liệu mới
+            'chuDe'    => $du['chude'],    // Ghi dữ liệu mới
             'noiDung'  => $du['noidung'],
-            'anh'      => $tenAnh, // Tên file ngẫu nhiên hoặc null
+            'anh'      => $tenAnh,
         ]);
 
         $_SESSION['flash'] = 'Đã gửi liên hệ thành công, cảm ơn bạn!';
-        header('Location: lien-he.php'); // Redirect để tránh F5 gửi lại form
+        header('Location: lien-he.php');
         exit;
     }
 }
 
-// Lấy thông báo thành công (chỉ hiện 1 lần)
 $tb = $_SESSION['flash'] ?? '';
 unset($_SESSION['flash']);
 
@@ -92,47 +97,58 @@ require_once __DIR__ . '/inc/header.php';
         </div>
     <?php endif; ?>
 
-    <!-- Lưu ý bắt buộc có enctype="multipart/form-data" để gửi được file -->
     <form method="POST" action="lien-he.php" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 15px;">
 
         <div>
             <label for="hoten" style="font-weight: bold; display: block; margin-bottom: 5px;">Họ tên *</label>
             <input type="text" id="hoten" name="hoten" value="<?= e($du['hoten']) ?>" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
-            <?php if (isset($loi['hoten'])): ?>
-                <span style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= e($loi['hoten']) ?></span>
-            <?php endif; ?>
+            <?php if (isset($loi['hoten'])): ?><span style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= e($loi['hoten']) ?></span><?php endif; ?>
         </div>
 
         <div>
             <label for="email" style="font-weight: bold; display: block; margin-bottom: 5px;">Email *</label>
             <input type="email" id="email" name="email" value="<?= e($du['email']) ?>" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
-            <?php if (isset($loi['email'])): ?>
-                <span style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= e($loi['email']) ?></span>
-            <?php endif; ?>
+            <?php if (isset($loi['email'])): ?><span style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= e($loi['email']) ?></span><?php endif; ?>
         </div>
 
         <div>
             <label for="sdt" style="font-weight: bold; display: block; margin-bottom: 5px;">Số điện thoại *</label>
             <input type="text" id="sdt" name="sdt" value="<?= e($du['sdt']) ?>" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
-            <?php if (isset($loi['sdt'])): ?>
-                <span style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= e($loi['sdt']) ?></span>
-            <?php endif; ?>
+            <?php if (isset($loi['sdt'])): ?><span style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= e($loi['sdt']) ?></span><?php endif; ?>
         </div>
+
+        <!-- BỔ SUNG 3 TRƯỜNG MỚI VÀO FORM HTML -->
+        <div>
+            <label for="tuoi" style="font-weight: bold; display: block; margin-bottom: 5px;">Tuổi</label>
+            <input type="number" id="tuoi" name="tuoi" value="<?= e($du['tuoi']) ?>" min="10" max="100" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+        </div>
+
+        <div>
+            <label for="ngay" style="font-weight: bold; display: block; margin-bottom: 5px;">Ngày liên hệ</label>
+            <input type="date" id="ngay" name="ngay" value="<?= $du['ngay'] !== '' ? e($du['ngay']) : date('Y-m-d') ?>" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+        </div>
+
+        <div>
+            <label for="chude" style="font-weight: bold; display: block; margin-bottom: 5px;">Chủ đề</label>
+            <select id="chude" name="chude" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+                <option value="Tư vấn mua hàng" <?= $du['chude'] === 'Tư vấn mua hàng' ? 'selected' : '' ?>>Tư vấn mua hàng</option>
+                <option value="Đổi trả sản phẩm" <?= $du['chude'] === 'Đổi trả sản phẩm' ? 'selected' : '' ?>>Đổi trả sản phẩm</option>
+                <option value="Khiếu nại dịch vụ" <?= $du['chude'] === 'Khiếu nại dịch vụ' ? 'selected' : '' ?>>Khiếu nại dịch vụ</option>
+                <option value="Khác" <?= $du['chude'] === 'Khác' ? 'selected' : '' ?>>Khác</option>
+            </select>
+        </div>
+        <!-- KẾT THÚC BỔ SUNG -->
 
         <div>
             <label for="anh" style="font-weight: bold; display: block; margin-bottom: 5px;">Ảnh đính kèm (Tùy chọn, tối đa 2MB)</label>
             <input type="file" id="anh" name="anh" accept="image/jpeg, image/png, image/webp" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
-            <?php if (isset($loi['anh'])): ?>
-                <span style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= e($loi['anh']) ?></span>
-            <?php endif; ?>
+            <?php if (isset($loi['anh'])): ?><span style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= e($loi['anh']) ?></span><?php endif; ?>
         </div>
 
         <div>
             <label for="noidung" style="font-weight: bold; display: block; margin-bottom: 5px;">Nội dung *</label>
             <textarea id="noidung" name="noidung" rows="5" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box; resize: vertical;"><?= e($du['noidung']) ?></textarea>
-            <?php if (isset($loi['noidung'])): ?>
-                <span style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= e($loi['noidung']) ?></span>
-            <?php endif; ?>
+            <?php if (isset($loi['noidung'])): ?><span style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= e($loi['noidung']) ?></span><?php endif; ?>
         </div>
 
         <button type="submit" class="nut-bam nut-bam--chinh" style="padding: 12px; font-size: 1.1rem; cursor: pointer; border: none; border-radius: 4px;">Gửi liên hệ</button>

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Data;
 
 use App\Models\SanPham;
@@ -12,7 +13,6 @@ class KhoSanPham
 
     public function __construct()
     {
-        // Trỏ đường dẫn ngược ra ngoài thư mục gốc rồi vào data/san-pham.json
         $this->tepDuLieu = __DIR__ . '/../../data/san-pham.json';
     }
 
@@ -22,8 +22,46 @@ class KhoSanPham
      */
     public function tatCa(): array
     {
-        if (!file_exists($this->tepDuLieu)) {
-            return [];
+        // Kiểm tra nếu mất file JSON thì xuất ra trang lỗi 500 giao diện đẹp
+        if (!file_exists($this->tepDuLieu) || file_get_contents($this->tepDuLieu) === false) {
+            http_response_code(500);
+            echo '<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Lỗi hệ thống</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa; /* Màu nền xám nhạt */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        h1 {
+            color: #dc2626; /* Màu đỏ */
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        p {
+            color: #4b5563; /* Màu xám đậm */
+            font-size: 1.2rem;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>500 - Lỗi hệ thống</h1>
+    <p>Hệ thống đang gặp sự cố. Vui lòng quay lại sau!</p>
+</body>
+</html>';
+            exit; // Dừng toàn bộ chương trình lại tại đây
         }
 
         $json = file_get_contents($this->tepDuLieu);
