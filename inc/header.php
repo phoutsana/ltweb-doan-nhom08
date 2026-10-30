@@ -1,16 +1,18 @@
+<?php
+// inc/header.php
+?>
 <!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Đã bọc hàm e() để chống XSS theo yêu cầu của Giảng viên -->
     <title><?= isset($tieuDe) ? e($tieuDe) : e('Fashion Store') ?></title>
     <meta name="description" content="Fashion Store - Website bán quần áo trực tuyến với nhiều sản phẩm thời trang dành cho nam và nữ.">
     <link rel="stylesheet" type="text/css" href="<?= $goc ?? '' ?>css/style.css">
     <?php if (!empty($cssRieng)): ?>
-    <link rel="stylesheet" href="<?= e($cssRieng) ?>">
-<?php endif; ?>
+        <link rel="stylesheet" href="<?= e($cssRieng) ?>">
+    <?php endif; ?>
 </head>
 
 <body class="bo-cuc-trang">
@@ -49,17 +51,59 @@
                 </a>
             </li>
 
-            <!-- Đã bổ sung logic kiểm tra trạng thái đăng nhập -->
-            <?php if (isset($_SESSION['da_dang_nhap']) && $_SESSION['da_dang_nhap'] === true): ?>
+            <!-- PHÂN QUYỀN HIỂN THỊ MENU CHO ADMIN VÀ KHÁCH HÀNG -->
+            <?php if (isset($_SESSION['user']) && $_SESSION['user']['vai_tro'] === 'quan_tri'): ?>
+                <li class="dieu-huong__muc" style="position: relative;" id="menu-quan-tri-parent">
+                    <!-- Đổi href thành javascript để bấm không bị nhảy trang mất kiểm soát -->
+                    <a class="dieu-huong__lien-ket" href="javascript:void(0);" id="btn-toggle-admin" style="color: #fcd34d;">Quản trị viên ▾</a>
+                    
+                    <!-- Menu con cho Admin chuyển đổi qua lại giữa các trang quản lý -->
+                    <ul class="menu-con" id="submenu-admin" style="display: none; position: absolute; top: 100%; left: 0; background: #1e3a8a; list-style: none; padding: 10px 0; margin: 0; min-width: 190px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); z-index: 100; border-radius: 4px;">
+                        <li style="padding: 6px 15px;"><a href="<?= $goc ?? '' ?>quan-tri-san-pham.php" style="color: white; text-decoration: none; display: block;">Quản lý sản phẩm</a></li>
+                        <li style="padding: 6px 15px;"><a href="<?= $goc ?? '' ?>them-san-pham.php" style="color: white; text-decoration: none; display: block;">Thêm sản phẩm mới</a></li>
+                        <li style="padding: 6px 15px;"><a href="<?= $goc ?? '' ?>quan-tri.php" style="color: white; text-decoration: none; display: block;">Quản lý liên hệ</a></li>
+                        <li style="padding: 6px 15px;"><a href="<?= $goc ?? '' ?>don-hang.php" style="color: white; text-decoration: none; display: block;">Quản lý đơn hàng</a></li>
+                    </ul>
+                </li>
+                
+                <script>
+                    // Xử lý sự kiện cả Hover (máy tính) lẫn Click (màn hình nhỏ/mobile)
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const adminParent = document.getElementById('menu-quan-tri-parent');
+                        const subMenu = document.getElementById('submenu-admin');
+                        const btnToggle = document.getElementById('btn-toggle-admin');
+
+                        if (adminParent && subMenu && btnToggle) {
+                            // Dành cho máy tính (Hover)
+                            adminParent.addEventListener('mouseenter', () => subMenu.style.display = 'block');
+                            adminParent.addEventListener('mouseleave', () => subMenu.style.display = 'none');
+
+                            // Dành cho màn hình nhỏ / mobile (Click vào chữ Quản trị viên để bật/tắt menu con)
+                            btnToggle.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                subMenu.style.display = subMenu.style.display === 'block' ? 'none' : 'block';
+                            });
+                        }
+                    });
+                </script>
+
                 <li class="dieu-huong__muc">
-                    <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>quan-tri.php" style="color: #fcd34d;">Quản trị viên</a>
+                    <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>dang-xuat.php">Đăng xuất</a>
+                </li>
+            <?php elseif (isset($_SESSION['user']) && !empty($_SESSION['user'])): ?>
+                <li class="dieu-huong__muc">
+                    <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>don-hang.php">Đơn hàng của tôi</a>
                 </li>
                 <li class="dieu-huong__muc">
                     <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>dang-xuat.php">Đăng xuất</a>
                 </li>
             <?php else: ?>
+                <!-- NÚT ĐĂNG KÝ VÀ ĐĂNG NHẬP CHO KHÁCH CHƯA ĐĂNG NHẬP -->
                 <li class="dieu-huong__muc">
-                    <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>dang-nhap.php">Đăng nhập</a>
+                    <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>dang-ky.php" <?= ($trang ?? '') === 'dang-ky' ? 'aria-current="page"' : '' ?>>Đăng ký</a>
+                </li>
+                <li class="dieu-huong__muc">
+                    <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>dang-nhap.php" <?= ($trang ?? '') === 'dang-nhap' ? 'aria-current="page"' : '' ?>>Đăng nhập</a>
                 </li>
             <?php endif; ?>
         </ul>

@@ -3,14 +3,12 @@ require_once __DIR__ . '/inc/config.php';
 
 use App\Services\GioHang;
 
-// Khởi tạo dịch vụ giỏ hàng
 $gioHang = new GioHang();
+$tbLoi = '';
 
-// --- XỬ LÝ CÁC HÀNH ĐỘNG CỦA NGƯỜI DÙNG ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hanhDong = $_POST['hanh_dong'] ?? '';
     $id = $_POST['id'] ?? '';
-    // Lấy số lượng từ form cập nhật
     $soLuongMoi = filter_input(INPUT_POST, 'so_luong', FILTER_VALIDATE_INT);
 
     try {
@@ -19,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($hanhDong === 'xoa' && $id !== '') {
             $gioHang->xoa($id);
         } elseif ($hanhDong === 'cap_nhat' && $id !== '' && $soLuongMoi !== false) {
-            // Sửa lỗi: Đã gọi phương thức capNhat()
             if ($soLuongMoi > 0) {
                 $gioHang->capNhat($id, $soLuongMoi);
             } else {
@@ -29,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $gioHang->lamTrong();
         }
     } catch (InvalidArgumentException $e) {
+        // Đã sửa: Lưu thông báo ngoại lệ vào session để hiển thị cảnh báo cho người dùng
+        $_SESSION['flash_loi'] = $e->getMessage();
     }
 
     header('Location: gio-hang.php');
@@ -36,6 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $chiTietGio = $gioHang->chiTiet();
+$tbLoi = $_SESSION['flash_loi'] ?? '';
+unset($_SESSION['flash_loi']);
+
 $tieuDe = 'Giỏ hàng của bạn - Fashion Store';
 $trang = 'gio-hang';
 require_once __DIR__ . '/inc/header.php';
@@ -98,6 +100,12 @@ require_once __DIR__ . '/inc/header.php';
     <section style="background-color: transparent; border: none; box-shadow: none; padding: 0;">
         <h2 style="color: #1e3a8a; border-left: 5px solid #2563eb; padding-left: 15px; margin-bottom: 20px;">Giỏ hàng / Yêu thích của bạn</h2>
 
+        <?php if ($tbLoi): ?>
+            <div style="background-color: #fee2e2; color: #991b1b; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #f87171;">
+                <strong>Lỗi:</strong> <?= e($tbLoi) ?>
+            </div>
+        <?php endif; ?>
+
         <?php if (empty($chiTietGio)): ?>
             <div style="background: white; padding: 40px 20px; text-align: center; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
                 <p style="font-size: 1.2em; color: #dc2626; font-weight: bold; margin-bottom: 20px;">Bạn chưa chọn sản phẩm nào!</p>
@@ -129,7 +137,6 @@ require_once __DIR__ . '/inc/header.php';
                                 </td>
                                 <td style="padding: 15px; color: #4b5563;"><?= vnd($item['sanPham']->gia) ?></td>
 
-                                <!-- Sửa ô hiển thị Số lượng thành Form cập nhật -->
                                 <td style="padding: 15px; text-align: center;">
                                     <form method="POST" action="gio-hang.php" style="margin: 0; display: inline-flex; gap: 5px; align-items: center;">
                                         <input type="hidden" name="id" value="<?= e($item['sanPham']->id) ?>">
@@ -166,7 +173,9 @@ require_once __DIR__ . '/inc/header.php';
 
                 <div class="nhom-nut-phai">
                     <a href="danh-sach.php" class="nut-bam nut-bam--phu" style="background: white;">Tiếp tục mua sắm</a>
-                    <button class="nut-bam nut-bam--chinh" onclick="alert('Tính năng thanh toán đang được phát triển!')">Tiến hành thanh toán</button>
+                    <form action="dat-hang.php" method="POST" style="margin: 0; display: inline;">
+                        <button type="submit" class="nut-bam nut-bam--chinh" style="border: none; cursor: pointer;">Tiến hành thanh toán</button>
+                    </form>
                 </div>
             </div>
         <?php endif; ?>

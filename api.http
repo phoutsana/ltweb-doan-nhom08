@@ -1,0 +1,23 @@
+### 1. Test API tìm kiếm sản phẩm (Thành công 200)
+GET http://localhost/nhom8/ltweb-doan-nhom08/api/san-pham.php?q=ao
+
+### 2. Test API xem chi tiết sản phẩm không tồn tại (404)
+GET http://localhost/nhom8/ltweb-doan-nhom08/api/san-pham.php?id=999999
+
+### 3. Test API thêm sản phẩm vào giỏ hàng qua POST (Thành công 200)
+POST http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
+Content-Type: application/json
+
+{
+  "san_pham_id": 1,
+  "so_luong": 2
+}
+
+### 4. Test API thêm sản phẩm với số lượng âm (422)
+POST http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
+Content-Type: application/json
+
+{
+  "san_pham_id": 1,
+  "so_luong": -3
+}

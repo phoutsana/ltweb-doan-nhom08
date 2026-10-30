@@ -42,15 +42,13 @@ form.addEventListener('submit', async (suKien) => {
     suKien.preventDefault();
 
     let formHopLe = true;
-    const duLieuThuThap = {};
 
     cacTruongCanKiemTra.forEach(item => {
         const input = document.querySelector(item.id);
         const theLoi = document.querySelector(item.idLoi);
-        if(input) {
+        if (input) {
             const hopLe = kiemTraInput(input, theLoi, item.msgRong);
             if (!hopLe) formHopLe = false;
-            duLieuThuThap[input.name] = input.value;
         }
     });
 
@@ -65,10 +63,12 @@ form.addEventListener('submit', async (suKien) => {
     theKetQua.style.color = '#2563eb'; 
 
     try {
+        // Dùng FormData để PHP dễ dàng nhận giá trị qua $_POST['fullname'], $_POST['email']...
+        const formData = new FormData(form);
+
         const res = await fetch(form.action, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(duLieuThuThap)
+            body: formData
         });
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);

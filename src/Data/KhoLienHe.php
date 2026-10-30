@@ -1,21 +1,47 @@
 <?php
+declare(strict_types=1);
+
 namespace App\Data;
+
+// Nạp tệp kết nối cơ sở dữ liệu
+require_once __DIR__ . '/../../inc/db.php';
 
 class KhoLienHe 
 {
-    public function __construct(private string $tep) {}
+    public function __construct() {}
 
     public function them(array $lh): void
     {
-        $dong = json_encode($lh, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
-        file_put_contents($this->tep, $dong . PHP_EOL, FILE_APPEND | LOCK_EX); // Khóa tệp khi ghi
+        try {
+            $pdo = \db();
+
+            // Insert tách bạch từng cột rõ ràng
+            $sql = "INSERT INTO lien_he (ho_ten, email, sdt, chu_de, noi_dung, anh, ngay_gui) 
+                    VALUES (:ho_ten, :email, :sdt, :chu_de, :noi_dung, :anh, NOW())";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                'ho_ten'   => $lh['hoTen'],
+                'email'    => $lh['email'],
+                'sdt'      => $lh['sdt'] ?? null,
+                'chu_de'   => $lh['chuDe'] ?? null,
+                'noi_dung' => $lh['noiDung'],
+                'anh'      => $lh['anh']
+            ]);
+        } catch (\PDOException $e) {
+            throw new \Exception("Lỗi lưu database: " . $e->getMessage());
+        }
     }
 
-    public function tatCa(): array // Mới nhất đứng đầu
+    public function tatCa(): array 
     {
-        if (!is_file($this->tep)) return [];
-        $dong = file($this->tep, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        $ds = array_map(fn($d) => json_decode($d, true), $dong);
-        return array_reverse(array_filter($ds, 'is_array'));
+        try {
+            $pdo = \db();
+            $sql = "SELECT * FROM lien_he ORDER BY id DESC";
+            $stmt = $pdo->query($sql);
+            return $stmt->fetchAll();
+        } catch (\PDOException $e) {
+            return [];
+        }
     }
 }

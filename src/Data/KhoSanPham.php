@@ -1,95 +1,94 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Data;
 
 use App\Models\SanPham;
+use PDO;
 
 /**
- * Lớp truy cập dữ liệu Sản Phẩm từ tệp JSON
+ * Lớp truy cập dữ liệu Sản Phẩm từ cơ sở dữ liệu MySQL (PDO)
  */
 class KhoSanPham
 {
-    private string $tepDuLieu;
-
-    public function __construct()
-    {
-        $this->tepDuLieu = __DIR__ . '/../../data/san-pham.json';
-    }
-
     /**
-     * Lấy toàn bộ sản phẩm từ file JSON
-     * @return SanPham[]
+     * Lấy toàn bộ sản phẩm từ bảng san_pham
      */
     public function tatCa(): array
     {
-        // Kiểm tra nếu mất file JSON thì xuất ra trang lỗi 500 giao diện đẹp
-        if (!file_exists($this->tepDuLieu) || file_get_contents($this->tepDuLieu) === false) {
+        try {
+            $pdo = \db(); // Gọi hàm db() toàn cục
+            
+            $sql = "SELECT p.*, d.ten AS ten_danh_muc 
+                    FROM san_pham p 
+                    LEFT JOIN danh_muc d ON p.danh_muc_id = d.id 
+                    ORDER BY p.id DESC";
+            
+            $stmt = $pdo->query($sql);
+            $rows = $stmt->fetchAll();
+
+            $danhSach = [];
+            foreach ($rows as $row) {
+                $d = [
+                    'id'         => (int)$row['id'],
+                    'ten'        => $row['ten'],
+                    'gia'        => (int)$row['gia'],
+                    'soLuong'    => (int)$row['ton_kho'],
+                    'danhMuc'    => $row['ten_danh_muc'] ?? 'Thời trang',
+                    'moTa'       => $row['mo_ta'] ?? '',
+                    'hinhAnh'    => !empty($row['anh']) ? $row['anh'] : 'images/default.jpg',
+                    'mauSac'     => $row['mau_sac'] ?? 'Đen, Trắng',
+                    'kichThuoc'  => $row['kich_thuoc'] ?? 'M, L, XL',
+                    'video'      => $row['video'] ?? ''
+                ];
+                $danhSach[] = SanPham::tuMang($d);
+            }
+
+            return $danhSach;
+        } catch (\PDOException $e) {
             http_response_code(500);
-            echo '<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>500 - Lỗi hệ thống</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa; /* Màu nền xám nhạt */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-            text-align: center;
+            echo 'Lỗi truy vấn cơ sở dữ liệu: ' . htmlspecialchars($e->getMessage());
+            exit;
         }
-        h1 {
-            color: #dc2626; /* Màu đỏ */
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-        p {
-            color: #4b5563; /* Màu xám đậm */
-            font-size: 1.2rem;
-            margin-top: 0;
-        }
-    </style>
-</head>
-<body>
-    <h1>500 - Lỗi hệ thống</h1>
-    <p>Hệ thống đang gặp sự cố. Vui lòng quay lại sau!</p>
-</body>
-</html>';
-            exit; // Dừng toàn bộ chương trình lại tại đây
-        }
-
-        $json = file_get_contents($this->tepDuLieu);
-        $mangDuLieu = json_decode($json, true);
-
-        if (!is_array($mangDuLieu)) {
-            return [];
-        }
-
-        $danhSach = [];
-        foreach ($mangDuLieu as $d) {
-            $danhSach[] = SanPham::tuMang($d);
-        }
-
-        return $danhSach;
     }
 
     /**
-     * Tìm một sản phẩm theo ID (dùng cho trang chi-tiet.php)
+     * Tìm một sản phẩm theo ID (dùng Prepared Statement)
      */
     public function timTheoId(int $id): ?SanPham
     {
-        $danhSach = $this->tatCa();
-        foreach ($danhSach as $sp) {
-            if ($sp->id === $id) {
-                return $sp;
+        try {
+            $pdo = \db(); // Gọi hàm db() toàn cục
+            
+            $sql = "SELECT p.*, d.ten AS ten_danh_muc 
+                    FROM san_pham p 
+                    LEFT JOIN danh_muc d ON p.danh_muc_id = d.id 
+                    WHERE p.id = :id LIMIT 1";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['id' => $id]);
+            $row = $stmt->fetch();
+
+            if (!$row) {
+                return null;
             }
+
+            $d = [
+                'id'         => (int)$row['id'],
+                'ten'        => $row['ten'],
+                'gia'        => (int)$row['gia'],
+                'soLuong'    => (int)$row['ton_kho'],
+                'danhMuc'    => $row['ten_danh_muc'] ?? 'Thời trang',
+                'moTa'       => $row['mo_ta'] ?? '',
+                'hinhAnh'    => !empty($row['anh']) ? $row['anh'] : 'images/default.jpg',
+                'mauSac'     => $row['mau_sac'] ?? 'Đen, Trắng',
+                'kichThuoc'  => $row['kich_thuoc'] ?? 'M, L, XL',
+                'video'      => $row['video'] ?? ''
+            ];
+
+            return SanPham::tuMang($d);
+        } catch (\PDOException $e) {
+            return null;
         }
-        return null;
     }
 }

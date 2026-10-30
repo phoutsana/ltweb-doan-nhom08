@@ -7,7 +7,7 @@ use App\Data\KhoSanPham;
 $kho = new KhoSanPham();
 
 // =====================================================================
-// ĐỌC COOKIE: LẤY DANH SÁCH 4 SẢN PHẨM ĐÃ XEM GẦN ĐÂY (Chuẩn Gợi ý 4)
+// ĐỌC COOKIE: LẤY DANH SÁCH 4 SẢN PHẨM ĐÃ XEM GẦN ĐÂY
 // =====================================================================
 $daXem = [];
 foreach (explode(',', $_COOKIE['da_xem'] ?? '') as $x) {
@@ -19,11 +19,9 @@ foreach (explode(',', $_COOKIE['da_xem'] ?? '') as $x) {
 }
 // =====================================================================
 
-// Cài đặt tiêu đề cho trang web
 $tieuDe = 'Trang chủ - Fashion Store';
-$trang = 'index'; // Đánh dấu trang hiện tại cho menu
+$trang = 'index';
 
-// Gọi header dùng chung
 require_once __DIR__ . '/inc/header.php';
 ?>
 
@@ -38,14 +36,12 @@ require_once __DIR__ . '/inc/header.php';
     </section>
 
     <!-- Khối hiển thị thời tiết từ API -->
-    <!-- Khối hiển thị thời tiết từ API -->
     <section class="khoi-noi-dung">
         <h2>Thời tiết Đà Nẵng hiện tại</h2>
         <p id="trang-thai-thoi-tiet" aria-live="polite" style="font-weight: 500; color: #2563eb;">Đang tải dữ liệu thời tiết...</p>
         <p id="nhiet-do" style="font-size: 1.5rem; font-weight: bold; margin-top: 10px;"></p>
 
         <script>
-            // Mã JavaScript gọi REST API 
             document.addEventListener('DOMContentLoaded', function() {
                 const trangThai = document.getElementById('trang-thai-thoi-tiet');
                 const nhietDo = document.getElementById('nhiet-do');
@@ -54,9 +50,9 @@ require_once __DIR__ . '/inc/header.php';
                     .then(response => response.json())
                     .then(data => {
                         trangThai.textContent = 'Dữ liệu thời tiết đã được tải thành công!';
-                        trangThai.style.color = '#10b981'; // Xanh lá cây nhạt như hình mẫu
+                        trangThai.style.color = '#10b981';
                         nhietDo.textContent = data.current_weather.temperature + ' °C';
-                        nhietDo.style.color = '#dc2626'; // Đỏ nổi bật cho nhiệt độ
+                        nhietDo.style.color = '#dc2626';
                     })
                     .catch(error => {
                         trangThai.textContent = 'Không tải được dữ liệu thời tiết.';
@@ -84,25 +80,31 @@ require_once __DIR__ . '/inc/header.php';
         </div>
     </section>
 
-    <!-- KHỐI ĐÃ XEM GẦN ĐÂY (Sẽ tự động hiện ra khi có Cookie) -->
+    <!-- KHỐI ĐÃ XEM GẦN ĐÂY -->
     <?php if (!empty($daXem)): ?>
         <section class="khoi-noi-dung" style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
             <h2 style="color: #1e3a8a; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; margin-bottom: 20px;">
                 Đã xem gần đây
             </h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
-                <?php foreach ($daXem as $sp): ?>
+                <?php foreach ($daXem as $sp):
+                    // Kiểm tra xem biến gọi bằng Getter hay Thuộc tính
+                    $spId = method_exists($sp, 'getId') ? $sp->getId() : $sp->id;
+                    $spTen = method_exists($sp, 'getTen') ? $sp->getTen() : $sp->ten;
+                    $spHinhAnh = method_exists($sp, 'getHinhAnh') ? $sp->getHinhAnh() : $sp->anh ?? $sp->hinhAnh;
+                    $spGia = method_exists($sp, 'getGia') ? $sp->getGia() : $sp->gia;
+                ?>
                     <article style="background: white; border-radius: 8px; padding: 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
-                            <img src="<?= e($sp->hinhAnh) ?>" alt="<?= e($sp->ten) ?>" style="width: 100%; height: 180px; object-fit: contain; margin-bottom: 10px;">
+                            <img src="<?= e($spHinhAnh) ?>" alt="<?= e($spTen) ?>" style="width: 100%; height: 180px; object-fit: contain; margin-bottom: 10px;">
                             <h3 style="font-size: 1.05rem; margin-bottom: 10px; line-height: 1.4; max-height: 2.8em; overflow: hidden;">
-                                <?= e($sp->ten) ?>
+                                <?= e($spTen) ?>
                             </h3>
                             <p style="color: #dc2626; font-weight: bold; margin-bottom: 15px; font-size: 1.1rem;">
-                                <?= vnd($sp->gia) ?>
+                                <?= vnd($spGia) ?>
                             </p>
                         </div>
-                        <a class="nut-bam nut-bam--chinh" href="chi-tiet.php?id=<?= e($sp->id) ?>" style="width: 100%; box-sizing: border-box;">Xem lại</a>
+                        <a class="nut-bam nut-bam--chinh" href="chi-tiet.php?id=<?= e($spId) ?>" style="width: 100%; box-sizing: border-box;">Xem lại</a>
                     </article>
                 <?php endforeach; ?>
             </div>
@@ -115,7 +117,4 @@ require_once __DIR__ . '/inc/header.php';
     </section>
 </main>
 
-<?php
-// Gọi footer dùng chung
-require_once __DIR__ . '/inc/footer.php';
-?>
+<?php require_once __DIR__ . '/inc/footer.php'; ?>
