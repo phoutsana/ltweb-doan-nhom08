@@ -7,9 +7,9 @@
 -- Khách hàng 2: khach2@gmail.com / 123456
 
 INSERT INTO nguoi_dung (email, mat_khau, ho_ten, vai_tro, ngay_tao) VALUES
-('admin@fashionstore.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Quản trị viên', 'quan_tri', NOW()),
+('admin@fashionstore.com', '$2y$12$qnkKZ0.YN9ep1tYUYNtcBuSHOnBRxolTR5.Zf3pi9UEnUWnGBiPCa', 'Quản trị viên', 'quan_tri', NOW()),
 ('khach1@gmail.com', '$2y$10$jMd3STvdUHTq/dcPXWLI2exernFtpfkb11hYIVKT7VBv2iuUNZ68K', 'Nguyễn Văn Khách', 'khach_hang', NOW()),
-('khach2@gmail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Trần Thị Mua', 'khach_hang', NOW());
+('khach2@gmail.com', '$2y$12$PhC3rHCu.sFH.KAsbShsyeZUFYL11gK4bZuT1b0oKkNQRYemyon4y', 'Trần Thị Mua', 'khach_hang', NOW());
 
 -- 2. Chèn danh mục
 INSERT INTO danh_muc (ten, slug) VALUES
@@ -19,7 +19,7 @@ INSERT INTO danh_muc (ten, slug) VALUES
 ('Phụ Kiện', 'phu-kien'),
 ('Bộ Sưu Tập Cũ', 'bo-suu-tap-cu');
 
--- 3. Chèn 30 sản phẩm (Chính xác theo CSDL hiện tại)
+-- 3. Chèn 31 sản phẩm (bao gồm sản phẩm Levi's)
 INSERT INTO san_pham (danh_muc_id, ten, gia, ton_kho, anh, mau_sac, kich_thuoc, video, mo_ta, ngay_tao) VALUES
 -- Sản phẩm 1-12
 (1, 'Áo thun nam basic', 150000, 50, 'images/ao-thun-nam.jpg', 'Xanh', 'M, L, XL', 'https://www.youtube.com/embed/Q4T5uVfQ03w?si=dF3zYc-sNa3FOJVl', 'Áo polo nam thiết kế đơn giản, dễ phối đồ.', NOW()),
@@ -56,6 +56,16 @@ INSERT INTO san_pham (danh_muc_id, ten, gia, ton_kho, anh, mau_sac, kich_thuoc, 
 (4, 'Khăn choàng cổ len', 180000, 15, 'images/khan-choang.jpg', 'Xanh', 'FreeSize', 'https://www.youtube.com/embed/hGoBWtIfwko?si=jURDQgoqj0ceYDhb', 'Giữ ấm cổ mùa đông.', NOW()),
 (2, 'Quần jean nam Levi''s', 850000, 15, 'images/quan-jean-nam1.jpg', 'Xanh', '29, 30, 31', 'https://www.youtube.com/embed/YVVTN-MwLLs?si=Qjj1SWqdp9KijCX7', 'Quần jean Levi''s chính hãng.', NOW());
 
+-- 3b. Don hang mau cho hai khach hang (moi khach mot don)
+-- Phai chay sau khi da tao nguoi_dung va san_pham.
+INSERT INTO don_hang (nguoi_dung_id, tong_tien, trang_thai, ngay_dat) VALUES
+(2, 150000, 'moi', NOW()),
+(3, 350000, 'moi', NOW());
+
+INSERT INTO chi_tiet_don (don_hang_id, san_pham_id, so_luong, don_gia) VALUES
+(1, 1, 1, 150000),
+(2, 2, 1, 350000);
+
 -- 4. Chèn một số dữ liệu liên hệ mẫu
 -- 4. Chèn một số dữ liệu liên hệ mẫu (Cập nhật SĐT và Chủ đề)
 INSERT INTO lien_he (ho_ten, email, sdt, chu_de, noi_dung, anh, ngay_gui) VALUES
@@ -67,11 +77,11 @@ INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES
 ('3120224184', 'Xayyatiew Phoutsana', 'Thành viên nhóm 08')
 ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
-INSERT INTO tv_du_an (mssv, ten_du_an, mo_ta, cong_nghe) VALUES 
+INSERT INTO tv_du_an (masv, ten_du_an, mo_ta, cong_nghe) VALUES
 ('3120224184', 'Hệ thống Gợi ý Phim', 'Xây dựng thuật toán TF-IDF và Cosine Similarity gợi ý phim', 'HTML, CSS, JS, Python'),
 ('3120224184', 'Khóa cửa thông minh RFID', 'Nguyên mẫu khóa cửa tự động qua thẻ RFID và Arduino', 'Arduino C, C++, IoT');
 
-INSERT INTO tv_luu_but (mssv, ten, loi_nhan) VALUES 
+INSERT INTO tv_luu_but (masv, ten, loi_nhan) VALUES
 ('3120224184', 'Nguyễn Văn Bạn', 'Trang cá nhân thiết kế rất đẹp và trực quan!');
 
 -- Them thong tin thanh vien Giang
@@ -90,7 +100,7 @@ VALUES
     ('3120224040', 6, 'Học tập', 'Tự học');
 
 -- Thêm thông tin của Lê Văn Mạnh vào bảng thanh_vien chung
-INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) 
+INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom)
 VALUES ('3120224094', 'Lê Văn Mạnh', 'Thành viên nhóm 08')
 ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
@@ -104,7 +114,7 @@ INSERT INTO tv_du_an (masv, ten_du_an, mo_ta, cong_nghe, link_demo) VALUES
 ('3120224094', 'Website Bán Hàng Điện Tử', 'Xây dựng trang thương mại điện tử bằng PHP thuần và MySQL.', 'PHP, MySQL, Bootstrap', '#'),
 ('3120224094', 'Ứng dụng Quản lý Công việc', 'App To-do list cá nhân hỗ trợ phân chia task theo ngày.', 'JavaScript, TailwindCSS', '#');
 
-INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES 
+INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES
 ('3120224182', 'KEOPHOXAY Phaeva', 'Thiết kế giao diện & Hỗ trợ code')
 ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
@@ -112,12 +122,8 @@ INSERT INTO tv_ky_nang (masv, tieu_de, mo_ta, muc) VALUES
 ('3120224182', 'Lập trình & Đánh dấu', 'HTML5, CSS3, căn bản về Lập trình web.', 'lap-trinh'),
 ('3120224182', 'Công cụ & Quản lý mã nguồn', 'Sử dụng Git và GitHub để làm việc nhóm.', 'cong-cu'),
 ('3120224182', 'Kỹ năng mềm', 'Kỹ năng làm việc nhóm, giao tiếp và lên kế hoạch dự án.', 'ky-nang-mem');
-INSERT INTO tv_du_an (mssv, ten_du_an, mo_ta, cong_nghe) VALUES
-('3120224184', 'Hệ thống Gợi ý Phim', 'Xây dựng thuật toán TF-IDF và Cosine Similarity gợi ý phim', 'HTML, CSS, JS, Python'),
-('3120224184', 'Khóa cửa thông minh RFID', 'Nguyên mẫu khóa cửa tự động qua thẻ RFID và Arduino', 'Arduino C, C++, IoT');
+-- Du lieu Phoutsana da duoc chen o phan tren, khong chen trung.
 
-INSERT INTO tv_luu_but (mssv, ten, loi_nhan) VALUES
-('3120224184', 'Nguyễn Văn Bạn', 'Trang cá nhân thiết kế rất đẹp và trực quan!');
 
 
 -- =====================================================

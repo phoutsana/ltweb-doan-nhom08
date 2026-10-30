@@ -116,25 +116,33 @@ CREATE TABLE thanh_vien (
     ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- 8. Bảng lưu bút cá nhân (Phần B - tv_luu_but)
+-- 8. So luu but: dung chung cau truc cot cho Phoutsana va Manh
 CREATE TABLE tv_luu_but (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    mssv VARCHAR(50) NOT NULL,
-    ten VARCHAR(100) NOT NULL,
-    loi_nhan TEXT NOT NULL,
+    masv VARCHAR(50) NOT NULL,
+    ten VARCHAR(100) DEFAULT NULL,
+    loi_nhan TEXT,
+    ten_nguoi_gui VARCHAR(100) DEFAULT NULL,
+    noi_dung TEXT,
     ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_tv_luubut FOREIGN KEY (mssv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
+    thoi_gian DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tv_luubut
+        FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE,
+    INDEX idx_tv_luu_but_masv (masv)
 ) ENGINE=InnoDB;
 
--- 9. Bảng dự án cá nhân (Phần B - tv_du_an)
+-- 9. Du an ca nhan: dung chung cau truc cot cho Phoutsana va Manh
 CREATE TABLE tv_du_an (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    mssv VARCHAR(50) NOT NULL,
+    masv VARCHAR(50) NOT NULL,
     ten_du_an VARCHAR(200) NOT NULL,
     mo_ta TEXT,
     cong_nghe VARCHAR(100),
+    link_demo VARCHAR(255) DEFAULT NULL,
     ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_tv_duan FOREIGN KEY (mssv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
+    CONSTRAINT fk_tv_duan
+        FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE,
+    INDEX idx_tv_du_an_masv (masv)
 ) ENGINE=InnoDB;
 -- 10. Bang thoi khoa bieu ca nhan
 -- Phan B - Ngo Huong Giang - MSSV: 3120224040
@@ -192,26 +200,8 @@ CREATE TABLE IF NOT EXISTS tv_danh_gia (
     thoi_gian DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_danhgia_thanhvien FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
--- 1. Bảng Sổ lưu bút (Chuyển từ JSONL sang MySQL có phân trang và quản lý)
-CREATE TABLE IF NOT EXISTS `tv_luu_but` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `masv` VARCHAR(50) NOT NULL,
-  `ten_nguoi_gui` VARCHAR(100) NOT NULL,
-  `noi_dung` TEXT NOT NULL,
-  `thoi_gian` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT `fk_luubut_thanhvien` FOREIGN KEY (`masv`) REFERENCES `thanh_vien`(`ma_sv`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- 2. Bảng Danh sách Dự án (Có tìm kiếm và lọc công nghệ)
-CREATE TABLE IF NOT EXISTS `tv_du_an` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `masv` VARCHAR(50) NOT NULL,
-  `ten_du_an` VARCHAR(150) NOT NULL,
-  `mo_ta` TEXT,
-  `cong_nghe` VARCHAR(100),
-  `link_demo` VARCHAR(255),
-  CONSTRAINT `fk_duan_thanhvien` FOREIGN KEY (`masv`) REFERENCES `thanh_vien`(`ma_sv`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- tv_luu_but va tv_du_an da khai bao day du o phan tren.
+-- Khong tao lai de tranh trung ten bang va lech cot.
 -- PHAN B - NGUYEN SON CHU (3120224020): CHI DAN CUOI schema.sql.
 -- Khong sua 10 bang chung cua nhom.
 CREATE TABLE tv_muc_tieu (
