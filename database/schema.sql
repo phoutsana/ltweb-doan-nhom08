@@ -181,3 +181,14 @@ CREATE TABLE IF NOT EXISTS tv_diem_hoc_phan (
     ngay_tinh DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_tv_diem_thanh_vien FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Bảng riêng duy nhất của Mạnh (tiền tố tv_)
+CREATE TABLE IF NOT EXISTS tv_danh_gia (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    masv VARCHAR(50) NOT NULL,
+    nguoi_gui VARCHAR(50) NOT NULL,
+    so_sao INT NOT NULL,
+    nhan_xet TEXT NOT NULL,
+    thoi_gian DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_danhgia_thanhvien FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

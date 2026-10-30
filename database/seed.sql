@@ -80,6 +80,10 @@ VALUES
     ('3120224040', 4, 'Học tập', 'Làm đồ án'),
     ('3120224040', 5, 'Học tập', 'Lập trình'),
     ('3120224040', 6, 'Học tập', 'Tự học');
+-- Thêm thông tin của Lê Văn Mạnh vào bảng thanh_vien chung
+INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) 
+VALUES ('3120224094', 'Lê Văn Mạnh', 'Thành viên nhóm 08')
+ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
 INSERT INTO tv_du_an (mssv, ten_du_an, mo_ta, cong_nghe) VALUES 
 ('3120224184', 'Hệ thống Gợi ý Phim', 'Xây dựng thuật toán TF-IDF và Cosine Similarity gợi ý phim', 'HTML, CSS, JS, Python'),
