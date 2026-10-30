@@ -10,6 +10,7 @@ INSERT INTO nguoi_dung (email, mat_khau, ho_ten, vai_tro, ngay_tao) VALUES
 ('admin@fashionstore.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Quản trị viên', 'quan_tri', NOW()),
 ('khach1@gmail.com', '$2y$10$jMd3STvdUHTq/dcPXWLI2exernFtpfkb11hYIVKT7VBv2iuUNZ68K', 'Nguyễn Văn Khách', 'khach_hang', NOW()),
 ('khach2@gmail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Trần Thị Mua', 'khach_hang', NOW());
+
 -- 2. Chèn danh mục
 INSERT INTO danh_muc (ten, slug) VALUES
 ('Áo Nam', 'ao-nam'),
@@ -111,3 +112,75 @@ INSERT INTO tv_ky_nang (masv, tieu_de, mo_ta, muc) VALUES
 ('3120224182', 'Lập trình & Đánh dấu', 'HTML5, CSS3, căn bản về Lập trình web.', 'lap-trinh'),
 ('3120224182', 'Công cụ & Quản lý mã nguồn', 'Sử dụng Git và GitHub để làm việc nhóm.', 'cong-cu'),
 ('3120224182', 'Kỹ năng mềm', 'Kỹ năng làm việc nhóm, giao tiếp và lên kế hoạch dự án.', 'ky-nang-mem');
+INSERT INTO tv_du_an (mssv, ten_du_an, mo_ta, cong_nghe) VALUES
+('3120224184', 'Hệ thống Gợi ý Phim', 'Xây dựng thuật toán TF-IDF và Cosine Similarity gợi ý phim', 'HTML, CSS, JS, Python'),
+('3120224184', 'Khóa cửa thông minh RFID', 'Nguyên mẫu khóa cửa tự động qua thẻ RFID và Arduino', 'Arduino C, C++, IoT');
+
+INSERT INTO tv_luu_but (mssv, ten, loi_nhan) VALUES
+('3120224184', 'Nguyễn Văn Bạn', 'Trang cá nhân thiết kế rất đẹp và trực quan!');
+
+
+-- =====================================================
+-- PHAN B - NGUYEN SON CHU - MSSV: 3120224020
+-- =====================================================
+
+-- Them thong tin thanh vien
+INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES
+('3120224020', 'Nguyễn Sơn Chu', 'Thành viên nhóm 08');
+
+-- Du lieu mau: Quan ly muc tieu hoc tap
+INSERT INTO tv_muc_tieu (mssv, noi_dung, hoan_thanh) VALUES
+('3120224020', 'Ôn PHP 30 phút mỗi ngày', 0),
+('3120224020', 'Tìm hiểu MySQL và PDO', 1),
+('3120224020', 'Hoàn thành Bài tập nhóm 6', 0);
+
+-- Du lieu mau: Cau hoi trac nghiem lap trinh
+INSERT INTO tv_cau_hoi
+(mssv, ma_cau, noi_dung, lua_chon_a, lua_chon_b, lua_chon_c, dap_an, giai_thich)
+VALUES
+('3120224020', 'q1',
+ 'Trong PHP, tên biến bắt đầu bằng ký tự nào?',
+ '$', '@', '#', 'a',
+ 'Biến PHP được viết với dấu $ ở phía trước tên biến.'),
+
+('3120224020', 'q2',
+ 'Phương thức HTTP nào thường dùng để gửi biểu mẫu làm thay đổi dữ liệu?',
+ 'GET', 'POST', 'HEAD', 'b',
+ 'POST thường được dùng cho thao tác tạo hoặc cập nhật dữ liệu.'),
+
+('3120224020', 'q3',
+ 'Hàm PHP nào dùng để mã hóa ký tự đặc biệt khi in ra HTML?',
+ 'strlen()', 'json_decode()', 'htmlspecialchars()', 'c',
+ 'htmlspecialchars() chuyển các ký tự HTML đặc biệt thành thực thể.'),
+
+('3120224020', 'q4',
+ 'Dữ liệu tham số GET trong URL được truy cập qua biến nào?',
+ '$_COOKIE', '$_GET', '$_FILES', 'b',
+ 'Mảng $_GET chứa các tham số truy vấn được gửi qua URL.'),
+
+('3120224020', 'q5',
+ 'Mục đích chính của mẫu POST - Redirect - GET (PRG) là gì?',
+ 'Giảm dung lượng ảnh',
+ 'Chống gửi lại biểu mẫu khi tải lại trang',
+ 'Thay thế việc kiểm tra dữ liệu', 'b',
+ 'Chuyển hướng sau POST thành công giúp F5 không gửi lại yêu cầu POST.');
+
+-- Du lieu mau: Ket qua trac nghiem
+INSERT INTO tv_ket_qua_trac_nghiem
+(mssv, so_cau_dung, tong_cau)
+VALUES
+('3120224020', 4, 5);
+-- Phan B - Nguyen Son Chu: Tai khoan chu trang
+-- Email: chu.bt6@example.com
+-- Mat khau demo: ChuDemo@2026
+
+INSERT INTO nguoi_dung (email, mat_khau, ho_ten, vai_tro)
+SELECT
+    'chu.bt6@example.com',
+    '$2y$12$Ht42hefdfSinf/gcak3gj.KHTZQeTsWAbA0mVv6vbrAsrMJjQL4UG',
+    'Nguyễn Sơn Chu',
+    'khach_hang'
+WHERE NOT EXISTS (
+    SELECT 1 FROM nguoi_dung
+    WHERE email = 'chu.bt6@example.com'
+);

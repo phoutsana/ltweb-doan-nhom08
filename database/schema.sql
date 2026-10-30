@@ -212,3 +212,42 @@ CREATE TABLE IF NOT EXISTS `tv_du_an` (
   `link_demo` VARCHAR(255),
   CONSTRAINT `fk_duan_thanhvien` FOREIGN KEY (`masv`) REFERENCES `thanh_vien`(`ma_sv`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- PHAN B - NGUYEN SON CHU (3120224020): CHI DAN CUOI schema.sql.
+-- Khong sua 10 bang chung cua nhom.
+CREATE TABLE tv_muc_tieu (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mssv VARCHAR(50) NOT NULL,
+    noi_dung VARCHAR(120) NOT NULL,
+    hoan_thanh TINYINT(1) NOT NULL DEFAULT 0,
+    ngay_tao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_chu_muc_tieu_mssv (mssv),
+    CONSTRAINT fk_chu_muc_tieu FOREIGN KEY (mssv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE,
+    CONSTRAINT ck_chu_muc_tieu_dodai CHECK (CHAR_LENGTH(TRIM(noi_dung)) BETWEEN 3 AND 120),
+    CONSTRAINT ck_chu_muc_tieu_trangthai CHECK (hoan_thanh IN (0,1))
+) ENGINE=InnoDB;
+
+CREATE TABLE tv_cau_hoi (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mssv VARCHAR(50) NOT NULL,
+    ma_cau VARCHAR(10) NOT NULL,
+    noi_dung VARCHAR(255) NOT NULL,
+    lua_chon_a VARCHAR(255) NOT NULL,
+    lua_chon_b VARCHAR(255) NOT NULL,
+    lua_chon_c VARCHAR(255) NOT NULL,
+    dap_an CHAR(1) NOT NULL,
+    giai_thich TEXT NOT NULL,
+    UNIQUE KEY uq_chu_cauhoi (mssv, ma_cau),
+    CONSTRAINT fk_chu_cauhoi FOREIGN KEY (mssv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE,
+    CONSTRAINT ck_chu_cauhoi_dapan CHECK (dap_an IN ('a','b','c'))
+) ENGINE=InnoDB;
+
+CREATE TABLE tv_ket_qua_trac_nghiem (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mssv VARCHAR(50) NOT NULL,
+    so_cau_dung TINYINT UNSIGNED NOT NULL,
+    tong_cau TINYINT UNSIGNED NOT NULL,
+    ngay_lam DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_chu_ketqua (mssv, ngay_lam),
+    CONSTRAINT fk_chu_ketqua FOREIGN KEY (mssv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE,
+    CONSTRAINT ck_chu_ketqua CHECK (tong_cau > 0 AND so_cau_dung <= tong_cau)
+) ENGINE=InnoDB;
