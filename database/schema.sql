@@ -136,3 +136,26 @@ CREATE TABLE tv_du_an (
     ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_tv_duan FOREIGN KEY (mssv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+-- 10. Bang thoi khoa bieu ca nhan
+-- Phan B - Ngo Huong Giang - MSSV: 3120224040
+-- Luu thoi khoa bieu de tra cuu va xuat CSV bang MySQL
+
+CREATE TABLE tv_thoi_khoa_bieu (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    mssv VARCHAR(50) NOT NULL,
+    thu TINYINT UNSIGNED NOT NULL,
+    buoi_sang VARCHAR(200) NOT NULL,
+    buoi_chieu VARCHAR(200) NOT NULL,
+
+    CONSTRAINT uq_tkb_mssv_thu
+        UNIQUE (mssv, thu),
+
+    CONSTRAINT chk_tkb_thu
+        CHECK (thu BETWEEN 2 AND 6),
+
+    CONSTRAINT fk_tkb_thanh_vien
+        FOREIGN KEY (mssv)
+        REFERENCES thanh_vien(ma_sv)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ENGINE=InnoDB;

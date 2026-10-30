@@ -66,6 +66,21 @@ INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES
 ('3120224184', 'Xayyatiew Phoutsana', 'Thành viên nhóm 08')
 ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
+-- Them thong tin thanh vien Giang
+
+INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom)
+VALUES
+('3120224040', 'Ngô Hương Giang', 'Thành viên nhóm 08');
+
+INSERT INTO tv_thoi_khoa_bieu
+    (mssv, thu, buoi_sang, buoi_chieu)
+VALUES
+    ('3120224040', 2, 'Học tập', 'Tự học'),
+    ('3120224040', 3, 'Học tập', 'Lập trình'),
+    ('3120224040', 4, 'Học tập', 'Làm đồ án'),
+    ('3120224040', 5, 'Học tập', 'Lập trình'),
+    ('3120224040', 6, 'Học tập', 'Tự học');
+
 INSERT INTO tv_du_an (mssv, ten_du_an, mo_ta, cong_nghe) VALUES 
 ('3120224184', 'Hệ thống Gợi ý Phim', 'Xây dựng thuật toán TF-IDF và Cosine Similarity gợi ý phim', 'HTML, CSS, JS, Python'),
 ('3120224184', 'Khóa cửa thông minh RFID', 'Nguyên mẫu khóa cửa tự động qua thẻ RFID và Arduino', 'Arduino C, C++, IoT');
