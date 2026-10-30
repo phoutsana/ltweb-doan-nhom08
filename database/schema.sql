@@ -159,3 +159,25 @@ CREATE TABLE tv_thoi_khoa_bieu (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB;
+
+-- Bảng kỹ năng cá nhân của KEOPHOXAY Phaeva (3120224182)
+CREATE TABLE IF NOT EXISTS tv_ky_nang (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    masv VARCHAR(50) NOT NULL,
+    tieu_de VARCHAR(200) NOT NULL,
+    mo_ta TEXT,
+    muc VARCHAR(50) NOT NULL,
+    CONSTRAINT fk_tv_ky_nang_thanh_vien FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Bảng lưu điểm học phần cá nhân của Phaeva
+CREATE TABLE IF NOT EXISTS tv_diem_hoc_phan (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    masv VARCHAR(50) NOT NULL,
+    diem_a1 DECIMAL(3,1) NOT NULL,
+    diem_a2 DECIMAL(3,1) NOT NULL,
+    diem_a3 DECIMAL(3,1) NOT NULL,
+    diem_tong_ket DECIMAL(3,1) NOT NULL,
+    ngay_tinh DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tv_diem_thanh_vien FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

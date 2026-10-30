@@ -87,3 +87,12 @@ INSERT INTO tv_du_an (mssv, ten_du_an, mo_ta, cong_nghe) VALUES
 
 INSERT INTO tv_luu_but (mssv, ten, loi_nhan) VALUES 
 ('3120224184', 'Nguyễn Văn Bạn', 'Trang cá nhân thiết kế rất đẹp và trực quan!');
+
+INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES 
+('3120224182', 'KEOPHOXAY Phaeva', 'Thiết kế giao diện & Hỗ trợ code')
+ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
+
+INSERT INTO tv_ky_nang (masv, tieu_de, mo_ta, muc) VALUES
+('3120224182', 'Lập trình & Đánh dấu', 'HTML5, CSS3, căn bản về Lập trình web.', 'lap-trinh'),
+('3120224182', 'Công cụ & Quản lý mã nguồn', 'Sử dụng Git và GitHub để làm việc nhóm.', 'cong-cu'),
+('3120224182', 'Kỹ năng mềm', 'Kỹ năng làm việc nhóm, giao tiếp và lên kế hoạch dự án.', 'ky-nang-mem');
