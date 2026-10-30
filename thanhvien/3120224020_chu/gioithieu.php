@@ -1,11 +1,15 @@
 <?php
 /**
- * Trang ca nhan Nguyen Son Chu (3120224020), dung header/footer chung cua nhom.
- * PHP 1: Quan ly muc tieu hoc tap (them, hoan thanh, xoa) bang Session va PRG.
- * PHP 2: Trac nghiem kien thuc lap trinh, cham dap an tai may chu va PRG.
- * Thu: tao mot muc tieu, danh dau/xoa; lam bai trac nghiem va nhan F5.
+ * Trang ca nhan Nguyen Son Chu (3120224020), giu giao dien Bai 5.
+ * Chuc nang 1: Quan ly muc tieu hoc tap bang MySQL/PDO va quyen chu trang.
+ * Chuc nang 2: Doc cau hoi, cham va luu lich su trac nghiem bang MySQL/PDO.
+ * Thu: dang nhap, them/hoan thanh/xoa; lam quiz, F5, thu khach va tat JS.
  */
 require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../../inc/db.php';
+if (is_file(__DIR__ . '/../../inc/xac-thuc.php')) {
+    require_once __DIR__ . '/../../inc/xac-thuc.php';
+}
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
@@ -16,56 +20,45 @@ $moTa = 'Trang giới thiệu cá nhân của Nguyễn Sơn Chu.';
 $trang = 'gioi-thieu';
 $cssRieng = 'style-canhan.css';
 
-// Ten khoa rieng de tranh anh huong den Session cua nhom va thanh vien khac.
-$khoaMucTieu = 'chu_3120224020_muc_tieu';
+// Chi su dung Session cho CSRF, thong bao va ket qua PRG; du lieu nam o MySQL.
+$mssvChu = '3120224020';
+$emailChu = 'chu.bt6@example.com'; // Tai khoan thu duoc khai bao trong seed_phanb_chu.sql.
 $khoaKetQua = 'chu_3120224020_ket_qua_trac_nghiem';
 $khoaThongBao = 'chu_3120224020_thong_bao';
 $khoaCsrf = 'chu_3120224020_csrf';
-
 if (empty($_SESSION[$khoaCsrf]) || !is_string($_SESSION[$khoaCsrf])) {
     $_SESSION[$khoaCsrf] = bin2hex(random_bytes(32));
 }
-if (!isset($_SESSION[$khoaMucTieu]) || !is_array($_SESSION[$khoaMucTieu])) {
-    $_SESSION[$khoaMucTieu] = [];
-}
 
-// Cau hoi va dap an chi duoc cham tai may chu, khong day dap an xuong form.
-$cauHoi = [
-    'q1' => [
-        'noi_dung' => 'Trong PHP, tên biến bắt đầu bằng ký tự nào?',
-        'lua_chon' => ['a' => '$', 'b' => '@', 'c' => '#'],
-        'dap_an' => 'a',
-        'giai_thich' => 'Biến PHP được viết với dấu $ ở phía trước tên biến.',
-    ],
-    'q2' => [
-        'noi_dung' => 'Phương thức HTTP nào thường dùng để gửi biểu mẫu làm thay đổi dữ liệu?',
-        'lua_chon' => ['a' => 'GET', 'b' => 'POST', 'c' => 'HEAD'],
-        'dap_an' => 'b',
-        'giai_thich' => 'POST thường được dùng cho thao tác tạo hoặc cập nhật dữ liệu.',
-    ],
-    'q3' => [
-        'noi_dung' => 'Hàm PHP nào dùng để mã hóa ký tự đặc biệt khi in ra HTML?',
-        'lua_chon' => ['a' => 'strlen()', 'b' => 'json_decode()', 'c' => 'htmlspecialchars()'],
-        'dap_an' => 'c',
-        'giai_thich' => 'htmlspecialchars() chuyển các ký tự HTML đặc biệt thành thực thể.',
-    ],
-    'q4' => [
-        'noi_dung' => 'Dữ liệu tham số GET trong URL được truy cập qua biến nào?',
-        'lua_chon' => ['a' => '$_COOKIE', 'b' => '$_GET', 'c' => '$_FILES'],
-        'dap_an' => 'b',
-        'giai_thich' => 'Mảng $_GET chứa các tham số truy vấn được gửi qua URL.',
-    ],
-    'q5' => [
-        'noi_dung' => 'Mục đích chính của mẫu POST - Redirect - GET (PRG) là gì?',
+$pdo = db();
+// Xac minh tai khoan chu trang trong nguoi_dung, khong can sua bang chung thanh_vien.
+$st = $pdo->prepare('SELECT id FROM nguoi_dung WHERE email = ?');
+$st->execute([$emailChu]);
+$idChu = (int) ($st->fetchColumn() ?: 0);
+$nguoiDangNhap = function_exists('nguoiDung') ? nguoiDung() : null;
+$idDangNhap = is_array($nguoiDangNhap)
+    ? (int) ($nguoiDangNhap['id'] ?? 0)
+    : (int) ($_SESSION['uid'] ?? 0);
+$laChuTrang = $idChu > 0 && $idDangNhap === $idChu;
+
+// Lay 5 cau hoi goc tu bang rieng thay vi mang PHP co dinh.
+$st = $pdo->prepare('SELECT ma_cau, noi_dung, lua_chon_a, lua_chon_b,
+                           lua_chon_c, dap_an, giai_thich
+                    FROM tv_cau_hoi WHERE mssv = ? ORDER BY ma_cau');
+$st->execute([$mssvChu]);
+$cauHoi = [];
+foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    $cauHoi[$row['ma_cau']] = [
+        'noi_dung' => $row['noi_dung'],
         'lua_chon' => [
-            'a' => 'Giảm dung lượng ảnh',
-            'b' => 'Chống gửi lại biểu mẫu khi tải lại trang',
-            'c' => 'Thay thế việc kiểm tra dữ liệu',
+            'a' => $row['lua_chon_a'],
+            'b' => $row['lua_chon_b'],
+            'c' => $row['lua_chon_c'],
         ],
-        'dap_an' => 'b',
-        'giai_thich' => 'Chuyển hướng sau POST thành công giúp F5 không gửi lại yêu cầu POST.',
-    ],
-];
+        'dap_an' => $row['dap_an'],
+        'giai_thich' => $row['giai_thich'],
+    ];
+}
 
 $loiMucTieu = '';
 $loiTracNghiem = '';
@@ -73,9 +66,6 @@ $loiChung = '';
 $giaTriMucTieu = '';
 $traLoiCu = [];
 
-// ----------------------------------------------------------
-// Hai chuc nang xu ly PHP tren may chu (khong can JavaScript)
-// ----------------------------------------------------------
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $tokenGui = $_POST['csrf_token'] ?? null;
     $hanhDong = $_POST['hanh_dong'] ?? null;
@@ -85,79 +75,85 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         http_response_code(400);
     } elseif (!is_string($hanhDong)) {
         $loiChung = 'Thao tác không hợp lệ.';
-    } elseif ($hanhDong === 'them_muc_tieu') {
-        // Chuc nang 1: Kiem tra dau vao va luu muc tieu tren Session.
-        $duLieu = $_POST['noi_dung_muc_tieu'] ?? null;
-        $giaTriMucTieu = is_string($duLieu) ? trim($duLieu) : '';
-        $giaTriMucTieu = preg_replace('/\s+/u', ' ', $giaTriMucTieu) ?? '';
-
-        if (preg_match('/^.{3,120}$/u', $giaTriMucTieu) !== 1) {
-            $loiMucTieu = 'Mục tiêu phải dài từ 3 đến 120 ký tự.';
-        } elseif (count($_SESSION[$khoaMucTieu]) >= 20) {
-            $loiMucTieu = 'Mỗi phiên chỉ được lưu tối đa 20 mục tiêu.';
+    } elseif (in_array($hanhDong, ['them_muc_tieu', 'doi_trang_thai', 'xoa_muc_tieu'], true)) {
+        if (!$laChuTrang) {
+            http_response_code(403);
+            $loiChung = 'Chỉ chủ trang đã đăng nhập mới được thay đổi mục tiêu.';
+        } elseif ($hanhDong === 'them_muc_tieu') {
+            $duLieu = $_POST['noi_dung_muc_tieu'] ?? null;
+            $giaTriMucTieu = is_string($duLieu) ? trim($duLieu) : '';
+            $giaTriMucTieu = preg_replace('/\s+/u', ' ', $giaTriMucTieu) ?? '';
+            if (preg_match('/^.{3,120}$/u', $giaTriMucTieu) !== 1) {
+                $loiMucTieu = 'Mục tiêu phải dài từ 3 đến 120 ký tự.';
+            } else {
+                $dem = $pdo->prepare('SELECT COUNT(*) FROM tv_muc_tieu WHERE mssv = ?');
+                $dem->execute([$mssvChu]);
+                if ((int) $dem->fetchColumn() >= 20) {
+                    $loiMucTieu = 'Chỉ được lưu tối đa 20 mục tiêu.';
+                } else {
+                    $st = $pdo->prepare('INSERT INTO tv_muc_tieu (mssv, noi_dung) VALUES (?, ?)');
+                    $st->execute([$mssvChu, $giaTriMucTieu]);
+                    $_SESSION[$khoaThongBao] = 'Đã thêm mục tiêu học tập.';
+                    header('Location: gioithieu.php#muc-tieu', true, 303);
+                    exit;
+                }
+            }
         } else {
-            $_SESSION[$khoaMucTieu][] = [
-                'id' => bin2hex(random_bytes(8)),
-                'noi_dung' => $giaTriMucTieu,
-                'hoan_thanh' => false,
-                'ngay_tao' => date('d/m/Y H:i'),
-            ];
-            $_SESSION[$khoaThongBao] = 'Đã thêm mục tiêu học tập.';
-            header('Location: gioithieu.php#muc-tieu', true, 303);
-            exit;
-        }
-    } elseif ($hanhDong === 'doi_trang_thai' || $hanhDong === 'xoa_muc_tieu') {
-        // Moi thao tac voi muc tieu phai co ID hop le va thuc su ton tai.
-        $idGui = $_POST['id_muc_tieu'] ?? null;
-        $timThay = false;
-        if (is_string($idGui) && preg_match('/^[a-f0-9]{16}$/D', $idGui) === 1) {
-            foreach ($_SESSION[$khoaMucTieu] as $viTri => $mucTieu) {
-                if (($mucTieu['id'] ?? '') === $idGui) {
-                    if ($hanhDong === 'xoa_muc_tieu') {
-                        array_splice($_SESSION[$khoaMucTieu], $viTri, 1);
-                        $_SESSION[$khoaThongBao] = 'Đã xóa mục tiêu.';
-                    } else {
-                        $_SESSION[$khoaMucTieu][$viTri]['hoan_thanh'] =
-                            !($mucTieu['hoan_thanh'] ?? false);
-                        $_SESSION[$khoaThongBao] = 'Đã cập nhật trạng thái mục tiêu.';
-                    }
-                    $timThay = true;
-                    break;
+            $idGui = $_POST['id_muc_tieu'] ?? null;
+            $idMucTieu = is_scalar($idGui)
+                ? filter_var($idGui, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]])
+                : false;
+            if ($idMucTieu === false) {
+                $loiMucTieu = 'ID mục tiêu không hợp lệ.';
+            } elseif ($hanhDong === 'xoa_muc_tieu') {
+                $st = $pdo->prepare('DELETE FROM tv_muc_tieu WHERE id = ? AND mssv = ?');
+                $st->execute([$idMucTieu, $mssvChu]);
+                if ($st->rowCount() === 0) {
+                    $loiMucTieu = 'Không tìm thấy mục tiêu được phép xóa.';
+                } else {
+                    $_SESSION[$khoaThongBao] = 'Đã xóa mục tiêu.';
+                    header('Location: gioithieu.php#muc-tieu', true, 303);
+                    exit;
+                }
+            } else {
+                $st = $pdo->prepare('UPDATE tv_muc_tieu
+                    SET hoan_thanh = CASE WHEN hoan_thanh = 1 THEN 0 ELSE 1 END
+                    WHERE id = ? AND mssv = ?');
+                $st->execute([$idMucTieu, $mssvChu]);
+                if ($st->rowCount() === 0) {
+                    $loiMucTieu = 'Không tìm thấy mục tiêu được phép cập nhật.';
+                } else {
+                    $_SESSION[$khoaThongBao] = 'Đã cập nhật trạng thái mục tiêu.';
+                    header('Location: gioithieu.php#muc-tieu', true, 303);
+                    exit;
                 }
             }
         }
-        if ($timThay) {
-            header('Location: gioithieu.php#muc-tieu', true, 303);
-            exit;
-        }
-        $loiMucTieu = 'Không tìm thấy mục tiêu cần cập nhật.';
     } elseif ($hanhDong === 'nop_trac_nghiem') {
-        // Chuc nang 2: Cham toan bo bai thi bang PHP.
         $duLieu = $_POST['tra_loi'] ?? null;
         $traLoiCu = is_array($duLieu) ? $duLieu : [];
-        $hopLe = is_array($duLieu);
-
+        $hopLe = is_array($duLieu) && count($cauHoi) === 5;
         foreach ($cauHoi as $maCau => $cau) {
             $chon = $traLoiCu[$maCau] ?? null;
             if (!is_string($chon) || !array_key_exists($chon, $cau['lua_chon'])) {
                 $hopLe = false;
             }
         }
-
         if (!$hopLe) {
             $loiTracNghiem = 'Vui lòng chọn một đáp án hợp lệ cho cả 5 câu.';
         } else {
             $soCauDung = 0;
-            $dapAnDaChon = [];
             foreach ($cauHoi as $maCau => $cau) {
-                $dapAnDaChon[$maCau] = $traLoiCu[$maCau];
                 if ($traLoiCu[$maCau] === $cau['dap_an']) {
                     $soCauDung++;
                 }
             }
+            $st = $pdo->prepare('INSERT INTO tv_ket_qua_trac_nghiem
+                (mssv, so_cau_dung, tong_cau) VALUES (?, ?, ?)');
+            $st->execute([$mssvChu, $soCauDung, count($cauHoi)]);
             $_SESSION[$khoaKetQua] = [
                 'so_cau_dung' => $soCauDung,
-                'dap_an_da_chon' => $dapAnDaChon,
+                'dap_an_da_chon' => $traLoiCu,
             ];
             header('Location: gioithieu.php?ketqua=1#trac-nghiem', true, 303);
             exit;
@@ -172,10 +168,19 @@ unset($_SESSION[$khoaThongBao]);
 $ketQuaTracNghiem = (($_GET['ketqua'] ?? null) === '1')
     ? ($_SESSION[$khoaKetQua] ?? null)
     : null;
+$st = $pdo->prepare("SELECT id, noi_dung, hoan_thanh,
+    DATE_FORMAT(ngay_tao, '%d/%m/%Y %H:%i') AS ngay_tao
+    FROM tv_muc_tieu WHERE mssv = ? ORDER BY id DESC");
+$st->execute([$mssvChu]);
+$danhSachMucTieu = $st->fetchAll(PDO::FETCH_ASSOC);
 $soMucTieuHoanThanh = count(array_filter(
-    $_SESSION[$khoaMucTieu],
-    static fn(array $mucTieu): bool => !empty($mucTieu['hoan_thanh'])
+    $danhSachMucTieu,
+    static fn(array $mucTieu): bool => (int) $mucTieu['hoan_thanh'] === 1
 ));
+$st = $pdo->prepare('SELECT so_cau_dung, tong_cau, ngay_lam
+    FROM tv_ket_qua_trac_nghiem WHERE mssv = ? ORDER BY id DESC LIMIT 5');
+$st->execute([$mssvChu]);
+$lichSuTracNghiem = $st->fetchAll(PDO::FETCH_ASSOC);
 
 // Nap giao dien chung; neu header chua ho tro CSS rieng thi them link vao <head>.
 ob_start();
@@ -199,7 +204,7 @@ echo $htmlHeader;
     </div>
 
     <section class="dau-trang-ca-nhan" aria-labelledby="tieu-de-ca-nhan">
-        <h2 id="tieu-de-ca-nhan">Trang giới thiệu cá nhân</h2>
+        <h1 id="tieu-de-ca-nhan">Trang giới thiệu cá nhân</h1>
         <p>Xin chào! Rất vui được giới thiệu về bản thân tôi.</p>
     </section>
 
@@ -282,10 +287,10 @@ echo $htmlHeader;
         </div>
     </section>
 
-    <!-- Chuc nang PHP 1: Quan ly muc tieu hoc tap tren Session -->
+    <!-- Chuc nang PHP 1: Quan ly muc tieu hoc tap bang MySQL/PDO -->
     <section id="muc-tieu" class="chu-chuc-nang">
-        <h2>Quản lý mục tiêu học tập (PHP)</h2>
-        <p>Thêm việc cần làm, đánh dấu hoàn thành hoặc xóa. Danh sách được lưu riêng trong phiên của bạn.</p>
+        <h2>Quản lý mục tiêu học tập (MySQL/PDO)</h2>
+        <p>Thêm, đánh dấu hoàn thành hoặc xóa mục tiêu. Dữ liệu được lưu trong MySQL.</p>
 
         <?php if ($loiChung !== ''): ?>
             <p class="chu-thong-bao-loi" role="alert"><?= e($loiChung) ?></p>
@@ -293,66 +298,68 @@ echo $htmlHeader;
         <?php if ($thongBao !== ''): ?>
             <p class="chu-thong-bao-thanh-cong" role="status"><?= e($thongBao) ?></p>
         <?php endif; ?>
-        <form method="post" action="gioithieu.php#muc-tieu" class="chu-form-muc-tieu" novalidate>
-            <input type="hidden" name="csrf_token" value="<?= e($_SESSION[$khoaCsrf]) ?>">
-            <input type="hidden" name="hanh_dong" value="them_muc_tieu">
-            <label for="chu-noi-dung-muc-tieu">Mục tiêu mới (3 - 120 ký tự)</label>
-            <div class="chu-hang-nhap">
-                <input id="chu-noi-dung-muc-tieu" name="noi_dung_muc_tieu" type="text"
-                       maxlength="120" value="<?= e($giaTriMucTieu) ?>"
-                       placeholder="Ví dụ: Ôn PHP 30 phút mỗi ngày" aria-describedby="chu-goi-y-muc-tieu">
-                <button class="chu-nut" type="submit">Thêm mục tiêu</button>
-            </div>
-            <p id="chu-goi-y-muc-tieu" class="chu-goi-y">Tối đa 20 mục tiêu trong mỗi phiên trình duyệt.</p>
-            <?php if ($loiMucTieu !== ''): ?>
-                <p class="chu-thong-bao-loi" role="alert"><?= e($loiMucTieu) ?></p>
-            <?php endif; ?>
-        </form>
+        <?php if ($laChuTrang): ?>
+            <form method="post" action="gioithieu.php#muc-tieu" class="chu-form-muc-tieu" novalidate>
+                <input type="hidden" name="csrf_token" value="<?= e($_SESSION[$khoaCsrf]) ?>">
+                <input type="hidden" name="hanh_dong" value="them_muc_tieu">
+                <label for="chu-noi-dung-muc-tieu">Mục tiêu mới (3 - 120 ký tự)</label>
+                <div class="chu-hang-nhap">
+                    <input id="chu-noi-dung-muc-tieu" name="noi_dung_muc_tieu" type="text"
+                           maxlength="120" value="<?= e($giaTriMucTieu) ?>"
+                           placeholder="Ví dụ: Ôn PHP 30 phút mỗi ngày" aria-describedby="chu-goi-y-muc-tieu">
+                    <button class="chu-nut" type="submit">Thêm mục tiêu</button>
+                </div>
+                <p id="chu-goi-y-muc-tieu" class="chu-goi-y">Tối đa 20 mục tiêu học tập.</p>
+                <?php if ($loiMucTieu !== ''): ?>
+                    <p class="chu-thong-bao-loi" role="alert"><?= e($loiMucTieu) ?></p>
+                <?php endif; ?>
+            </form>
+        <?php else: ?>
+            <p class="chu-goi-y">Chỉ chủ trang đã đăng nhập mới được thêm, cập nhật hoặc xóa mục tiêu.</p>
+        <?php endif; ?>
 
         <p class="chu-tom-tat"><strong>Đã hoàn thành:</strong>
-            <?= e((string) $soMucTieuHoanThanh) ?>/<?= e((string) count($_SESSION[$khoaMucTieu])) ?> mục tiêu
+            <?= e((string) $soMucTieuHoanThanh) ?>/<?= e((string) count($danhSachMucTieu)) ?> mục tiêu
         </p>
-
-        <?php if (empty($_SESSION[$khoaMucTieu])): ?>
+        <?php if (empty($danhSachMucTieu)): ?>
             <p class="chu-goi-y">Chưa có mục tiêu nào. Hãy thêm mục tiêu đầu tiên.</p>
         <?php else: ?>
             <ul class="chu-danh-sach-muc-tieu">
-                <?php foreach ($_SESSION[$khoaMucTieu] as $mucTieu): ?>
-                    <li class="chu-muc-tieu <?= !empty($mucTieu['hoan_thanh']) ? 'chu-da-xong' : '' ?>">
+                <?php foreach ($danhSachMucTieu as $mucTieu): ?>
+                    <li class="chu-muc-tieu <?= (int) $mucTieu['hoan_thanh'] === 1 ? 'chu-da-xong' : '' ?>">
                         <div class="chu-noi-dung-muc-tieu">
                             <strong><?= e($mucTieu['noi_dung']) ?></strong>
                             <small>Ngày tạo: <?= e($mucTieu['ngay_tao']) ?></small>
                         </div>
-                        <div class="chu-thao-tac">
-                            <form method="post" action="gioithieu.php#muc-tieu">
-                                <input type="hidden" name="csrf_token" value="<?= e($_SESSION[$khoaCsrf]) ?>">
-                                <input type="hidden" name="id_muc_tieu" value="<?= e($mucTieu['id']) ?>">
-                                <button class="chu-nut chu-nut-phu" type="submit" name="hanh_dong" value="doi_trang_thai">
-                                    <?= !empty($mucTieu['hoan_thanh']) ? 'Làm lại' : 'Hoàn thành' ?>
-                                </button>
-                            </form>
-                            <form method="post" action="gioithieu.php#muc-tieu">
-                                <input type="hidden" name="csrf_token" value="<?= e($_SESSION[$khoaCsrf]) ?>">
-                                <input type="hidden" name="id_muc_tieu" value="<?= e($mucTieu['id']) ?>">
-                                <button class="chu-nut chu-nut-xoa" type="submit" name="hanh_dong" value="xoa_muc_tieu">
-                                    Xóa
-                                </button>
-                            </form>
-                        </div>
+                        <?php if ($laChuTrang): ?>
+                            <div class="chu-thao-tac">
+                                <form method="post" action="gioithieu.php#muc-tieu">
+                                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION[$khoaCsrf]) ?>">
+                                    <input type="hidden" name="id_muc_tieu" value="<?= e((string) $mucTieu['id']) ?>">
+                                    <button class="chu-nut chu-nut-phu" type="submit" name="hanh_dong" value="doi_trang_thai">
+                                        <?= (int) $mucTieu['hoan_thanh'] === 1 ? 'Làm lại' : 'Hoàn thành' ?>
+                                    </button>
+                                </form>
+                                <form method="post" action="gioithieu.php#muc-tieu">
+                                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION[$khoaCsrf]) ?>">
+                                    <input type="hidden" name="id_muc_tieu" value="<?= e((string) $mucTieu['id']) ?>">
+                                    <button class="chu-nut chu-nut-xoa" type="submit" name="hanh_dong" value="xoa_muc_tieu">Xóa</button>
+                                </form>
+                            </div>
+                        <?php endif; ?>
                     </li>
                 <?php endforeach; ?>
             </ul>
         <?php endif; ?>
     </section>
 
-    <!-- Chuc nang PHP 2: Trac nghiem kiem tra kien thuc tren may chu -->
+    <!-- Chuc nang PHP 2: Doc cau hoi, cham va luu diem bang MySQL/PDO -->
     <section id="trac-nghiem" class="chu-chuc-nang">
-        <h2>Trắc nghiệm kiến thức lập trình (PHP)</h2>
-        <p>Chọn một đáp án cho mỗi câu. Hệ thống chấm bài ở máy chủ và giải thích từng câu.</p>
+        <h2>Trắc nghiệm kiến thức lập trình (MySQL/PDO)</h2>
+        <p>Câu hỏi lấy từ MySQL; máy chủ chấm điểm và lưu kết quả vào MySQL.</p>
         <form method="post" action="gioithieu.php#trac-nghiem" class="chu-form-trac-nghiem" novalidate>
             <input type="hidden" name="csrf_token" value="<?= e($_SESSION[$khoaCsrf]) ?>">
             <input type="hidden" name="hanh_dong" value="nop_trac_nghiem">
-
             <?php foreach ($cauHoi as $maCau => $cau): ?>
                 <fieldset class="chu-cau-hoi">
                     <legend><?= e($cau['noi_dung']) ?></legend>
@@ -366,7 +373,6 @@ echo $htmlHeader;
                     <?php endforeach; ?>
                 </fieldset>
             <?php endforeach; ?>
-
             <?php if ($loiTracNghiem !== ''): ?>
                 <p class="chu-thong-bao-loi" role="alert"><?= e($loiTracNghiem) ?></p>
             <?php endif; ?>
@@ -392,6 +398,22 @@ echo $htmlHeader;
                         </li>
                     <?php endforeach; ?>
                 </ol>
+            </div>
+        <?php endif; ?>
+        <?php if ($lichSuTracNghiem): ?>
+            <h3>Kết quả gần nhất đã lưu trong MySQL</h3>
+            <div class="bang-cuon-ngang">
+                <table>
+                    <thead><tr><th scope="col">Thời gian</th><th scope="col">Điểm</th></tr></thead>
+                    <tbody>
+                        <?php foreach ($lichSuTracNghiem as $ketQua): ?>
+                            <tr>
+                                <td><?= e($ketQua['ngay_lam']) ?></td>
+                                <td><?= e((string) $ketQua['so_cau_dung']) ?>/<?= e((string) $ketQua['tong_cau']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         <?php endif; ?>
     </section>

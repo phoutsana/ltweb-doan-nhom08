@@ -140,3 +140,17 @@ INSERT INTO tv_ket_qua_trac_nghiem
 (mssv, so_cau_dung, tong_cau)
 VALUES
 ('3120224020', 4, 5);
+-- Phan B - Nguyen Son Chu: Tai khoan chu trang
+-- Email: chu.bt6@example.com
+-- Mat khau demo: ChuDemo@2026
+
+INSERT INTO nguoi_dung (email, mat_khau, ho_ten, vai_tro)
+SELECT
+    'chu.bt6@example.com',
+    '$2y$12$Ht42hefdfSinf/gcak3gj.KHTZQeTsWAbA0mVv6vbrAsrMJjQL4UG',
+    'Nguyễn Sơn Chu',
+    'khach_hang'
+WHERE NOT EXISTS (
+    SELECT 1 FROM nguoi_dung
+    WHERE email = 'chu.bt6@example.com'
+);
