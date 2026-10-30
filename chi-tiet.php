@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 require_once __DIR__ . '/inc/config.php';
 
 use App\Data\KhoSanPham;
@@ -107,9 +108,9 @@ require_once __DIR__ . '/inc/header.php';
             </section>
         <?php endif; ?>
 
-        <!-- Đã tách riêng Giỏ hàng và Yêu thích để JS có thể hoạt động -->
+        <!-- Đã thêm class 'form-them-gio-hang' để tệp js/gio-hang.js bắt sự kiện thành công -->
         <div style="display: flex; gap: 15px; margin-top: 20px;">
-            <form action="gio-hang.php" method="POST" style="flex: 1;">
+            <form action="gio-hang.php" method="POST" style="flex: 1;" class="form-them-gio-hang">
                 <input type="hidden" name="id" value="<?= e($spId) ?>">
                 <button type="submit" name="hanh_dong" value="them" class="nut-bam nut-bam--chinh" style="width: 100%; padding: 15px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: background 0.3s;">
                     🛒 Thêm vào giỏ hàng
@@ -124,7 +125,9 @@ require_once __DIR__ . '/inc/header.php';
     </article>
 </main>
 
-<!-- Liên kết với file JS chuyên bắt sự kiện Yêu thích -->
+<!-- Nạp đầy đủ các tệp JavaScript xử lý giỏ hàng, tìm kiếm và chi tiết -->
+<script src="js/gio-hang.js"></script>
+<script src="js/tim-kiem.js"></script>
 <script type="module" src="js/trang-chi-tiet.js"></script>
 
 <?php

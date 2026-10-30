@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 require_once __DIR__ . '/inc/config.php';
 
 $pdo = \db();
@@ -10,6 +11,7 @@ $danhMucList = $stmtDm->fetchAll();
 // --- NHẬN THAM SỐ TỪ BIỂU MẪU GET ---
 $tuKhoa = trim($_GET['q'] ?? '');
 $danhMucId = filter_var($_GET['dm'] ?? '', FILTER_VALIDATE_INT);
+$giaToiDa = filter_var($_GET['gia_toi_da'] ?? '', FILTER_VALIDATE_INT);
 $sapXep = trim($_GET['sx'] ?? '');
 $trangHienTai = filter_var($_GET['trang'] ?? 1, FILTER_VALIDATE_INT);
 $trangHienTai = ($trangHienTai > 0) ? $trangHienTai : 1;
@@ -31,22 +33,30 @@ if ($danhMucId !== false && $danhMucId > 0) {
     $thamSo[] = $danhMucId;
 }
 
+// 3. Điều kiện lọc theo mức giá tối đa
+if ($giaToiDa !== false && $giaToiDa > 0) {
+    $dieuKien[] = "gia <= ?";
+    $thamSo[] = $giaToiDa;
+}
+
 $sqlWhere = '';
 if (!empty($dieuKien)) {
     $sqlWhere = " WHERE " . implode(" AND ", $dieuKien);
 }
 
-// 3. Đếm tổng số lượng kết quả (Phục vụ phân trang)
+// 4. Đếm tổng số lượng kết quả (Phục vụ phân trang)
 $stmtCount = $pdo->prepare("SELECT COUNT(*) FROM san_pham" . $sqlWhere);
 $stmtCount->execute($thamSo);
 $tongSoDong = $stmtCount->fetchColumn();
-$tongSoTrang = ceil($tongSoDong / $soLuongMoiTrang);
+$tongSoTrang = (int)ceil($tongSoDong / $soLuongMoiTrang);
 if ($trangHienTai > $tongSoTrang && $tongSoTrang > 0) {
     $trangHienTai = $tongSoTrang;
 }
+
+// Đã khắc phục lỗi dòng offset bị lỗi ký tự
 $offset = ($trangHienTai - 1) * $soLuongMoiTrang;
 
-// 4. Xử lý sắp xếp (Chỉ cho phép các cột an toàn theo yêu cầu đề bài)
+// 5. Xử lý sắp xếp (Chỉ cho phép các cột an toàn theo yêu cầu đề bài)
 $cotSapXepChoPhieu = [
     'gia-tang' => 'gia ASC',
     'gia-giam' => 'gia DESC',
@@ -57,7 +67,7 @@ if (array_key_exists($sapXep, $cotSapXepChoPhieu)) {
     $sqlOrderBy = " ORDER BY " . $cotSapXepChoPhieu[$sapXep];
 }
 
-// 5. Truy vấn danh sách sản phẩm chính thức có phân trang (LIMIT, OFFSET)
+// 6. Truy vấn danh sách sản phẩm chính thức có phân trang (LIMIT, OFFSET)
 $sql = "SELECT id, danh_muc_id, ten, gia, ton_kho, anh FROM san_pham" . $sqlWhere . $sqlOrderBy . " LIMIT " . (int)$soLuongMoiTrang . " OFFSET " . (int)$offset;
 $stmt = $pdo->prepare($sql);
 $stmt->execute($thamSo);
@@ -70,15 +80,15 @@ require_once __DIR__ . '/inc/header.php';
 
 <main class="noi-dung-chinh" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
 
-    <!-- Khối bộ lọc -->
+    <!-- Khối bộ lọc (Đã bổ sung bộ lọc Giá tối đa theo yêu cầu Bảng 1) -->
     <form method="GET" action="danh-sach.php" class="khoi-noi-dung bo-loc-san-pham" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 30px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
 
-        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 200px;">
+        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 180px;">
             <label for="tim-kiem" style="font-weight: bold; color: #374151;">Tìm kiếm</label>
             <input type="text" id="tim-kiem" name="q" value="<?= e($tuKhoa) ?>" placeholder="Tên sản phẩm..." style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none;">
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px;">
+        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px;">
             <label for="loc-danh-muc" style="font-weight: bold; color: #374151;">Danh mục</label>
             <select id="loc-danh-muc" name="dm" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; background: white;">
                 <option value="">Tất cả</option>
@@ -88,7 +98,13 @@ require_once __DIR__ . '/inc/header.php';
             </select>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px;">
+        <!-- Ô lọc giá tối đa mới thêm -->
+        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px;">
+            <label for="gia-toi-da" style="font-weight: bold; color: #374151;">Giá tối đa (VNĐ)</label>
+            <input type="number" id="gia-toi-da" name="gia_toi_da" value="<?= ($giaToiDa !== false && $giaToiDa > 0) ? $giaToiDa : '' ?>" placeholder="VD: 500000" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none;">
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px;">
             <label for="sap-xep" style="font-weight: bold; color: #374151;">Sắp xếp</label>
             <select id="sap-xep" name="sx" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; background: white;">
                 <option value="">Mặc định</option>

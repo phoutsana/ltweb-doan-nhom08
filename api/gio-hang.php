@@ -12,8 +12,8 @@ header('Content-Type: application/json; charset=utf-8');
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
-    // Trả về danh sách giỏ hàng hiện tại trong Session
-    $gioHang = $_SESSION['gio_hang'] ?? [];
+    // Đồng bộ dùng session 'gio' khớp với toàn hệ thống website
+    $gioHang = $_SESSION['gio'] ?? [];
     http_response_code(200);
     echo json_encode(["gio_hang" => $gioHang], JSON_UNESCAPED_UNICODE);
     exit;
@@ -50,14 +50,14 @@ if ($method === 'POST') {
         }
 
         // Khởi tạo giỏ hàng trong session nếu chưa có
-        if (!isset($_SESSION['gio_hang'])) {
-            $_SESSION['gio_hang'] = [];
+        if (!isset($_SESSION['gio'])) {
+            $_SESSION['gio'] = [];
         }
 
-        if (isset($_SESSION['gio_hang'][$sanPhamId])) {
-            $_SESSION['gio_hang'][$sanPhamId]['so_luong'] += $soLuong;
+        if (isset($_SESSION['gio'][$sanPhamId])) {
+            $_SESSION['gio'][$sanPhamId]['so_luong'] += $soLuong;
         } else {
-            $_SESSION['gio_hang'][$sanPhamId] = [
+            $_SESSION['gio'][$sanPhamId] = [
                 'id' => $sp['id'],
                 'ten' => $sp['ten'],
                 'gia' => $sp['gia'],
@@ -67,7 +67,7 @@ if ($method === 'POST') {
         }
 
         // Tính tổng số món trong giỏ để trả về cập nhật header ngay lập tức
-        $tongSoMon = array_sum(array_column($_SESSION['gio_hang'], 'so_luong'));
+        $tongSoMon = array_sum(array_column($_SESSION['gio'], 'so_luong'));
 
         http_response_code(200);
         echo json_encode(["thanh_cong" => true, "tong_so_mon" => $tongSoMon], JSON_UNESCAPED_UNICODE);

@@ -18,8 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $loi = 'Vui lòng điền đầy đủ tất cả các trường.';
     } elseif (!filter_var($emailNhap, FILTER_VALIDATE_EMAIL)) {
         $loi = 'Địa chỉ email không hợp lệ.';
-    } elseif (mb_strlen($matKhauNhap) < 6) {
-        $loi = 'Mật khẩu phải có ít nhất 6 ký tự.';
+    } elseif (mb_strlen($matKhauNhap) < 7) { // Sửa từ 6 thành 7 để khớp Ca kiểm thử 6 (bắt buộc >= 7 ký tự)
+        $loi = 'Mật khẩu phải có ít nhất 7 ký tự.';
     } else {
         try {
             $pdo = db();
@@ -95,8 +95,8 @@ require_once __DIR__ . '/inc/header.php';
         </div>
 
         <div>
-            <label for="mat_khau" style="font-weight: bold; display: block; margin-bottom: 5px;">Mật khẩu *</label>
-            <input type="password" id="mat_khau" name="mat_khau" required minlength="6" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+            <label for="mat_khau" style="font-weight: bold; display: block; margin-bottom: 5px;">Mật khẩu (tối thiểu 7 ký tự) *</label>
+            <input type="password" id="mat_khau" name="mat_khau" required minlength="7" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
         </div>
 
         <button type="submit" class="nut-bam nut-bam--chinh" style="padding: 12px; font-size: 1.1rem; cursor: pointer; border: none; border-radius: 4px; background-color: #2563eb; color: white; font-weight: bold;">Đăng ký</button>
