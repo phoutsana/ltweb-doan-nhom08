@@ -122,14 +122,17 @@ Dự án hướng đến việc xây dựng một website bán hàng thời tran
 
 ## 6. Thành viên nhóm
 
-**Lớp:** 24CNTT2  
-**Khoa:** Công nghệ Thông tin  
-**Trường:** Đại học Sư phạm – Đại học Đà Nẵng
+- **Lớp:** 24CNTT2
+- **Khoa:** Toán – Tin
+- **Trường:** Đại học Sư phạm – Đại học Đà Nẵng
 
-- **Phoutsana Xayyatiew:** Thành viên nhóm.
+**Danh sách thành viên:**
 
-*Các thành viên còn lại sẽ được bổ sung sau.*
-
+1. **Nguyễn Sơn Chu** – MSSV: 3120224020
+2. **Ngô Hương Giang** – MSSV: 3120224040
+3. **Lê Văn Mạnh** – MSSV: 3120224094
+4. **KEOPHOXAY Phaeva** – MSSV: 3120224182
+5. **XAYYATIEW Phoutsana** – MSSV: 3120224184
 ## 7. Mục tiêu dự án
 
 Thông qua dự án Fashion Store, nhóm vận dụng kiến thức đã học trong học phần Lập trình Web để xây dựng một website bán hàng trực tuyến. Đồng thời, nhóm có cơ hội thực hành thiết kế cơ sở dữ liệu, lập trình PHP hướng đối tượng, xử lý dữ liệu với MySQL, xây dựng giao diện người dùng và kiểm thử các chức năng của hệ thống.
