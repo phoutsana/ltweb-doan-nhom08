@@ -35,11 +35,15 @@ $pdo = db();
 $st = $pdo->prepare('SELECT id FROM nguoi_dung WHERE email = ?');
 $st->execute([$emailChu]);
 $idChu = (int) ($st->fetchColumn() ?: 0);
-$nguoiDangNhap = function_exists('nguoiDung') ? nguoiDung() : null;
+
+$nguoiDangNhap = $_SESSION['user'] ?? null;
+
 $idDangNhap = is_array($nguoiDangNhap)
     ? (int) ($nguoiDangNhap['id'] ?? 0)
-    : (int) ($_SESSION['uid'] ?? 0);
+    : 0;
+
 $laChuTrang = $idChu > 0 && $idDangNhap === $idChu;
+
 
 // Lay 5 cau hoi goc tu bang rieng thay vi mang PHP co dinh.
 $st = $pdo->prepare('SELECT ma_cau, noi_dung, lua_chon_a, lua_chon_b,
