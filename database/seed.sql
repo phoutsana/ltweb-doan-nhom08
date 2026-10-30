@@ -66,6 +66,13 @@ INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES
 ('3120224184', 'Xayyatiew Phoutsana', 'Thành viên nhóm 08')
 ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
+INSERT INTO tv_du_an (mssv, ten_du_an, mo_ta, cong_nghe) VALUES 
+('3120224184', 'Hệ thống Gợi ý Phim', 'Xây dựng thuật toán TF-IDF và Cosine Similarity gợi ý phim', 'HTML, CSS, JS, Python'),
+('3120224184', 'Khóa cửa thông minh RFID', 'Nguyên mẫu khóa cửa tự động qua thẻ RFID và Arduino', 'Arduino C, C++, IoT');
+
+INSERT INTO tv_luu_but (mssv, ten, loi_nhan) VALUES 
+('3120224184', 'Nguyễn Văn Bạn', 'Trang cá nhân thiết kế rất đẹp và trực quan!');
+
 -- Them thong tin thanh vien Giang
 
 INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom)
@@ -80,17 +87,21 @@ VALUES
     ('3120224040', 4, 'Học tập', 'Làm đồ án'),
     ('3120224040', 5, 'Học tập', 'Lập trình'),
     ('3120224040', 6, 'Học tập', 'Tự học');
+
 -- Thêm thông tin của Lê Văn Mạnh vào bảng thanh_vien chung
 INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) 
 VALUES ('3120224094', 'Lê Văn Mạnh', 'Thành viên nhóm 08')
 ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
-INSERT INTO tv_du_an (mssv, ten_du_an, mo_ta, cong_nghe) VALUES 
-('3120224184', 'Hệ thống Gợi ý Phim', 'Xây dựng thuật toán TF-IDF và Cosine Similarity gợi ý phim', 'HTML, CSS, JS, Python'),
-('3120224184', 'Khóa cửa thông minh RFID', 'Nguyên mẫu khóa cửa tự động qua thẻ RFID và Arduino', 'Arduino C, C++, IoT');
+-- Dữ liệu mẫu cho Sổ lưu bút của Mạnh
+INSERT INTO tv_luu_but (masv, ten_nguoi_gui, noi_dung) VALUES
+('3120224094', 'Nguyễn Văn A', 'Trang cá nhân thiết kế đẹp và mượt quá bạn ơi!'),
+('3120224094', 'Trần Thị B', 'Chúc đồ án nhóm mình đạt điểm A+ nhé!');
 
-INSERT INTO tv_luu_but (mssv, ten, loi_nhan) VALUES 
-('3120224184', 'Nguyễn Văn Bạn', 'Trang cá nhân thiết kế rất đẹp và trực quan!');
+-- Dữ liệu mẫu cho Dự án cá nhân của Mạnh
+INSERT INTO tv_du_an (masv, ten_du_an, mo_ta, cong_nghe, link_demo) VALUES
+('3120224094', 'Website Bán Hàng Điện Tử', 'Xây dựng trang thương mại điện tử bằng PHP thuần và MySQL.', 'PHP, MySQL, Bootstrap', '#'),
+('3120224094', 'Ứng dụng Quản lý Công việc', 'App To-do list cá nhân hỗ trợ phân chia task theo ngày.', 'JavaScript, TailwindCSS', '#');
 
 INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES 
 ('3120224182', 'KEOPHOXAY Phaeva', 'Thiết kế giao diện & Hỗ trợ code')

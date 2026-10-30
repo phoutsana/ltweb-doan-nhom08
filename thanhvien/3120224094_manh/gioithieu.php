@@ -352,3 +352,97 @@ require __DIR__ . '/../../inc/header.php';
 <script src="js/canhan.js"></script>
 
 <?php require __DIR__ . '/../../inc/footer.php'; ?>
+<?php
+// Xử lý khi người dùng gửi lưu bút mới
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gui_luu_but'])) {
+    $ten_nguoi_gui = trim($_POST['ten_nguoi_gui']);
+    $noi_dung = trim($_POST['noi_dung']);
+    if (!empty($ten_nguoi_gui) && !empty($noi_dung)) {
+        $stmt = db()->prepare("INSERT INTO tv_luu_but (masv, ten_nguoi_gui, noi_dung) VALUES (?, ?, ?)");
+        $stmt->execute(['3120224094', $ten_nguoi_gui, $noi_dung]);
+        header("Location: gioithieu.php");
+        exit;
+    }
+}
+
+// Lấy danh sách lưu bút từ CSDL
+$stmt_lb = db()->prepare("SELECT * FROM tv_luu_but WHERE masv = ? ORDER BY thoi_gian DESC");
+$stmt_lb->execute(['3120224094']);
+$danh_sach_luu_but = $stmt_lb->fetchAll();
+?>
+
+<!-- HTML Giao diện Sổ lưu bút -->
+<div class="card mb-4">
+    <div class="card-header bg-primary text-white">📖 Sổ lưu bút (CSDL MySQL)</div>
+    <div class="card-body">
+        <form method="POST" class="mb-4">
+            <div class="mb-3">
+                <input type="text" name="ten_nguoi_gui" class="form-control" placeholder="Tên của bạn..." required>
+            </div>
+            <div class="mb-3">
+                <textarea name="noi_dung" class="form-control" rows="3" placeholder="Lời nhắn gửi..." required></textarea>
+            </div>
+            <button type="submit" name="gui_luu_but" class="btn btn-primary">Gửi lời nhắn</button>
+        </form>
+
+        <hr>
+        <div class="list-group">
+            <?php if (empty($danh_sach_luu_but)): ?>
+                <p class="text-muted">Chưa có lời nhắn nào.</p>
+            <?php else: ?>
+                <?php foreach ($danh_sach_luu_but as $lb): ?>
+                    <div class="list-group-item mb-2">
+                        <h6 class="mb-1 text-bold"><?= htmlspecialchars($lb['ten_nguoi_gui']) ?> <small class="text-muted float-end"><?= $lb['thoi_gian'] ?></small></h6>
+                        <p class="mb-1"><?= nl2br(htmlspecialchars($lb['noi_dung'])) ?></p>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+<?php
+// Xử lý tìm kiếm dự án
+$tu_khoa = isset($_GET['tu_khoa']) ? trim($_GET['tu_khoa']) : '';
+if ($tu_khoa !== '') {
+    $stmt_da = db()->prepare("SELECT * FROM tv_du_an WHERE masv = ? AND (ten_du_an LIKE ? OR cong_nghe LIKE ?)");
+    $stmt_da->execute(['3120224094', "%$tu_khoa%", "%$tu_khoa%"]);
+} else {
+    $stmt_da = db()->prepare("SELECT * FROM tv_du_an WHERE masv = ?");
+    $stmt_da->execute(['3120224094']);
+}
+$danh_sach_du_an = $stmt_da->fetchAll();
+?>
+
+<!-- HTML Giao diện Dự án cá nhân -->
+<div class="card mb-4">
+    <div class="card-header bg-success text-white">🚀 Dự án cá nhân (Tìm kiếm & Lọc CSDL)</div>
+    <div class="card-body">
+        <!-- Form Tìm kiếm -->
+        <form method="GET" class="input-group mb-3">
+            <input type="text" name="tu_khoa" class="form-control" placeholder="Tìm theo tên dự án hoặc công nghệ..." value="<?= htmlspecialchars($tu_khoa) ?>">
+            <button class="btn btn-outline-success" type="submit">Tìm kiếm</button>
+            <?php if ($tu_khoa !== ''): ?>
+                <a href="gioithieu.php" class="btn btn-outline-secondary">Đặt lại</a>
+            <?php endif; ?>
+        </form>
+
+        <!-- Danh sách dự án -->
+        <div class="row">
+            <?php if (empty($danh_sach_du_an)): ?>
+                <p class="text-muted">Không tìm thấy dự án phù hợp.</p>
+            <?php else: ?>
+                <?php foreach ($danh_sach_du_an as $da): ?>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary"><?= htmlspecialchars($da['ten_du_an']) ?></h5>
+                                <p class="card-text"><?= htmlspecialchars($da['mo_ta']) ?></p>
+                                <span class="badge bg-info text-dark">Công nghệ: <?= htmlspecialchars($da['cong_nghe']) ?></span>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>

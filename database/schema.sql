@@ -192,3 +192,23 @@ CREATE TABLE IF NOT EXISTS tv_danh_gia (
     thoi_gian DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_danhgia_thanhvien FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- 1. Bảng Sổ lưu bút (Chuyển từ JSONL sang MySQL có phân trang và quản lý)
+CREATE TABLE IF NOT EXISTS `tv_luu_but` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `masv` VARCHAR(50) NOT NULL,
+  `ten_nguoi_gui` VARCHAR(100) NOT NULL,
+  `noi_dung` TEXT NOT NULL,
+  `thoi_gian` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT `fk_luubut_thanhvien` FOREIGN KEY (`masv`) REFERENCES `thanh_vien`(`ma_sv`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 2. Bảng Danh sách Dự án (Có tìm kiếm và lọc công nghệ)
+CREATE TABLE IF NOT EXISTS `tv_du_an` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `masv` VARCHAR(50) NOT NULL,
+  `ten_du_an` VARCHAR(150) NOT NULL,
+  `mo_ta` TEXT,
+  `cong_nghe` VARCHAR(100),
+  `link_demo` VARCHAR(255),
+  CONSTRAINT `fk_duan_thanhvien` FOREIGN KEY (`masv`) REFERENCES `thanh_vien`(`ma_sv`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
