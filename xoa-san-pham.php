@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/inc/config.php';
 
-// 1. KIỂM TRA QUYỀN QUẢN TRỊ (Khắc phục lỗi bảo mật: tài khoản khách không được phép xóa)
+// 1. KIỂM TRA QUYỀN QUẢN TRỊ (Bảo mật: khách hàng không được phép xóa)
 if (!isset($_SESSION['user']) || $_SESSION['user']['vai_tro'] !== 'quan_tri') {
     http_response_code(403);
     die("<h1>Lỗi 403: Truy cập bị từ chối.</h1><p>Bạn không có quyền thực hiện thao tác xóa sản phẩm này!</p>");
@@ -22,16 +22,15 @@ if ($id > 0) {
     try {
         $stmt = $pdo->prepare("DELETE FROM san_pham WHERE id = ?");
         $stmt->execute([$id]);
-        // Xóa thành công
+        // Xóa thành công chuyển hướng về trang quản trị
         header("Location: quan-tri-san-pham.php?tb=thanh_cong");
         exit;
     } catch (\PDOException $e) {
-        // KIỂM TRA CA 5: Bắt lỗi 1451 (Cannot delete or update a parent row)
+        // KIỂM TRA CA 5: Bắt lỗi khóa ngoại 1451 (sản phẩm đã phát sinh đơn hàng)
         if ($e->getCode() == '23000' || strpos($e->getMessage(), '1451') !== false) {
             header("Location: quan-tri-san-pham.php?loi=dang_dung");
             exit;
         } else {
-            // Lỗi hệ thống khác
             throw $e;
         }
     }

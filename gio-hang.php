@@ -1,186 +1,130 @@
 <?php
+declare(strict_types=1);
 require_once __DIR__ . '/inc/config.php';
 
-use App\Services\GioHang;
-
-$gioHang = new GioHang();
-$tbLoi = '';
-
+// Xử lý các hành động cập nhật giỏ hàng trực tiếp trên trang giỏ hàng
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hanhDong = $_POST['hanh_dong'] ?? '';
-    $id = $_POST['id'] ?? '';
-    $soLuongMoi = filter_input(INPUT_POST, 'so_luong', FILTER_VALIDATE_INT);
+    $id = (int)($_POST['id'] ?? 0);
 
-    try {
-        if ($hanhDong === 'them' && $id !== '') {
-            $gioHang->them($id);
-        } elseif ($hanhDong === 'xoa' && $id !== '') {
-            $gioHang->xoa($id);
-        } elseif ($hanhDong === 'cap_nhat' && $id !== '' && $soLuongMoi !== false) {
-            if ($soLuongMoi > 0) {
-                $gioHang->capNhat($id, $soLuongMoi);
-            } else {
-                $gioHang->xoa($id);
+    if ($hanhDong === 'xoa' && $id > 0) {
+        unset($_SESSION['gio'][$id]);
+    } elseif ($hanhDong === 'cap_nhat' && $id > 0) {
+        $soLuongMoi = (int)($_POST['so_luong'] ?? 1);
+        if ($soLuongMoi > 0) {
+            if (isset($_SESSION['gio'][$id])) {
+                if (is_array($_SESSION['gio'][$id])) {
+                    $_SESSION['gio'][$id]['so_luong'] = $soLuongMoi;
+                } else {
+                    $_SESSION['gio'][$id] = $soLuongMoi;
+                }
             }
-        } elseif ($hanhDong === 'xoa_tat_ca') {
-            $gioHang->lamTrong();
+        } else {
+            unset($_SESSION['gio'][$id]);
         }
-    } catch (InvalidArgumentException $e) {
-        // Đã sửa: Lưu thông báo ngoại lệ vào session để hiển thị cảnh báo cho người dùng
-        $_SESSION['flash_loi'] = $e->getMessage();
     }
-
     header('Location: gio-hang.php');
     exit;
 }
 
-$chiTietGio = $gioHang->chiTiet();
-$tbLoi = $_SESSION['flash_loi'] ?? '';
-unset($_SESSION['flash_loi']);
+// Lấy danh sách giỏ hàng từ session 'gio'
+$gioHang = $_SESSION['gio'] ?? [];
+$tongTien = 0;
 
 $tieuDe = 'Giỏ hàng của bạn - Fashion Store';
 $trang = 'gio-hang';
 require_once __DIR__ . '/inc/header.php';
 ?>
 
-<main class="noi-dung-chinh">
-    <style>
-        @scope {
-            .khung-nut-gio-hang {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-top: 25px;
-                gap: 15px;
-            }
+<main class="noi-dung-chinh" style="max-width: 1000px; margin: 30px auto; padding: 20px;">
+    <div style="border-bottom: 2px solid #2563eb; padding-bottom: 10px; margin-bottom: 25px;">
+        <h2 style="color: #1e3a8a; margin: 0;">Giỏ hàng / Yêu thích của bạn</h2>
+    </div>
 
-            .nhom-nut-phai {
-                display: flex;
-                gap: 10px;
-            }
-
-            @media (max-width: 768px) {
-                .hop-bang {
-                    margin: 0 -20px;
-                    width: calc(100% + 40px);
-                    border-radius: 0;
-                    border-left: none;
-                    border-right: none;
-                }
-
-                .bang-san-pham th,
-                .bang-san-pham td {
-                    padding: 10px 8px;
-                }
-
-                .khung-nut-gio-hang {
-                    flex-direction: column;
-                    align-items: stretch;
-                }
-
-                .nhom-nut-phai {
-                    flex-direction: column;
-                    align-items: stretch;
-                    width: 100%;
-                }
-
-                .khung-nut-gio-hang button,
-                .khung-nut-gio-hang a {
-                    width: 100%;
-                    text-align: center;
-                    display: block;
-                    margin: 0 !important;
-                    padding: 12px;
-                    box-sizing: border-box;
-                }
-            }
-        }
-    </style>
-
-    <section style="background-color: transparent; border: none; box-shadow: none; padding: 0;">
-        <h2 style="color: #1e3a8a; border-left: 5px solid #2563eb; padding-left: 15px; margin-bottom: 20px;">Giỏ hàng / Yêu thích của bạn</h2>
-
-        <?php if ($tbLoi): ?>
-            <div style="background-color: #fee2e2; color: #991b1b; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #f87171;">
-                <strong>Lỗi:</strong> <?= e($tbLoi) ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if (empty($chiTietGio)): ?>
-            <div style="background: white; padding: 40px 20px; text-align: center; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <p style="font-size: 1.2em; color: #dc2626; font-weight: bold; margin-bottom: 20px;">Bạn chưa chọn sản phẩm nào!</p>
-                <a href="danh-sach.php" class="nut-bam nut-bam--chinh" style="padding: 10px 25px;">Quay lại mua sắm</a>
-            </div>
-        <?php else: ?>
-            <div class="hop-bang" style="overflow-x: auto; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <table class="bang-san-pham" style="width: 100%; min-width: 600px; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background-color: #f8fafc; border-bottom: 2px solid #e5e7eb;">
-                            <th scope="col" style="padding: 15px; text-align: left; color: #1e3a8a;">Hình ảnh</th>
-                            <th scope="col" style="padding: 15px; text-align: left; color: #1e3a8a;">Tên sản phẩm</th>
-                            <th scope="col" style="padding: 15px; text-align: left; color: #1e3a8a;">Đơn giá</th>
-                            <th scope="col" style="padding: 15px; text-align: center; color: #1e3a8a;">Số lượng</th>
-                            <th scope="col" style="padding: 15px; text-align: left; color: #1e3a8a;">Thành tiền</th>
-                            <th scope="col" style="padding: 15px; text-align: center; color: #1e3a8a;">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($chiTietGio as $item): ?>
-                            <tr style="border-bottom: 1px solid #e5e7eb; transition: background 0.2s;">
-                                <td style="padding: 15px;">
-                                    <img src="<?= e($item['sanPham']->hinhAnh) ?>" alt="<?= e($item['sanPham']->ten) ?>" style="width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd;">
-                                </td>
-                                <td style="padding: 15px; font-weight: bold;">
-                                    <a href="chi-tiet.php?id=<?= e($item['sanPham']->id) ?>" style="text-decoration: none; color: #2563eb;">
-                                        <?= e($item['sanPham']->ten) ?>
-                                    </a>
-                                </td>
-                                <td style="padding: 15px; color: #4b5563;"><?= vnd($item['sanPham']->gia) ?></td>
-
-                                <td style="padding: 15px; text-align: center;">
-                                    <form method="POST" action="gio-hang.php" style="margin: 0; display: inline-flex; gap: 5px; align-items: center;">
-                                        <input type="hidden" name="id" value="<?= e($item['sanPham']->id) ?>">
-                                        <input type="number" name="so_luong" value="<?= e((string)$item['soLuong']) ?>" min="1" style="width: 60px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px; padding: 5px;">
-                                        <button type="submit" name="hanh_dong" value="cap_nhat" style="padding: 5px 10px; border: 1px solid #0ea5e9; color: white; background: #0ea5e9; border-radius: 4px; cursor: pointer;">Sửa</button>
-                                    </form>
-                                </td>
-
-                                <td style="padding: 15px; color: #dc2626; font-weight: bold;"><?= vnd($item['thanhTien']) ?></td>
-                                <td style="padding: 15px; text-align: center;">
-                                    <form method="POST" action="gio-hang.php" style="margin: 0;">
-                                        <input type="hidden" name="id" value="<?= e($item['sanPham']->id) ?>">
-                                        <button type="submit" name="hanh_dong" value="xoa" class="nut-bam nut-bam--phu" style="padding: 6px 12px; border: 1px solid #dc2626; color: #dc2626; background: #fee2e2; font-size: 0.9em;">Xóa</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                    <tfoot>
-                        <tr style="background-color: #f8fafc;">
-                            <td colspan="4" style="text-align: right; font-weight: bold; font-size: 1.1em; padding: 20px 15px; color: #1f2937;">Tổng cộng:</td>
-                            <td colspan="2" style="color: #dc2626; font-weight: bold; font-size: 1.3em; padding: 20px 15px;">
-                                <?= vnd($gioHang->tongTien()) ?>
+    <?php if (empty($gioHang)): ?>
+        <div style="text-align: center; padding: 50px; background: white; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <p style="font-size: 1.2rem; color: #dc2626; font-weight: bold; margin-bottom: 20px;">Bạn chưa chọn sản phẩm nào!</p>
+            <a href="danh-sach.php" style="display: inline-block; padding: 10px 25px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">Quay lại mua sắm</a>
+        </div>
+    <?php else: ?>
+        <div style="background: white; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 25px;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <thead style="background: #f8fafc; border-bottom: 1px solid #e5e7eb;">
+                    <tr>
+                        <th style="padding: 15px;">Sản phẩm</th>
+                        <th style="padding: 15px; text-align: center;">Đơn giá</th>
+                        <th style="padding: 15px; text-align: center;">Số lượng</th>
+                        <th style="padding: 15px; text-align: right;">Thành tiền</th>
+                        <th style="padding: 15px; text-align: center;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($gioHang as $idSp => $item): ?>
+                        <?php 
+                            if (is_array($item)) {
+                                $ten = $item['ten'] ?? 'Sản phẩm';
+                                $gia = (float)($item['gia'] ?? 0);
+                                $soLuong = (int)($item['so_luong'] ?? 1);
+                                $anh = $item['anh'] ?? '';
+                            } else {
+                                $stmt = db()->prepare("SELECT ten, gia, anh FROM san_pham WHERE id = ?");
+                                $stmt->execute([$idSp]);
+                                $spDb = $stmt->fetch();
+                                $ten = $spDb['ten'] ?? 'Sản phẩm';
+                                $gia = (float)($spDb['gia'] ?? 0);
+                                $soLuong = (int)$item;
+                                $anh = $spDb['anh'] ?? '';
+                            }
+                            $thanhTien = $gia * $soLuong;
+                            $tongTien += $thanhTien;
+                        ?>
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                            <td style="padding: 15px; display: flex; align-items: center; gap: 15px;">
+                                <?php if (!empty($anh)): ?>
+                                    <img src="<?= e($anh) ?>" alt="<?= e($ten) ?>" style="width: 60px; height: 60px; object-fit: contain; background: #f9fafb; border-radius: 4px; border: 1px solid #e5e7eb; padding: 5px;">
+                                <?php endif; ?>
+                                <span style="font-weight: bold; color: #111827;"><?= e($ten) ?></span>
+                            </td>
+                            <td style="padding: 15px; text-align: center; color: #dc2626; font-weight: bold;"><?= number_format($gia, 0, ',', '.') ?> đ</td>
+                            <td style="padding: 15px; text-align: center;">
+                                <form method="POST" action="gio-hang.php" style="display: inline-flex; align-items: center; gap: 5px;">
+                                    <input type="hidden" name="hanh_dong" value="cap_nhat">
+                                    <input type="hidden" name="id" value="<?= (int)$idSp ?>">
+                                    <input type="number" name="so_luong" value="<?= $soLuong ?>" min="1" max="99" style="width: 60px; padding: 5px; text-align: center; border: 1px solid #d1d5db; border-radius: 4px;">
+                                    <button type="submit" style="padding: 5px 10px; background: #4b5563; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">Cập nhật</button>
+                                </form>
+                            </td>
+                            <td style="padding: 15px; text-align: right; font-weight: bold; color: #111827;"><?= number_format($thanhTien, 0, ',', '.') ?> đ</td>
+                            <td style="padding: 15px; text-align: center;">
+                                <form method="POST" action="gio-hang.php" onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?');" style="margin: 0;">
+                                    <input type="hidden" name="hanh_dong" value="xoa">
+                                    <input type="hidden" name="id" value="<?= (int)$idSp ?>">
+                                    <button type="submit" style="padding: 6px 12px; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer;">Xóa</button>
+                                </form>
                             </td>
                         </tr>
-                    </tfoot>
-                </table>
-            </div>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
 
-            <div class="khung-nut-gio-hang">
-                <form method="POST" action="gio-hang.php" style="margin: 0;">
-                    <button type="submit" name="hanh_dong" value="xoa_tat_ca" class="nut-bam nut-bam--phu" style="border: 1px solid #64748b; color: #475569; background: white;">Xóa toàn bộ giỏ hàng</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <div>
+                <span style="font-size: 1.2rem; color: #374151; font-weight: bold;">Tổng tiền thanh toán:</span>
+                <span style="font-size: 1.5rem; color: #dc2626; font-weight: bold; margin-left: 10px;"><?= number_format($tongTien, 0, ',', '.') ?> đ</span>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <a href="danh-sach.php" style="padding: 12px 20px; background: #e5e7eb; color: #374151; text-decoration: none; border-radius: 6px; font-weight: bold;">Tiếp tục mua sắm</a>
+                
+                <!-- Sử dụng form POST chính thức để gửi yêu cầu đặt hàng sang dat-hang.php -->
+                <form action="dat-hang.php" method="POST" style="margin: 0;">
+                    <button type="submit" style="padding: 12px 25px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.3s;">
+                        Tiến hành đặt hàng
+                    </button>
                 </form>
-
-                <div class="nhom-nut-phai">
-                    <a href="danh-sach.php" class="nut-bam nut-bam--phu" style="background: white;">Tiếp tục mua sắm</a>
-                    <form action="dat-hang.php" method="POST" style="margin: 0; display: inline;">
-                        <button type="submit" class="nut-bam nut-bam--chinh" style="border: none; cursor: pointer;">Tiến hành thanh toán</button>
-                    </form>
-                </div>
             </div>
-        <?php endif; ?>
-    </section>
+        </div>
+    <?php endif; ?>
 </main>
 
-<script type="module" src="js/main.js"></script>
 <?php require_once __DIR__ . '/inc/footer.php'; ?>

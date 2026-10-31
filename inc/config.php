@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 // inc/config.php - Cấu hình chung, được require đầu tiên ở mọi trang.
-const MOI_TRUONG = 'dev'; // máy thật: 'prod'
+const MOI_TRUONG = 'prod'; // máy thật: 'prod'
 
 error_reporting(E_ALL);
 ini_set('display_errors', MOI_TRUONG === 'dev' ? '1' : '0');

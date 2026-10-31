@@ -7,17 +7,14 @@ use App\Data\KhoSanPham;
 $kho = new KhoSanPham();
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-// Dùng getter getId() nếu class KhoSanPham trả về Object
 $sanPham = $id ? $kho->timTheoId($id) : null;
 
-// Xử lý nếu ID sai hoặc sản phẩm không tồn tại
 if (!$sanPham) {
     http_response_code(404);
     require_once __DIR__ . '/404.php';
     exit;
 }
 
-// Lấy các thuộc tính (đảm bảo đồng bộ hàm get giống bên danh-sach.php)
 $spId = method_exists($sanPham, 'getId') ? $sanPham->getId() : $sanPham->id;
 $spTen = method_exists($sanPham, 'getTen') ? $sanPham->getTen() : $sanPham->ten;
 $spHinhAnh = method_exists($sanPham, 'getHinhAnh') ? $sanPham->getHinhAnh() : $sanPham->anh ?? $sanPham->hinhAnh;
@@ -28,20 +25,16 @@ $spMauSac = method_exists($sanPham, 'getMauSac') ? $sanPham->getMauSac() : $sanP
 $spKichThuoc = method_exists($sanPham, 'getKichThuoc') ? $sanPham->getKichThuoc() : $sanPham->kich_thuoc ?? $sanPham->kichThuoc;
 $spVideo = method_exists($sanPham, 'getVideo') ? $sanPham->getVideo() : $sanPham->video;
 
-// =====================================================================
-// XỬ LÝ COOKIE: LƯU 4 SẢN PHẨM ĐÃ XEM GẦN NHẤT
-// =====================================================================
+// Cookie lưu 4 sản phẩm đã xem gần nhất
 $cu = array_map('intval', explode(',', $_COOKIE['da_xem'] ?? ''));
 $moi = array_unique([$spId, ...array_filter($cu)]);
 
-// Đã fix lỗi cú pháp tính toán thời gian ở đây (có dấu *)
 setcookie('da_xem', implode(',', array_slice($moi, 0, 4)), [
-    'expires'  => time() + 30 * 24 * 3600, // 30 ngày
+    'expires'  => time() + 30 * 24 * 3600,
     'path'     => '/',
     'httponly' => true,
     'samesite' => 'Lax',
 ]);
-// =====================================================================
 
 $tieuDe = $spTen . ' - Fashion Store';
 $trang = 'chi-tiet';
@@ -108,9 +101,10 @@ require_once __DIR__ . '/inc/header.php';
             </section>
         <?php endif; ?>
 
-        <!-- Đã thêm class 'form-them-gio-hang' để tệp js/gio-hang.js bắt sự kiện thành công -->
+        <!-- Form thêm giỏ hàng có class 'form-them-gio-hang' để tệp js/gio-hang.js bắt sự kiện AJAX -->
         <div style="display: flex; gap: 15px; margin-top: 20px;">
             <form action="gio-hang.php" method="POST" style="flex: 1;" class="form-them-gio-hang">
+                <input type="hidden" name="san_pham_id" value="<?= e($spId) ?>">
                 <input type="hidden" name="id" value="<?= e($spId) ?>">
                 <button type="submit" name="hanh_dong" value="them" class="nut-bam nut-bam--chinh" style="width: 100%; padding: 15px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: background 0.3s;">
                     🛒 Thêm vào giỏ hàng
@@ -125,7 +119,7 @@ require_once __DIR__ . '/inc/header.php';
     </article>
 </main>
 
-<!-- Nạp đầy đủ các tệp JavaScript xử lý giỏ hàng, tìm kiếm và chi tiết -->
+<!-- Nạp đầy đủ các tệp JavaScript xử lý giỏ hàng và tìm kiếm -->
 <script src="js/gio-hang.js"></script>
 <script src="js/tim-kiem.js"></script>
 <script type="module" src="js/trang-chi-tiet.js"></script>

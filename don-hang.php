@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 require_once __DIR__ . '/inc/config.php';
 
 // Bắt buộc phải đăng nhập mới được xem đơn hàng
@@ -23,10 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['don_hang_id'], $_POST
         $dhId = (int)$_POST['don_hang_id'];
         $trangThaiMoi = trim($_POST['trang_thai']);
 
-        // Danh sách trạng thái cho phép theo thiết kế
         $trangThaiChoPhieu = ['dang_xu_ly', 'dang_giao', 'hoan_thanh', 'da_huy'];
 
-        if (in_array($trangThaiMoi, $trangThaiChoPhieu)) {
+        if (in_array($trangThaiMoi, $trangThaiChoPhieu, true)) {
             try {
                 $stmtUp = $pdo->prepare("UPDATE don_hang SET trang_thai = ? WHERE id = ?");
                 $stmtUp->execute([$trangThaiMoi, $dhId]);
@@ -80,7 +81,6 @@ require_once __DIR__ . '/inc/header.php';
                 http_response_code(404);
                 echo "<h2>Không tìm thấy đơn hàng hoặc bạn không có quyền xem đơn hàng này.</h2>";
             } else {
-                // Lấy chi tiết sản phẩm trong đơn
                 $stmtCt = $pdo->prepare("SELECT ct.*, sp.ten as ten_san_pham, sp.anh FROM chi_tiet_don ct JOIN san_pham sp ON ct.san_pham_id = sp.id WHERE ct.don_hang_id = ?");
                 $stmtCt->execute([$chiTietDonId]);
                 $danhSachChiTiet = $stmtCt->fetchAll();
@@ -91,8 +91,7 @@ require_once __DIR__ . '/inc/header.php';
                 <p><strong>Tổng tiền:</strong> <span style="color: #dc2626; font-weight: bold;"><?= number_format($donHang['tong_tien'], 0, ',', '.') ?> đ</span></p>
 
                 <h3 style="margin-top: 25px; margin-bottom: 10px;">Danh sách sản phẩm</h3>
-                
-                <!-- Bọc bảng chi tiết bằng div cuộn ngang chống vỡ khung -->
+
                 <div style="width: 100%; overflow-x: auto; margin-bottom: 20px;">
                     <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
                         <thead>
@@ -107,7 +106,9 @@ require_once __DIR__ . '/inc/header.php';
                             <?php foreach ($danhSachChiTiet as $item): ?>
                                 <tr>
                                     <td style="padding: 10px; border: 1px solid #d1d5db;">
-                                        <img src="<?= e($item['anh']) ?>" alt="" style="width: 40px; height: 40px; object-fit: cover; vertical-align: middle; margin-right: 10px;">
+                                        <?php if (!empty($item['anh'])): ?>
+                                            <img src="<?= e($item['anh']) ?>" alt="" style="width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin-right: 10px; background: #f9fafb; border: 1px solid #e5e7eb; padding: 2px;">
+                                        <?php endif; ?>
                                         <?= e($item['ten_san_pham']) ?>
                                     </td>
                                     <td style="padding: 10px; border: 1px solid #d1d5db;"><?= number_format($item['don_gia'], 0, ',', '.') ?> đ</td>
@@ -128,15 +129,15 @@ require_once __DIR__ . '/inc/header.php';
         ?>
 
     <?php else: ?>
-        <!-- HIỂN THỊ DANH SÁCH ĐƠN HÀNG -->
+        <!-- HIỂN THỊ DANH SÁCH ĐƠN HÀNG (Sắp xếp DESC đưa đơn mới nhất lên đầu) -->
         <h2 style="color: #1e3a8a; margin-bottom: 20px;"><?= $currentUser['vai_tro'] === 'quan_tri' ? 'Quản Lý Tất Cả Đơn Hàng (Admin)' : 'Đơn Hàng Của Tôi' ?></h2>
 
         <?php
         try {
             if ($currentUser['vai_tro'] === 'quan_tri') {
-                $stmt = $pdo->query("SELECT dh.*, nd.ho_ten, nd.email FROM don_hang dh JOIN nguoi_dung nd ON dh.nguoi_dung_id = nd.id ORDER BY dh.id ASC");
+                $stmt = $pdo->query("SELECT dh.*, nd.ho_ten, nd.email FROM don_hang dh JOIN nguoi_dung nd ON dh.nguoi_dung_id = nd.id ORDER BY dh.id DESC");
             } else {
-                $stmt = $pdo->prepare("SELECT * FROM don_hang WHERE nguoi_dung_id = ? ORDER BY id ASC");
+                $stmt = $pdo->prepare("SELECT * FROM don_hang WHERE nguoi_dung_id = ? ORDER BY id DESC");
                 $stmt->execute([$currentUser['id']]);
             }
             $danhSachDon = $stmt->fetchAll();
@@ -145,7 +146,6 @@ require_once __DIR__ . '/inc/header.php';
                 echo "<p style='text-align: center; color: #6b7280; padding: 20px;'>Chưa có đơn hàng nào.</p>";
             } else {
         ?>
-                <!-- Bọc bảng danh sách đơn hàng bằng div cuộn ngang chống vỡ khung -->
                 <div style="width: 100%; overflow-x: auto; margin-bottom: 20px;">
                     <table style="width: 100%; border-collapse: collapse; min-width: 650px;">
                         <thead>

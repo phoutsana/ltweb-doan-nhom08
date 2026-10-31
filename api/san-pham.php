@@ -1,6 +1,9 @@
 <?php
-// Đăng ký error handler trả JSON 500 khi có lỗi hệ thống
+// Đăng ký error handler trả JSON 500 khi có lỗi hệ thống và ghi log
 set_exception_handler(function ($e) {
+    // Ghi chi tiết lỗi vào tệp log hệ thống
+    error_log($e->getMessage());
+
     http_response_code(500);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode(["loi" => "Lỗi máy chủ"]);
@@ -49,6 +52,9 @@ try {
     echo json_encode($ketQua, JSON_UNESCAPED_UNICODE);
 
 } catch (\PDOException $e) {
+    // Ghi chi tiết lỗi PDO vào tệp nhật ký để phục vụ kiểm tra logs/php-error.log
+    error_log($e->getMessage());
+
     http_response_code(500);
     echo json_encode(["loi" => "Lỗi máy chủ"]);
 }

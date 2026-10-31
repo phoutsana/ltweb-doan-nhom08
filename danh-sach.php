@@ -27,7 +27,7 @@ if ($tuKhoa !== '') {
     $thamSo[] = '%' . addcslashes($tuKhoa, '%_\\') . '%';
 }
 
-// 2. Điều kiện lọc theo danh mục (Dùng id chuẩn theo bảng danh_muc)
+// 2. Điều kiện lọc theo danh mục
 if ($danhMucId !== false && $danhMucId > 0) {
     $dieuKien[] = "danh_muc_id = ?";
     $thamSo[] = $danhMucId;
@@ -53,10 +53,10 @@ if ($trangHienTai > $tongSoTrang && $tongSoTrang > 0) {
     $trangHienTai = $tongSoTrang;
 }
 
-// Đã khắc phục lỗi dòng offset bị lỗi ký tự
+// Tính offset phân trang chuẩn xác
 $offset = ($trangHienTai - 1) * $soLuongMoiTrang;
 
-// 5. Xử lý sắp xếp (Chỉ cho phép các cột an toàn theo yêu cầu đề bài)
+// 5. Xử lý sắp xếp
 $cotSapXepChoPhieu = [
     'gia-tang' => 'gia ASC',
     'gia-giam' => 'gia DESC',
@@ -67,7 +67,7 @@ if (array_key_exists($sapXep, $cotSapXepChoPhieu)) {
     $sqlOrderBy = " ORDER BY " . $cotSapXepChoPhieu[$sapXep];
 }
 
-// 6. Truy vấn danh sách sản phẩm chính thức có phân trang (LIMIT, OFFSET)
+// 6. Truy vấn danh sách sản phẩm chính thức có phân trang
 $sql = "SELECT id, danh_muc_id, ten, gia, ton_kho, anh FROM san_pham" . $sqlWhere . $sqlOrderBy . " LIMIT " . (int)$soLuongMoiTrang . " OFFSET " . (int)$offset;
 $stmt = $pdo->prepare($sql);
 $stmt->execute($thamSo);
@@ -80,7 +80,7 @@ require_once __DIR__ . '/inc/header.php';
 
 <main class="noi-dung-chinh" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
 
-    <!-- Khối bộ lọc (Đã bổ sung bộ lọc Giá tối đa theo yêu cầu Bảng 1) -->
+    <!-- Khối bộ lọc -->
     <form method="GET" action="danh-sach.php" class="khoi-noi-dung bo-loc-san-pham" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 30px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
 
         <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 180px;">
@@ -98,7 +98,7 @@ require_once __DIR__ . '/inc/header.php';
             </select>
         </div>
 
-        <!-- Ô lọc giá tối đa mới thêm -->
+        <!-- Ô lọc giá tối đa -->
         <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px;">
             <label for="gia-toi-da" style="font-weight: bold; color: #374151;">Giá tối đa (VNĐ)</label>
             <input type="number" id="gia-toi-da" name="gia_toi_da" value="<?= ($giaToiDa !== false && $giaToiDa > 0) ? $giaToiDa : '' ?>" placeholder="VD: 500000" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none;">
@@ -128,7 +128,7 @@ require_once __DIR__ . '/inc/header.php';
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px;">
                 <?php foreach ($danhSach as $sp): ?>
                     <div style="position: relative; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column;">
-                        
+
                         <!-- Nút Yêu Thích -->
                         <button type="button" data-yeu-thich="<?= e($sp['id']) ?>" style="position: absolute; top: 10px; right: 10px; z-index: 10; background: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.15); color: #dc2626; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;">
                             ♡
@@ -142,7 +142,7 @@ require_once __DIR__ . '/inc/header.php';
                         <!-- Thông tin sản phẩm -->
                         <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
                             <div>
-                                <h2 style="font-size: 1.1rem; color: #111827; margin: 0 0 10px 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <h2 style="font-weight: 600; font-size: 1.1rem; color: #111827; margin: 0 0 10px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                     <?= e($sp['ten']) ?>
                                 </h2>
                                 <p style="color: #dc2626; font-size: 1.25rem; font-weight: 700; margin: 0 0 15px 0;">
@@ -158,14 +158,14 @@ require_once __DIR__ . '/inc/header.php';
                 <?php endforeach; ?>
             </div>
 
-            <!-- PHÂN TRANG (Giữ nguyên tham số bộ lọc khi chuyển trang) -->
+            <!-- PHÂN TRANG -->
             <?php if ($tongSoTrang > 1): ?>
                 <div style="display: flex; justify-content: center; gap: 8px; margin-top: 40px;">
                     <?php for ($i = 1; $i <= $tongSoTrang; $i++): ?>
-                        <?php 
-                            $params = $_GET;
-                            $params['trang'] = $i;
-                            $urlTrang = 'danh-sach.php?' . http_build_query($params);
+                        <?php
+                        $params = $_GET;
+                        $params['trang'] = $i;
+                        $urlTrang = 'danh-sach.php?' . http_build_query($params);
                         ?>
                         <a href="<?= e($urlTrang) ?>" style="padding: 8px 14px; border-radius: 4px; text-decoration: none; font-weight: bold; background: <?= ($i === $trangHienTai) ? '#2563eb' : '#e5e7eb' ?>; color: <?= ($i === $trangHienTai) ? 'white' : '#374151' ?>;">
                             <?= $i ?>
@@ -177,7 +177,47 @@ require_once __DIR__ . '/inc/header.php';
         <?php endif; ?>
     </section>
 </main>
+
+<!-- ĐOẠN SCRIPT AJAX TRỰC TIẾP GIÚP CHẶN RELOAD TRANG ĐỂ ĐẠT CA 13 -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const formBoLoc = document.querySelector('form');
+    const vungDanhSach = document.querySelector('#than-bang-san-pham');
+
+    if (formBoLoc && vungDanhSach) {
+        formBoLoc.addEventListener('submit', function (e) {
+            e.preventDefault(); // Chặn việc tải lại trang truyền thống
+
+            const formData = new FormData(formBoLoc);
+            const queryString = new URLSearchParams(formData).toString();
+            const url = 'danh-sach.php?' + queryString;
+
+            // Cập nhật URL trên thanh địa chỉ mượt mà không cần reload
+            window.history.pushState({}, '', url);
+
+            // Gửi request ngầm bằng fetch
+            fetch(url, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => res.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const noiDungMoi = doc.querySelector('#than-bang-san-pham');
+                
+                if (noiDungMoi) {
+                    vungDanhSach.innerHTML = noiDungMoi.innerHTML;
+                }
+            })
+            .catch(err => console.error('Lỗi AJAX lọc sản phẩm:', err));
+        });
+    }
+});
+</script>
+
 <script type="module" src="js/trang-danh-sach.js"></script>
+<script src="js/tim-kiem.js"></script>
+
 <?php
 require_once __DIR__ . '/inc/footer.php';
 ?>

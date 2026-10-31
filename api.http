@@ -1,19 +1,10 @@
-### 1. Test API tìm kiếm sản phẩm (Thành công 200)
-GET http://localhost/nhom8/ltweb-doan-nhom08/api/san-pham.php?q=ao
-
-### 2. Test API xem chi tiết sản phẩm không tồn tại (404)
-GET http://localhost/nhom8/ltweb-doan-nhom08/api/san-pham.php?id=999999
-
-### 3. Test API thêm sản phẩm vào giỏ hàng qua POST (Thành công 200)
+### 1. Thân không phải JSON (Mong đợi: Mã 400)
 POST http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
 Content-Type: application/json
 
-{
-  "san_pham_id": 1,
-  "so_luong": 2
-}
+day_khong_phai_la_json_hop_le
 
-### 4. Test API thêm sản phẩm với số lượng âm (422)
+### 2. Số lượng âm: sl = -3 (Mong đợi: Mã 422)
 POST http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
 Content-Type: application/json
 
@@ -21,3 +12,25 @@ Content-Type: application/json
   "san_pham_id": 1,
   "so_luong": -3
 }
+
+### 3. ID sản phẩm không tồn tại: id = 999999 (Mong đợi: Mã 404)
+POST http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
+Content-Type: application/json
+
+{
+  "san_pham_id": 999999,
+  "so_luong": 1
+}
+
+### 4. Vượt quá tồn kho (Mong đợi: Mã 422)
+# (Giả sử sản phẩm ID 1 chỉ còn tồn kho ít, bạn truyền số lượng lớn như 999)
+POST http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
+Content-Type: application/json
+
+{
+  "san_pham_id": 1,
+  "so_luong": 999
+}
+
+### 5. Sai phương thức: DELETE (Mong đợi: Mã 405 kèm header Allow)
+DELETE http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php

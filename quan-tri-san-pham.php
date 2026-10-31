@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 require_once __DIR__ . '/inc/config.php';
 
@@ -34,14 +33,14 @@ require_once __DIR__ . '/inc/header.php';
 
     <!-- Hiển thị thông báo (Thành công hoặc Lỗi) -->
     <?php if (isset($_GET['tb']) && $_GET['tb'] === 'thanh_cong'): ?>
-        <div style="background: #d1fae5; color: #065f46; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #10b981;">
+        <div style="background: #d1fae5; color: #065f46; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #10b981; font-weight: bold;">
             Thao tác thành công!
         </div>
     <?php endif; ?>
 
     <?php if (isset($_GET['loi']) && $_GET['loi'] === 'dang_dung'): ?>
-        <div style="background: #fee2e2; color: #b91c1c; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #ef4444;">
-            <strong>Không thể xóa:</strong> Sản phẩm này đã có khách đặt hàng (Vi phạm khóa ngoại 1451).
+        <div style="background: #fee2e2; color: #b91c1c; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #ef4444; font-weight: bold;">
+            Không thể xóa: Sản phẩm này đã có khách đặt hàng (Vi phạm khóa ngoại 1451).
         </div>
     <?php endif; ?>
 
@@ -76,7 +75,7 @@ require_once __DIR__ . '/inc/header.php';
                             <?= htmlspecialchars($sp['ten_danh_muc'] ?? 'Không có') ?>
                         </td>
                         <td style="padding: 12px; border: 1px solid #e5e7eb; color: #e11d48; font-weight: bold;">
-                            <?= number_format($sp['gia'], 0, ',', '.') ?> đ
+                            <?= number_format((float)$sp['gia'], 0, ',', '.') ?> đ
                         </td>
                         <td style="padding: 12px; border: 1px solid #e5e7eb; text-align: center;">
                             <?php if ($sp['ton_kho'] <= 0): ?>
@@ -89,7 +88,7 @@ require_once __DIR__ . '/inc/header.php';
                             <div style="display: flex; gap: 8px; justify-content: center;">
                                 <a href="sua-san-pham.php?id=<?= $sp['id'] ?>" style="padding: 6px 12px; background: #f59e0b; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 500;">Sửa</a>
 
-                                <!-- XÓA BẰNG POST: Chống xóa nhầm và chống SQL Injection (Chuẩn kiểm thử Ca 5/8) -->
+                                <!-- XÓA BẰNG POST: Chống xóa nhầm và chống SQL Injection -->
                                 <form method="POST" action="xoa-san-pham.php" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');" style="margin: 0;">
                                     <input type="hidden" name="id" value="<?= $sp['id'] ?>">
                                     <button type="submit" style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer;">Xóa</button>
