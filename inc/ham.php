@@ -1,4 +1,3 @@
-
 <?php
 
 function e(mixed $value): string

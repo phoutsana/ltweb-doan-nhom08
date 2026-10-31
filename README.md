@@ -56,7 +56,9 @@ Dự án được tổ chức thành các thư mục và tệp chính như sau:
 Clone dự án về máy tính:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/phoutsana/ltweb-doan-nhom08.git
+cd ltweb-doan-nhom08
+composer install
 ```
 
 **Bước 2: Khởi động XAMPP**
@@ -100,7 +102,7 @@ Các tài khoản dưới đây được sử dụng để kiểm tra chức nă
 
 | Vai trò | Email | Mật khẩu |
 |---|---|---|
-| Quản trị viên | `admin@gmail.com` | `123456` |
+| Quản trị viên | `admin@fashionstore.com` | `123456` |
 | Khách hàng | `khach1@gmail.com` | `555555` |
 
 *Không sử dụng các mật khẩu kiểm thử này cho tài khoản thực tế hoặc môi trường triển khai công khai.*
