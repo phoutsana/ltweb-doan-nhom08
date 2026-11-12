@@ -1,32 +1,39 @@
 <?php
 // inc/header.php
+// Trang goi require_once inc/config.php truoc khi nap header.
+$gocTrang = (string) ($goc ?? '');
+$cssTrang = isset($cssRieng) && is_string($cssRieng) ? $cssRieng : '';
+$tieuDeTrang = (string) ($tieuDe ?? 'Fashion Store');
+$trangHienTai = (string) ($trang ?? '');
+$nguoiDung = isset($_SESSION['user']) && is_array($_SESSION['user']) ? $_SESSION['user'] : null;
+$laQuanTri = $nguoiDung !== null && ($nguoiDung['vai_tro'] ?? '') === 'quan_tri';
 ?>
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= isset($tieuDe) ? e($tieuDe) : e('Fashion Store') ?></title>
+    <title><?= e($tieuDeTrang) ?></title>
     <meta name="description" content="Fashion Store - Website bán quần áo trực tuyến với nhiều sản phẩm thời trang dành cho nam và nữ.">
-    <link rel="stylesheet" type="text/css" href="<?= $goc ?? '' ?>css/style.css">
-    <?php if (!empty($cssRieng)): ?>
-        <link rel="stylesheet" href="<?= e($cssRieng) ?>">
+    <link rel="stylesheet" href="<?= e($gocTrang) ?>css/style.css">
+    <link rel="stylesheet" href="<?= e($gocTrang) ?>css/header-bt7.css">
+    <?php if ($cssTrang !== ''): ?>
+        <link rel="stylesheet" href="<?= e($gocTrang . $cssTrang) ?>">
     <?php endif; ?>
+    <script src="<?= e($gocTrang) ?>js/admin-menu.js" defer></script>
 </head>
-
 <body class="bo-cuc-trang">
     <?php
     $gioHangSvc = new \App\Services\GioHang();
-    $tongSoLuong = $gioHangSvc->tongSoLuong();
+    $tongSoLuong = (int) $gioHangSvc->tongSoLuong();
     ?>
 
-    <header class="dau-trang" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px 0;">
-        <a href="<?= $goc ?? '' ?>index.php" style="display: inline-block;">
-            <img src="<?= $goc ?? '' ?>images/logo.png" alt="Fashion Store Logo" style="height: 70px; margin-bottom: 10px;">
+    <header class="dau-trang bt7-site-header">
+        <a href="<?= e($gocTrang) ?>index.php" class="bt7-site-logo-link">
+            <img src="<?= e($gocTrang) ?>images/logo.png" alt="Fashion Store Logo" class="bt7-site-logo" width="70" height="70">
         </a>
-        <h1 style="margin: 0;">Fashion Store</h1>
-        <p class="dau-trang__khau-hieu" style="margin-top: 5px;">Cửa hàng thời trang trực tuyến</p>
+        <h1 class="bt7-site-title">Fashion Store</h1>
+        <p class="dau-trang__khau-hieu bt7-site-slogan">Cửa hàng thời trang trực tuyến</p>
     </header>
 
     <nav class="dieu-huong" aria-label="Điều hướng chính">
@@ -34,76 +41,49 @@
 
         <ul class="dieu-huong__danh-sach menu" id="menu-chinh">
             <li class="dieu-huong__muc">
-                <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>index.php" <?= ($trang ?? '') === 'trang-chu' ? 'aria-current="page"' : '' ?>>Trang chủ</a>
+                <a class="dieu-huong__lien-ket" href="<?= e($gocTrang) ?>index.php" <?= $trangHienTai === 'trang-chu' ? 'aria-current="page"' : '' ?>>Trang chủ</a>
             </li>
             <li class="dieu-huong__muc">
-                <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>danh-sach.php" <?= ($trang ?? '') === 'san-pham' ? 'aria-current="page"' : '' ?>>Sản phẩm</a>
+                <a class="dieu-huong__lien-ket" href="<?= e($gocTrang) ?>danh-sach.php" <?= $trangHienTai === 'san-pham' ? 'aria-current="page"' : '' ?>>Sản phẩm</a>
             </li>
             <li class="dieu-huong__muc">
-                <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>gioi-thieu.php" <?= ($trang ?? '') === 'gioi-thieu' ? 'aria-current="page"' : '' ?>>Giới thiệu</a>
+                <a class="dieu-huong__lien-ket" href="<?= e($gocTrang) ?>gioi-thieu.php" <?= $trangHienTai === 'gioi-thieu' ? 'aria-current="page"' : '' ?>>Giới thiệu</a>
             </li>
             <li class="dieu-huong__muc">
-                <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>lien-he.php" <?= ($trang ?? '') === 'lien-he' ? 'aria-current="page"' : '' ?>>Liên hệ</a>
+                <a class="dieu-huong__lien-ket" href="<?= e($gocTrang) ?>lien-he.php" <?= $trangHienTai === 'lien-he' ? 'aria-current="page"' : '' ?>>Liên hệ</a>
             </li>
             <li class="dieu-huong__muc">
-                <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>gio-hang.php" <?= ($trang ?? '') === 'gio-hang' ? 'aria-current="page"' : '' ?>>
-                    Giỏ hàng (<span class="so-luong-gio-hang" style="font-weight: bold; color: #facc15;"><?= $tongSoLuong ?></span>)
+                <a class="dieu-huong__lien-ket" href="<?= e($gocTrang) ?>gio-hang.php" <?= $trangHienTai === 'gio-hang' ? 'aria-current="page"' : '' ?>>
+                    Giỏ hàng (<span class="so-luong-gio-hang"><?= $tongSoLuong ?></span>)
                 </a>
             </li>
 
-            <!-- PHÂN QUYỀN HIỂN THỊ MENU CHO ADMIN VÀ KHÁCH HÀNG -->
-            <?php if (isset($_SESSION['user']) && $_SESSION['user']['vai_tro'] === 'quan_tri'): ?>
-                <li class="dieu-huong__muc" style="position: relative;" id="menu-quan-tri-parent">
-                    <!-- Đổi href thành javascript để bấm không bị nhảy trang mất kiểm soát -->
-                    <a class="dieu-huong__lien-ket" href="javascript:void(0);" id="btn-toggle-admin" style="color: #fcd34d;">Quản trị viên ▾</a>
-                    
-                    <!-- Menu con cho Admin chuyển đổi qua lại giữa các trang quản lý -->
-                    <ul class="menu-con" id="submenu-admin" style="display: none; position: absolute; top: 100%; left: 0; background: #1e3a8a; list-style: none; padding: 10px 0; margin: 0; min-width: 190px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); z-index: 100; border-radius: 4px;">
-                        <li style="padding: 6px 15px;"><a href="<?= $goc ?? '' ?>quan-tri-san-pham.php" style="color: white; text-decoration: none; display: block;">Quản lý sản phẩm</a></li>
-                        <li style="padding: 6px 15px;"><a href="<?= $goc ?? '' ?>them-san-pham.php" style="color: white; text-decoration: none; display: block;">Thêm sản phẩm mới</a></li>
-                        <li style="padding: 6px 15px;"><a href="<?= $goc ?? '' ?>quan-tri.php" style="color: white; text-decoration: none; display: block;">Quản lý liên hệ</a></li>
-                        <li style="padding: 6px 15px;"><a href="<?= $goc ?? '' ?>don-hang.php" style="color: white; text-decoration: none; display: block;">Quản lý đơn hàng</a></li>
+            <?php if ($laQuanTri): ?>
+                <li class="dieu-huong__muc bt7-admin-menu-parent" id="menu-quan-tri-parent">
+                    <button type="button" class="dieu-huong__lien-ket bt7-admin-menu-toggle" id="btn-toggle-admin" aria-expanded="false" aria-controls="submenu-admin">Quản trị viên ▾</button>
+                    <ul class="menu-con bt7-admin-submenu" id="submenu-admin">
+                        <li><a href="<?= e($gocTrang) ?>quan-tri-san-pham.php">Quản lý sản phẩm</a></li>
+                        <li><a href="<?= e($gocTrang) ?>them-san-pham.php">Thêm sản phẩm mới</a></li>
+                        <li><a href="<?= e($gocTrang) ?>quan-tri.php">Quản lý liên hệ</a></li>
+                        <li><a href="<?= e($gocTrang) ?>don-hang.php">Quản lý đơn hàng</a></li>
                     </ul>
                 </li>
-                
-                <script>
-                    // Xử lý sự kiện cả Hover (máy tính) lẫn Click (màn hình nhỏ/mobile)
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const adminParent = document.getElementById('menu-quan-tri-parent');
-                        const subMenu = document.getElementById('submenu-admin');
-                        const btnToggle = document.getElementById('btn-toggle-admin');
-
-                        if (adminParent && subMenu && btnToggle) {
-                            // Dành cho máy tính (Hover)
-                            adminParent.addEventListener('mouseenter', () => subMenu.style.display = 'block');
-                            adminParent.addEventListener('mouseleave', () => subMenu.style.display = 'none');
-
-                            // Dành cho màn hình nhỏ / mobile (Click vào chữ Quản trị viên để bật/tắt menu con)
-                            btnToggle.addEventListener('click', function(e) {
-                                e.preventDefault();
-                                subMenu.style.display = subMenu.style.display === 'block' ? 'none' : 'block';
-                            });
-                        }
-                    });
-                </script>
-
                 <li class="dieu-huong__muc">
-                    <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>dang-xuat.php">Đăng xuất</a>
+                    <a class="dieu-huong__lien-ket" href="<?= e($gocTrang) ?>dang-xuat.php">Đăng xuất</a>
                 </li>
-            <?php elseif (isset($_SESSION['user']) && !empty($_SESSION['user'])): ?>
+            <?php elseif ($nguoiDung !== null): ?>
                 <li class="dieu-huong__muc">
-                    <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>don-hang.php">Đơn hàng của tôi</a>
+                    <a class="dieu-huong__lien-ket" href="<?= e($gocTrang) ?>don-hang.php">Đơn hàng của tôi</a>
                 </li>
                 <li class="dieu-huong__muc">
-                    <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>dang-xuat.php">Đăng xuất</a>
+                    <a class="dieu-huong__lien-ket" href="<?= e($gocTrang) ?>dang-xuat.php">Đăng xuất</a>
                 </li>
             <?php else: ?>
-                <!-- NÚT ĐĂNG KÝ VÀ ĐĂNG NHẬP CHO KHÁCH CHƯA ĐĂNG NHẬP -->
                 <li class="dieu-huong__muc">
-                    <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>dang-ky.php" <?= ($trang ?? '') === 'dang-ky' ? 'aria-current="page"' : '' ?>>Đăng ký</a>
+                    <a class="dieu-huong__lien-ket" href="<?= e($gocTrang) ?>dang-ky.php" <?= $trangHienTai === 'dang-ky' ? 'aria-current="page"' : '' ?>>Đăng ký</a>
                 </li>
                 <li class="dieu-huong__muc">
-                    <a class="dieu-huong__lien-ket" href="<?= $goc ?? '' ?>dang-nhap.php" <?= ($trang ?? '') === 'dang-nhap' ? 'aria-current="page"' : '' ?>>Đăng nhập</a>
+                    <a class="dieu-huong__lien-ket" href="<?= e($gocTrang) ?>dang-nhap.php" <?= $trangHienTai === 'dang-nhap' ? 'aria-current="page"' : '' ?>>Đăng nhập</a>
                 </li>
             <?php endif; ?>
         </ul>

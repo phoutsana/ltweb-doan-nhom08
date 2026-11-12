@@ -1,0 +1,43 @@
+/* Styles extracted from inc/header.php (BT7: no inline styles). */
+.bt7-site-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px 0;
+}
+.bt7-site-logo-link { display: inline-block; }
+.bt7-site-logo { width: auto; height: 70px; margin-bottom: 10px; }
+.bt7-site-title { margin: 0; }
+.bt7-site-slogan { margin-top: 5px; }
+.so-luong-gio-hang { font-weight: bold; color: #facc15; }
+.bt7-admin-menu-parent { position: relative; }
+.bt7-admin-menu-toggle {
+    color: #fcd34d;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    cursor: pointer;
+}
+.bt7-admin-submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #1e3a8a;
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+    min-width: 190px;
+    box-shadow: 0 4px 6px rgba(0,0,0,.2);
+    z-index: 100;
+    border-radius: 4px;
+}
+.bt7-admin-menu-parent:hover > .bt7-admin-submenu,
+.bt7-admin-menu-parent.is-open > .bt7-admin-submenu { display: block; }
+.bt7-admin-submenu li { padding: 6px 15px; }
+.bt7-admin-submenu a { color: #fff; text-decoration: none; display: block; }
+.bt7-admin-submenu a:hover, .bt7-admin-submenu a:focus-visible {
+    text-decoration: underline;
+}
