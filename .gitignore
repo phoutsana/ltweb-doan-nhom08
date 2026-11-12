@@ -11,3 +11,16 @@
 # Keep required protection files
 !/storage/.htaccess
 !/logs/.htaccess
+
+# BT7 - Bao ve thong tin xac thuc
+.env
+.env.*
+!.env.example
+
+# Khong commit tep sao luu
+*.bak
+
+# Khong commit nhat ky va du lieu phat sinh
+logs/*.log
+logs/*.jsonl
+storage/*.jsonl
