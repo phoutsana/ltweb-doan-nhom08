@@ -161,6 +161,7 @@ $thongBaoDanhGia = $_SESSION['flash_danhgia'] ?? '';
 unset($_SESSION['flash_danhgia']);
 
 // Nhúng Header dùng chung của nhóm
+$cssRieng = 'thanhvien/3120224094_manh/bt7-csp.css';
 require __DIR__ . '/../../inc/header.php';
 ?>
 
@@ -259,24 +260,24 @@ require __DIR__ . '/../../inc/header.php';
         <h2 class="card-title">🧮 Máy tính điểm học phần (PHP)</h2>
         <form method="POST" action="gioithieu.php#tinh-diem" novalidate class="feedback-form">
             <input type="hidden" name="action_tinhdiem" value="1">
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <div class="form-group" style="flex: 1; min-width: 150px;">
+            <div data-bt7-csp="csp001">
+                <div class="form-group" data-bt7-csp="csp002">
                     <label for="a1">Điểm A1 (20%):</label>
                     <input type="number" step="0.1" id="a1" name="a1" value="<?= e($diemA1) ?>" placeholder="Ví dụ: 8.5">
                 </div>
-                <div class="form-group" style="flex: 1; min-width: 150px;">
+                <div class="form-group" data-bt7-csp="csp003">
                     <label for="a2">Điểm A2 (30%):</label>
                     <input type="number" step="0.1" id="a2" name="a2" value="<?= e($diemA2) ?>" placeholder="Ví dụ: 7.0">
                 </div>
-                <div class="form-group" style="flex: 1; min-width: 150px;">
+                <div class="form-group" data-bt7-csp="csp004">
                     <label for="a3">Điểm A3 (50%):</label>
                     <input type="number" step="0.1" id="a3" name="a3" value="<?= e($diemA3) ?>" placeholder="Ví dụ: 9.0">
                 </div>
             </div>
-            <button type="submit" class="btn-submit" style="margin-top: 10px;">Tính điểm</button>
+            <button type="submit" class="btn-submit" data-bt7-csp="csp005">Tính điểm</button>
         </form>
         <?php if ($diemTongKet !== null): ?>
-            <div style="margin-top: 20px; padding: 15px; background-color: #dcfce7; border-radius: 8px; color: #166534; font-weight: 600;">
+            <div data-bt7-csp="csp006">
                 🎉 Điểm tổng kết: <?= number_format($diemTongKet, 2) ?> / 10
             </div>
         <?php endif; ?>
@@ -286,7 +287,7 @@ require __DIR__ . '/../../inc/header.php';
     <section id="tuong-tac" class="card">
         <h2 class="card-title">💬 Sổ lưu bút cá nhân (Lưu tệp)</h2>
         <?php if ($thongBaoLuuBut !== ''): ?>
-            <div style="padding: 12px; background-color: #e0f2fe; border-radius: 6px; color: #0369a1; margin-bottom: 15px;"><?= e($thongBaoLuuBut) ?></div>
+            <div data-bt7-csp="csp007"><?= e($thongBaoLuuBut) ?></div>
         <?php endif; ?>
         <form method="POST" action="gioithieu.php#tuong-tac" novalidate class="feedback-form">
             <input type="hidden" name="action_luubut" value="1">
@@ -299,13 +300,13 @@ require __DIR__ . '/../../inc/header.php';
     <!-- 7. HÒM THƯ GÓP Ý & ĐÁNH GIÁ SAO (BẢNG tv_danh_gia) -->
     <section id="danh-gia-trang" class="card">
         <h2 class="card-title">⭐ Hòm thư Góp ý & Đánh giá Sao (Bảng tv_danh_gia)</h2>
-        <div style="background: #fdf2f8; border: 1px solid #fbcfe8; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
-            <span style="font-size: 1.5rem; font-weight: bold; color: #db2777;"><?= $diemTrungBinh ?> / 5.0 ⭐</span>
-            <p style="margin: 5px 0 0 0; color: #831843;">Tổng hợp từ <strong><?= $tongLuotDanhGia ?></strong> lượt đánh giá qua hàm SQL <code>AVG()</code>.</p>
+        <div data-bt7-csp="csp008">
+            <span data-bt7-csp="csp009"><?= $diemTrungBinh ?> / 5.0 ⭐</span>
+            <p data-bt7-csp="csp010">Tổng hợp từ <strong><?= $tongLuotDanhGia ?></strong> lượt đánh giá qua hàm SQL <code>AVG()</code>.</p>
         </div>
 
         <?php if ($thongBaoDanhGia !== ''): ?>
-            <div style="padding: 12px; background-color: #fce7f3; border-radius: 6px; color: #831843; margin-bottom: 15px;"><?= e($thongBaoDanhGia) ?></div>
+            <div data-bt7-csp="csp011"><?= e($thongBaoDanhGia) ?></div>
         <?php endif; ?>
 
         <form method="POST" action="gioithieu.php#danh-gia-trang" novalidate class="feedback-form">
@@ -314,7 +315,7 @@ require __DIR__ . '/../../inc/header.php';
                 <input type="text" name="nguoi_gui" value="<?= e($duLieuDanhGia['nguoi_gui']) ?>" placeholder="Họ và tên bạn...">
             </div>
             <div class="form-group">
-                <select name="so_sao" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <select name="so_sao" data-bt7-csp="csp012">
                     <option value="5">⭐⭐⭐⭐⭐ (5 sao - Tuyệt vời)</option>
                     <option value="4">⭐⭐⭐⭐ (4 sao - Rất tốt)</option>
                     <option value="3">⭐⭐⭐ (3 sao - Tạm ổn)</option>
@@ -328,23 +329,23 @@ require __DIR__ . '/../../inc/header.php';
             <button type="submit" class="btn-submit">Gửi đánh giá</button>
         </form>
 
-        <h4 style="margin-top: 25px; margin-bottom: 12px;">💬 Góp ý từ CSDL:</h4>
+        <h4 data-bt7-csp="csp013">💬 Góp ý từ CSDL:</h4>
         <?php if (empty($danhSachDanhGia)): ?>
-            <p style="color: #64748b; font-style: italic;">Chưa có góp ý nào.</p>
+            <p data-bt7-csp="csp014">Chưa có góp ý nào.</p>
         <?php else: ?>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div data-bt7-csp="csp015">
                 <?php foreach ($danhSachDanhGia as $dg): ?>
-                    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px;">
+                    <div data-bt7-csp="csp016">
                         <strong><?= e($dg['nguoi_gui']) ?> (<?= (int)$dg['so_sao'] ?> ⭐)</strong>
-                        <p style="margin: 4px 0 0 0; color: #334155;"><?= e($dg['nhan_xet']) ?></p>
+                        <p data-bt7-csp="csp017"><?= e($dg['nhan_xet']) ?></p>
                     </div>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
     </section>
 
-    <div class="back-buttons" style="margin-top: 20px;">
-        <a href="<?= $goc ?>index.php" class="btn-back" style="text-decoration: none; color: #1e42a0; font-weight: 500;">&larr; Quay về trang chủ nhóm</a>
+    <div class="back-buttons" data-bt7-csp="csp018">
+        <a href="<?= $goc ?>index.php" class="btn-back" data-bt7-csp="csp019">&larr; Quay về trang chủ nhóm</a>
     </div>
 
 </main>

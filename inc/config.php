@@ -3,10 +3,23 @@
 declare(strict_types=1);
 
 // inc/config.php - Cấu hình chung, được require đầu tiên ở mọi trang.
-const MOI_TRUONG = 'dev'; // máy thật: 'prod'
+$autoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (!is_file($autoload)) {
+    throw new RuntimeException('Hay chay composer install.');
+}
+require_once $autoload;
+
+$dotenv = \Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->safeLoad();
+$dotenv->required(['DB_HOST', 'DB_DATABASE', 'DB_USERNAME']);
+
+$appDebug = filter_var(
+    $_ENV['APP_DEBUG'] ?? $_SERVER['APP_DEBUG'] ?? 'false',
+    FILTER_VALIDATE_BOOLEAN
+);
 
 error_reporting(E_ALL);
-ini_set('display_errors', MOI_TRUONG === 'dev' ? '1' : '0');
+ini_set('display_errors', $appDebug ? '1' : '0');
 ini_set('log_errors', '1');
 ini_set('error_log', __DIR__ . '/../logs/php-error.log');
 
@@ -54,24 +67,22 @@ ini_set('error_log', __DIR__ . '/../logs/php-error.log');
 
      // CSP co ban duoc ap dung ngay
      header(
-         "Content-Security-Policy: " .
-         "object-src 'none'; " .
-         "base-uri 'self'; " .
-         "frame-ancestors 'self'"
-     );
+    "Content-Security-Policy: " .
+    "default-src 'self'; " .
+    "script-src 'self'; " .
+    "style-src 'self'; " .
+    "img-src 'self' data: https:; " .
+    "font-src 'self' data:; " .
+    "connect-src 'self' https://api.open-meteo.com; " .
+    "form-action 'self'; " .
+    "object-src 'none'; " .
+    "base-uri 'self'; " .
+    "frame-ancestors 'self'"
+);
 
      // Chinh sach CSP nghiem ngat de theo doi va
      // chuan bi loai bo script/style inline
-     header(
-         "Content-Security-Policy-Report-Only: " .
-         "default-src 'self'; " .
-         "script-src 'self'; " .
-         "style-src 'self'; " .
-         "img-src 'self' data: https:; " .
-         "object-src 'none'; " .
-         "base-uri 'self'; " .
-         "frame-ancestors 'self'"
-     );
+
  }
 
 /**

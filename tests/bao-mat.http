@@ -1,0 +1,32 @@
+@baseUrl = http://localhost:8001
+
+### TC01 - Header bao mat
+GET {{baseUrl}}/index.php
+
+### TC02 - Dang nhap thieu CSRF: mong doi 403
+POST {{baseUrl}}/dang-nhap.php
+Content-Type: application/x-www-form-urlencoded
+
+email=bt7-test@example.com&mat_khau=sai
+
+### TC03 - API gio hang thieu CSRF: mong doi 403
+POST {{baseUrl}}/api/gio-hang.php
+Content-Type: application/json
+
+{"id":1,"sl":1}
+
+### TC04a - GET dang xuat: mong doi 405
+GET {{baseUrl}}/dang-xuat.php
+
+### TC04b - GET xoa san pham: mong doi 405
+GET {{baseUrl}}/xoa-san-pham.php?id=0
+
+### TC08a - Tham so tim kiem dang mang
+GET {{baseUrl}}/danh-sach.php?q%5B%5D=ao
+
+### TC08b - ID san pham dang mang
+GET {{baseUrl}}/chi-tiet.php?id%5B%5D=1
+
+# CAC CA CO CSRF HOP LE:
+# Lay cookie va token tu phien thu nghiem khi chay.
+# Khong luu PHPSESSID hoac token that vao tep nay.

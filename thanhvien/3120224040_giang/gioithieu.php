@@ -14,7 +14,7 @@ require_once __DIR__ . '/../../inc/config.php';
 $goc = '../../';
 $tieuDe = 'Giới thiệu Ngô Hương Giang | Fashion Store';
 $trang = '';
-$cssRieng = 'style-canhan.css';
+$cssRieng = 'thanhvien/3120224040_giang/bt7-csp.css';
 
 const MSSV_GIANG = '3120224040';
 
@@ -312,7 +312,7 @@ require __DIR__ . '/../../inc/header.php';
                     <span>85%</span>
                 </div>
                 <div class="skill-bar">
-                    <div class="skill-progress" style="width: 85%;"></div>
+                    <div class="skill-progress" data-bt7-csp="csp001"></div>
                 </div>
             </div>
 
@@ -322,7 +322,7 @@ require __DIR__ . '/../../inc/header.php';
                     <span>80%</span>
                 </div>
                 <div class="skill-bar">
-                    <div class="skill-progress" style="width: 80%;"></div>
+                    <div class="skill-progress" data-bt7-csp="csp002"></div>
                 </div>
             </div>
 
@@ -332,7 +332,7 @@ require __DIR__ . '/../../inc/header.php';
                     <span>85%</span>
                 </div>
                 <div class="skill-bar">
-                    <div class="skill-progress" style="width: 85%;"></div>
+                    <div class="skill-progress" data-bt7-csp="csp003"></div>
                 </div>
             </div>
 
@@ -342,7 +342,7 @@ require __DIR__ . '/../../inc/header.php';
                     <span>80%</span>
                 </div>
                 <div class="skill-bar">
-                    <div class="skill-progress" style="width: 80%;"></div>
+                    <div class="skill-progress" data-bt7-csp="csp004"></div>
                 </div>
             </div>
         </div>
@@ -464,7 +464,7 @@ require __DIR__ . '/../../inc/header.php';
         </form>
 
         <?php if ($loiTraCuu !== ''): ?>
-            <p role="alert" style="color: red;">
+            <p role="alert" data-bt7-csp="csp005">
                 <?= e($loiTraCuu) ?>
             </p>
         <?php endif; ?>

@@ -1,0 +1,21 @@
+/* BT7 - CSP */
+@import url("style-canhan.css");
+[data-bt7-csp="csp001"] { display: flex; gap: 15px; flex-wrap: wrap; }
+[data-bt7-csp="csp002"] { flex: 1; min-width: 150px; }
+[data-bt7-csp="csp003"] { flex: 1; min-width: 150px; }
+[data-bt7-csp="csp004"] { flex: 1; min-width: 150px; }
+[data-bt7-csp="csp005"] { margin-top: 10px; }
+[data-bt7-csp="csp006"] { margin-top: 20px; padding: 15px; background-color: #dcfce7; border-radius: 8px; color: #166534; font-weight: 600; }
+[data-bt7-csp="csp007"] { padding: 12px; background-color: #e0f2fe; border-radius: 6px; color: #0369a1; margin-bottom: 15px; }
+[data-bt7-csp="csp008"] { background: #fdf2f8; border: 1px solid #fbcfe8; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+[data-bt7-csp="csp009"] { font-size: 1.5rem; font-weight: bold; color: #db2777; }
+[data-bt7-csp="csp010"] { margin: 5px 0 0 0; color: #831843; }
+[data-bt7-csp="csp011"] { padding: 12px; background-color: #fce7f3; border-radius: 6px; color: #831843; margin-bottom: 15px; }
+[data-bt7-csp="csp012"] { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; }
+[data-bt7-csp="csp013"] { margin-top: 25px; margin-bottom: 12px; }
+[data-bt7-csp="csp014"] { color: #64748b; font-style: italic; }
+[data-bt7-csp="csp015"] { display: flex; flex-direction: column; gap: 10px; }
+[data-bt7-csp="csp016"] { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px; }
+[data-bt7-csp="csp017"] { margin: 4px 0 0 0; color: #334155; }
+[data-bt7-csp="csp018"] { margin-top: 20px; }
+[data-bt7-csp="csp019"] { text-decoration: none; color: #1e42a0; font-weight: 500; }

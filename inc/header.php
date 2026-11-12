@@ -56,6 +56,7 @@ $tongSoLuong = (int) $gioHangSvc->tongSoLuong();
         src="<?= e($gocTrang . 'js/admin-menu.js') ?>"
         defer>
     </script>
+<link rel="stylesheet" href="<?= e($gocTrang . 'css/admin-menu-bt7.css') ?>">
 </head>
 
 <body class="bo-cuc-trang">

@@ -18,7 +18,7 @@ $goc = '../../';
 $tieuDe = 'Giới thiệu cá nhân - Nguyễn Sơn Chu';
 $moTa = 'Trang giới thiệu cá nhân của Nguyễn Sơn Chu.';
 $trang = 'gioi-thieu';
-$cssRieng = 'style-canhan.css';
+$cssRieng = 'thanhvien/3120224020_chu/style-canhan.css';
 
 // Chi su dung Session cho CSRF, thong bao va ket qua PRG; du lieu nam o MySQL.
 $mssvChu = '3120224020';

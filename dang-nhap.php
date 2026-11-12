@@ -173,33 +173,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $tieuDe = 'Đăng nhập - Fashion Store';
 $trang = 'dang-nhap';
 
+$cssRieng = 'css/dang-nhap-bt7-csp.css';
 require_once __DIR__ . '/inc/header.php';
 ?>
 
-<main class="noi-dung-chinh"
-      style="max-width: 500px;
-             margin: 50px auto;
-             padding: 30px;
-             background: white;
-             border-radius: 8px;
-             box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+<main class="noi-dung-chinh" data-bt7-dn="dn001">
 
-    <h2 style="text-align: center;
-               color: #1e3a8a;
-               margin-bottom: 20px;">
+    <h2 data-bt7-dn="dn002">
         Đăng Nhập
     </h2>
 
     <!-- Thong bao loi -->
     <?php if ($loi): ?>
 
-        <div style="background-color: #fee2e2;
-                    color: #991b1b;
-                    padding: 10px;
-                    border-radius: 4px;
-                    margin-bottom: 15px;
-                    border: 1px solid #f87171;
-                    text-align: center;">
+        <div data-bt7-dn="dn003">
 
             <?= e($loi) ?>
 
@@ -209,19 +196,13 @@ require_once __DIR__ . '/inc/header.php';
 
     <!-- Form dang nhap -->
     <form method="POST"
-          action="dang-nhap.php"
-          style="display: flex;
-                 flex-direction: column;
-                 gap: 15px;">
+          action="dang-nhap.php" data-bt7-dn="dn004">
 
 <?= csrf_field() ?>
 
         <!-- Email -->
         <div>
-            <label for="email"
-                   style="font-weight: bold;
-                          display: block;
-                          margin-bottom: 5px;">
+            <label for="email" data-bt7-dn="dn005">
                 Tài khoản (Email) *
             </label>
 
@@ -231,20 +212,12 @@ require_once __DIR__ . '/inc/header.php';
                    value="<?= e($email) ?>"
                    placeholder="Ví dụ: admin@fashionstore.com"
                    required
-                   autocomplete="username"
-                   style="width: 100%;
-                          padding: 10px;
-                          border: 1px solid #d1d5db;
-                          border-radius: 4px;
-                          box-sizing: border-box;">
+                   autocomplete="username" data-bt7-dn="dn006">
         </div>
 
         <!-- Mat khau -->
         <div>
-            <label for="password"
-                   style="font-weight: bold;
-                          display: block;
-                          margin-bottom: 5px;">
+            <label for="password" data-bt7-dn="dn007">
                 Mật khẩu *
             </label>
 
@@ -252,23 +225,12 @@ require_once __DIR__ . '/inc/header.php';
                    id="password"
                    name="password"
                    required
-                   autocomplete="current-password"
-                   style="width: 100%;
-                          padding: 10px;
-                          border: 1px solid #d1d5db;
-                          border-radius: 4px;
-                          box-sizing: border-box;">
+                   autocomplete="current-password" data-bt7-dn="dn008">
         </div>
 
         <!-- Nut dang nhap -->
         <button type="submit"
-                class="nut-bam nut-bam--chinh"
-                style="padding: 12px;
-                       font-size: 1.1rem;
-                       cursor: pointer;
-                       border: none;
-                       border-radius: 4px;
-                       margin-top: 10px;">
+                class="nut-bam nut-bam--chinh" data-bt7-dn="dn009">
             Đăng nhập
         </button>
 

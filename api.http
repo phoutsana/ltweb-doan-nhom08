@@ -1,23 +1,49 @@
-### 1. Test API tìm kiếm sản phẩm (Thành công 200)
-GET http://localhost/nhom8/ltweb-doan-nhom08/api/san-pham.php?q=ao
 
-### 2. Test API xem chi tiết sản phẩm không tồn tại (404)
-GET http://localhost/nhom8/ltweb-doan-nhom08/api/san-pham.php?id=999999
+@baseUrl = http://localhost:8001
 
-### 3. Test API thêm sản phẩm vào giỏ hàng qua POST (Thành công 200)
-POST http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
+# Gia tri mau - KHONG commit token/cookie that
+@csrfToken = THAY_TOKEN_KHI_KIEM_THU
+@sessionCookie = PHPSESSID=THAY_SESSION_KHI_KIEM_THU
+
+### 1. Tim kiem san pham - 200
+GET {{baseUrl}}/api/san-pham.php?q=ao
+
+### 2. San pham khong ton tai - 404
+GET {{baseUrl}}/api/san-pham.php?id=999999
+
+### 3. Them vao gio hang hop le - 200
+POST {{baseUrl}}/api/gio-hang.php
 Content-Type: application/json
+X-CSRF-Token: {{csrfToken}}
+Cookie: {{sessionCookie}}
 
 {
   "san_pham_id": 1,
   "so_luong": 2
 }
 
-### 4. Test API thêm sản phẩm với số lượng âm (422)
-POST http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
+### 4. So luong am - 422
+POST {{baseUrl}}/api/gio-hang.php
 Content-Type: application/json
+X-CSRF-Token: {{csrfToken}}
+Cookie: {{sessionCookie}}
 
 {
   "san_pham_id": 1,
   "so_luong": -3
 }
+
+### 5. Token CSRF sai - 403
+POST {{baseUrl}}/api/gio-hang.php
+Content-Type: application/json
+X-CSRF-Token: token-sai
+Cookie: {{sessionCookie}}
+
+{
+  "san_pham_id": 1,
+  "so_luong": 1
+}
+
+### 6. Xem gio hang - 200
+GET {{baseUrl}}/api/gio-hang.php
+Cookie: {{sessionCookie}}

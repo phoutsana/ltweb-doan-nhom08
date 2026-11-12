@@ -21,7 +21,15 @@ function db(): PDO
     $username = 'bt7_web_nhom08';
 
     // 2. Doc mat khau tu bien moi truong
-    $password = getenv('BT7_DB_PASSWORD');
+    $host = (string) ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? $host);
+    $port = (int) ($_ENV['DB_PORT'] ?? $_SERVER['DB_PORT'] ?? $port);
+    $dbName = (string) ($_ENV['DB_DATABASE'] ?? $_SERVER['DB_DATABASE'] ?? $dbName);
+    $username = (string) ($_ENV['DB_USERNAME'] ?? $_SERVER['DB_USERNAME'] ?? $username);
+
+    $password = $_ENV['DB_PASSWORD'] ?? $_SERVER['DB_PASSWORD'] ?? null;
+    if (!is_string($password) || $password === '') {
+        $password = getenv('BT7_DB_PASSWORD');
+    }
 
     if (!is_string($password) || $password === '') {
         throw new RuntimeException(

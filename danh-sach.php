@@ -75,22 +75,23 @@ $danhSach = $stmt->fetchAll();
 
 $tieuDe = 'Danh sách sản phẩm - Fashion Store';
 $trang = 'danh-sach';
+$cssRieng = 'css/danh-sach-bt7-csp.css';
 require_once __DIR__ . '/inc/header.php';
 ?>
 
-<main class="noi-dung-chinh" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+<main class="noi-dung-chinh" data-bt7-ds="ds001">
 
     <!-- Khối bộ lọc (Đã bổ sung bộ lọc Giá tối đa theo yêu cầu Bảng 1) -->
-    <form method="GET" action="danh-sach.php" class="khoi-noi-dung bo-loc-san-pham" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 30px; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+    <form method="GET" action="danh-sach.php" class="khoi-noi-dung bo-loc-san-pham" data-bt7-ds="ds002">
 
-        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 180px;">
-            <label for="tim-kiem" style="font-weight: bold; color: #374151;">Tìm kiếm</label>
-            <input type="text" id="tim-kiem" name="q" value="<?= e($tuKhoa) ?>" placeholder="Tên sản phẩm..." style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none;">
+        <div data-bt7-ds="ds003">
+            <label for="tim-kiem" data-bt7-ds="ds004">Tìm kiếm</label>
+            <input type="text" id="tim-kiem" name="q" value="<?= e($tuKhoa) ?>" placeholder="Tên sản phẩm..." data-bt7-ds="ds005">
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px;">
-            <label for="loc-danh-muc" style="font-weight: bold; color: #374151;">Danh mục</label>
-            <select id="loc-danh-muc" name="dm" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; background: white;">
+        <div data-bt7-ds="ds006">
+            <label for="loc-danh-muc" data-bt7-ds="ds007">Danh mục</label>
+            <select id="loc-danh-muc" name="dm" data-bt7-ds="ds008">
                 <option value="">Tất cả</option>
                 <?php foreach ($danhMucList as $dm): ?>
                     <option value="<?= $dm['id'] ?>" <?= ($danhMucId === (int)$dm['id']) ? 'selected' : '' ?>><?= e($dm['ten']) ?></option>
@@ -99,14 +100,14 @@ require_once __DIR__ . '/inc/header.php';
         </div>
 
         <!-- Ô lọc giá tối đa mới thêm -->
-        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px;">
-            <label for="gia-toi-da" style="font-weight: bold; color: #374151;">Giá tối đa (VNĐ)</label>
-            <input type="number" id="gia-toi-da" name="gia_toi_da" value="<?= ($giaToiDa !== false && $giaToiDa > 0) ? $giaToiDa : '' ?>" placeholder="VD: 500000" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none;">
+        <div data-bt7-ds="ds009">
+            <label for="gia-toi-da" data-bt7-ds="ds010">Giá tối đa (VNĐ)</label>
+            <input type="number" id="gia-toi-da" name="gia_toi_da" value="<?= ($giaToiDa !== false && $giaToiDa > 0) ? $giaToiDa : '' ?>" placeholder="VD: 500000" data-bt7-ds="ds011">
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px;">
-            <label for="sap-xep" style="font-weight: bold; color: #374151;">Sắp xếp</label>
-            <select id="sap-xep" name="sx" style="padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; background: white;">
+        <div data-bt7-ds="ds012">
+            <label for="sap-xep" data-bt7-ds="ds013">Sắp xếp</label>
+            <select id="sap-xep" name="sx" data-bt7-ds="ds014">
                 <option value="">Mặc định</option>
                 <option value="gia-tang" <?= $sapXep === 'gia-tang' ? 'selected' : '' ?>>Giá tăng dần</option>
                 <option value="gia-giam" <?= $sapXep === 'gia-giam' ? 'selected' : '' ?>>Giá giảm dần</option>
@@ -114,43 +115,43 @@ require_once __DIR__ . '/inc/header.php';
             </select>
         </div>
 
-        <button type="submit" style="padding: 10px 25px; background-color: #2563eb; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; height: 42px;">Lọc</button>
+        <button type="submit" data-bt7-ds="ds015">Lọc</button>
     </form>
 
     <!-- Khu vực hiển thị sản phẩm -->
     <section id="than-bang-san-pham">
         <?php if (empty($danhSach)): ?>
-            <div style="text-align: center; padding: 50px; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                <p style="font-weight: bold; color: #dc2626; font-size: 1.2rem;">Không có sản phẩm nào phù hợp với tìm kiếm của bạn.</p>
-                <a href="danh-sach.php" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px;">Xem tất cả sản phẩm</a>
+            <div data-bt7-ds="ds016">
+                <p data-bt7-ds="ds017">Không có sản phẩm nào phù hợp với tìm kiếm của bạn.</p>
+                <a href="danh-sach.php" data-bt7-ds="ds018">Xem tất cả sản phẩm</a>
             </div>
         <?php else: ?>
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px;">
+            <div data-bt7-ds="ds019">
                 <?php foreach ($danhSach as $sp): ?>
-                    <div style="position: relative; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column;">
+                    <div data-bt7-ds="ds020">
                         
                         <!-- Nút Yêu Thích -->
-                        <button type="button" data-yeu-thich="<?= e($sp['id']) ?>" style="position: absolute; top: 10px; right: 10px; z-index: 10; background: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.15); color: #dc2626; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;">
+                        <button type="button" data-yeu-thich="<?= e($sp['id']) ?>" data-bt7-ds="ds021">
                             ♡
                         </button>
 
                         <!-- Ảnh sản phẩm -->
-                        <div style="width: 100%; height: 250px; background-color: #f3f4f6; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                            <img src="<?= e($sp['anh']) ?>" alt="<?= e($sp['ten']) ?>" loading="lazy" style="max-width: 100%; max-height: 100%; object-fit: contain; padding: 10px;">
+                        <div data-bt7-ds="ds022">
+                            <img src="<?= e($sp['anh']) ?>" alt="<?= e($sp['ten']) ?>" loading="lazy" data-bt7-ds="ds023">
                         </div>
 
                         <!-- Thông tin sản phẩm -->
-                        <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div data-bt7-ds="ds024">
                             <div>
-                                <h2 style="font-size: 1.1rem; color: #111827; margin: 0 0 10px 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <h2 data-bt7-ds="ds025">
                                     <?= e($sp['ten']) ?>
                                 </h2>
-                                <p style="color: #dc2626; font-size: 1.25rem; font-weight: 700; margin: 0 0 15px 0;">
+                                <p data-bt7-ds="ds026">
                                     <?= number_format($sp['gia'], 0, ',', '.') ?> đ
                                 </p>
                             </div>
 
-                            <a href="chi-tiet.php?id=<?= e($sp['id']) ?>" style="display: block; text-align: center; width: 100%; padding: 10px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 6px; font-weight: 600;">
+                            <a href="chi-tiet.php?id=<?= e($sp['id']) ?>" data-bt7-ds="ds027">
                                 Xem chi tiết
                             </a>
                         </div>
@@ -160,14 +161,14 @@ require_once __DIR__ . '/inc/header.php';
 
             <!-- PHÂN TRANG (Giữ nguyên tham số bộ lọc khi chuyển trang) -->
             <?php if ($tongSoTrang > 1): ?>
-                <div style="display: flex; justify-content: center; gap: 8px; margin-top: 40px;">
+                <div data-bt7-ds="ds028">
                     <?php for ($i = 1; $i <= $tongSoTrang; $i++): ?>
                         <?php 
                             $params = $_GET;
                             $params['trang'] = $i;
                             $urlTrang = 'danh-sach.php?' . http_build_query($params);
                         ?>
-                        <a href="<?= e($urlTrang) ?>" style="padding: 8px 14px; border-radius: 4px; text-decoration: none; font-weight: bold; background: <?= ($i === $trangHienTai) ? '#2563eb' : '#e5e7eb' ?>; color: <?= ($i === $trangHienTai) ? 'white' : '#374151' ?>;">
+                        <a href="<?= e($urlTrang) ?>" class="<?= ($i === $trangHienTai) ? 'bt7-page-active' : 'bt7-page-inactive' ?>" data-bt7-ds="ds029">
                             <?= $i ?>
                         </a>
                     <?php endfor; ?>

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/inc/config.php';
+require_once __DIR__ . '/inc/csrf.php';
 
 // Kiểm tra phân quyền Quản trị viên trực tiếp an toàn
 if (!isset($_SESSION['user']) || $_SESSION['user']['vai_tro'] !== 'quan_tri') {
@@ -19,58 +20,62 @@ $danhSachLienHe = $kho->tatCa();
 
 $tieuDe = 'Trang Quản Trị - Fashion Store';
 $trang = 'quan-tri';
+$cssRieng = 'css/quan-tri-bt7-csp.css';
 require_once __DIR__ . '/inc/header.php';
 ?>
 
-<main class="noi-dung-chinh" style="max-width: 1000px; margin: 30px auto; padding: 20px; overflow-x: hidden;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">
-        <h2 style="color: #1e3a8a; margin: 0;">Danh sách Liên hệ khách hàng</h2>
-        <a href="dang-xuat.php" class="nut-bam" style="background-color: #dc2626; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none;">Đăng xuất</a>
+<main class="noi-dung-chinh" data-bt7-qt="qt001">
+    <div data-bt7-qt="qt002">
+        <h2 data-bt7-qt="qt003">Danh sách Liên hệ khách hàng</h2>
+        <form method="post" action="dang-xuat.php" class="bt7-qt-logout-form">
+    <?= csrf_field() ?>
+    <button type="submit" class="nut-bam bt7-qt-logout-button">Đăng xuất</button>
+</form>
     </div>
 
     <?php if (empty($danhSachLienHe)): ?>
-        <div style="text-align: center; padding: 40px; background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
-            <p style="font-size: 1.2rem; color: #4b5563;">Chưa có khách hàng nào gửi liên hệ.</p>
+        <div data-bt7-qt="qt005">
+            <p data-bt7-qt="qt006">Chưa có khách hàng nào gửi liên hệ.</p>
         </div>
     <?php else: ?>
         <!-- Bọc bảng danh sách liên hệ bằng div cuộn ngang chống vỡ khung -->
-        <div style="width: 100%; overflow-x: auto; background: white; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <table style="width: 100%; border-collapse: collapse; min-width: 700px;">
-                <thead style="background-color: #f8fafc; text-align: left;">
+        <div data-bt7-qt="qt007">
+            <table data-bt7-qt="qt008">
+                <thead data-bt7-qt="qt009">
                     <tr>
-                        <th style="padding: 12px 15px; border-bottom: 1px solid #e5e7eb;">Thời gian</th>
-                        <th style="padding: 12px 15px; border-bottom: 1px solid #e5e7eb;">Khách hàng</th>
-                        <th style="padding: 12px 15px; border-bottom: 1px solid #e5e7eb;">Nội dung chi tiết</th>
-                        <th style="padding: 12px 15px; border-bottom: 1px solid #e5e7eb;">Ảnh đính kèm</th>
+                        <th data-bt7-qt="qt010">Thời gian</th>
+                        <th data-bt7-qt="qt011">Khách hàng</th>
+                        <th data-bt7-qt="qt012">Nội dung chi tiết</th>
+                        <th data-bt7-qt="qt013">Ảnh đính kèm</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($danhSachLienHe as $lh): ?>
-                        <tr style="border-bottom: 1px solid #e5e7eb;">
-                            <td style="padding: 15px; vertical-align: top; width: 15%; color: #4b5563;"><?= e($lh['ngay_gui']) ?></td>
+                        <tr data-bt7-qt="qt014">
+                            <td data-bt7-qt="qt015"><?= e($lh['ngay_gui']) ?></td>
 
-                            <td style="padding: 15px; vertical-align: top; width: 25%;">
-                                <p style="font-weight: bold; margin: 0 0 5px 0; color: #111827;"><?= e($lh['ho_ten']) ?></p>
-                                <p style="margin: 0 0 5px 0; font-size: 0.9em;">📧 <?= e($lh['email']) ?></p>
+                            <td data-bt7-qt="qt016">
+                                <p data-bt7-qt="qt017"><?= e($lh['ho_ten']) ?></p>
+                                <p data-bt7-qt="qt018">📧 <?= e($lh['email']) ?></p>
                                 <?php if (!empty($lh['sdt'])): ?>
-                                    <p style="margin: 0; font-size: 0.9em;">📞 <?= e($lh['sdt']) ?></p>
+                                    <p data-bt7-qt="qt019">📞 <?= e($lh['sdt']) ?></p>
                                 <?php endif; ?>
                             </td>
 
-                            <td style="padding: 15px; vertical-align: top; width: 40%;">
+                            <td data-bt7-qt="qt020">
                                 <?php if (!empty($lh['chu_de'])): ?>
-                                    <p style="margin: 0 0 5px 0; font-weight: bold; color: #2563eb;">📌 Chủ đề: <?= e($lh['chu_de']) ?></p>
+                                    <p data-bt7-qt="qt021">📌 Chủ đề: <?= e($lh['chu_de']) ?></p>
                                 <?php endif; ?>
                                 <?= nl2br(e($lh['noi_dung'])) ?>
                             </td>
 
-                            <td style="padding: 15px; vertical-align: top; text-align: center; width: 20%;">
+                            <td data-bt7-qt="qt022">
                                 <?php if (!empty($lh['anh'])): ?>
                                     <a href="uploads/<?= e($lh['anh']) ?>" target="_blank">
-                                        <img src="uploads/<?= e($lh['anh']) ?>" alt="Ảnh đính kèm" style="max-width: 100px; max-height: 100px; border-radius: 4px; border: 1px solid #d1d5db; object-fit: cover;">
+                                        <img src="uploads/<?= e($lh['anh']) ?>" alt="Ảnh đính kèm" data-bt7-qt="qt023">
                                     </a>
                                 <?php else: ?>
-                                    <span style="color: #9ca3af; font-size: 0.9em;">Không có ảnh</span>
+                                    <span data-bt7-qt="qt024">Không có ảnh</span>
                                 <?php endif; ?>
                             </td>
                         </tr>

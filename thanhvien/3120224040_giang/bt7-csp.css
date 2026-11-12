@@ -1,0 +1,7 @@
+/* BT7 - CSP */
+@import url("style-canhan.css");
+[data-bt7-csp="csp001"] { width: 85%; }
+[data-bt7-csp="csp002"] { width: 80%; }
+[data-bt7-csp="csp003"] { width: 85%; }
+[data-bt7-csp="csp004"] { width: 80%; }
+[data-bt7-csp="csp005"] { color: red; }

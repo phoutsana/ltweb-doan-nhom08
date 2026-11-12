@@ -68,6 +68,9 @@ form.addEventListener('submit', async (suKien) => {
 
         const res = await fetch(form.action, {
             method: 'POST',
+            headers: {
+                'X-CSRF-Token': String(formData.get('csrf_token') || '')
+            },
             body: formData
         });
 

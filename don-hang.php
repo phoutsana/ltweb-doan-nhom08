@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/inc/config.php';
+require_once __DIR__ . '/inc/csrf.php';
 
 // Bắt buộc phải đăng nhập mới được xem đơn hàng
 if (!isset($_SESSION['user'])) {
@@ -8,6 +9,10 @@ if (!isset($_SESSION['user'])) {
 }
 
 $currentUser = $_SESSION['user'];
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
+    csrf_verify();
+}
 $pdo = \db();
 $loi = '';
 $thanhCong = '';
@@ -49,16 +54,17 @@ $chiTietDonId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 $tieuDe = 'Quản lý đơn hàng - Fashion Store';
 $trang = 'don-hang';
+$cssRieng = 'css/don-hang-bt7-csp.css';
 require_once __DIR__ . '/inc/header.php';
 ?>
 
-<main class="noi-dung-chinh" style="max-width: 1000px; margin: 30px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow-x: hidden;">
+<main class="noi-dung-chinh" data-bt7-dh="dh001">
     <?php if ($loi): ?>
-        <div style="background-color: #fee2e2; color: #991b1b; padding: 10px; border-radius: 4px; margin-bottom: 15px; border: 1px solid #f87171; text-align: center;"><?= e($loi) ?></div>
+        <div data-bt7-dh="dh002"><?= e($loi) ?></div>
     <?php endif; ?>
 
     <?php if ($thanhCong): ?>
-        <div style="background-color: #d1fae5; color: #065f46; padding: 12px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #34d399; text-align: center; font-weight: bold; font-size: 1.05rem;">
+        <div data-bt7-dh="dh003">
             <?= e($thanhCong) ?>
         </div>
     <?php endif; ?>
@@ -85,41 +91,41 @@ require_once __DIR__ . '/inc/header.php';
                 $stmtCt->execute([$chiTietDonId]);
                 $danhSachChiTiet = $stmtCt->fetchAll();
         ?>
-                <h2 style="color: #1e3a8a; margin-bottom: 15px;">Chi Tiết Đơn Hàng #<?= $donHang['id'] ?></h2>
+                <h2 data-bt7-dh="dh004">Chi Tiết Đơn Hàng #<?= $donHang['id'] ?></h2>
                 <p><strong>Ngày đặt:</strong> <?= e($donHang['ngay_tao'] ?? $donHang['ngay_dat'] ?? 'N/A') ?></p>
-                <p><strong>Trạng thái:</strong> <span style="padding: 4px 8px; background: #e0f2fe; color: #0369a1; border-radius: 4px;"><?= e($donHang['trang_thai']) ?></span></p>
-                <p><strong>Tổng tiền:</strong> <span style="color: #dc2626; font-weight: bold;"><?= number_format($donHang['tong_tien'], 0, ',', '.') ?> đ</span></p>
+                <p><strong>Trạng thái:</strong> <span data-bt7-dh="dh005"><?= e($donHang['trang_thai']) ?></span></p>
+                <p><strong>Tổng tiền:</strong> <span data-bt7-dh="dh006"><?= number_format($donHang['tong_tien'], 0, ',', '.') ?> đ</span></p>
 
-                <h3 style="margin-top: 25px; margin-bottom: 10px;">Danh sách sản phẩm</h3>
+                <h3 data-bt7-dh="dh007">Danh sách sản phẩm</h3>
                 
                 <!-- Bọc bảng chi tiết bằng div cuộn ngang chống vỡ khung -->
-                <div style="width: 100%; overflow-x: auto; margin-bottom: 20px;">
-                    <table style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                <div data-bt7-dh="dh008">
+                    <table data-bt7-dh="dh009">
                         <thead>
-                            <tr style="background: #f3f4f6; text-align: left;">
-                                <th style="padding: 10px; border: 1px solid #d1d5db;">Sản phẩm</th>
-                                <th style="padding: 10px; border: 1px solid #d1d5db;">Đơn giá lúc đặt</th>
-                                <th style="padding: 10px; border: 1px solid #d1d5db;">Số lượng</th>
-                                <th style="padding: 10px; border: 1px solid #d1d5db;">Thành tiền</th>
+                            <tr data-bt7-dh="dh010">
+                                <th data-bt7-dh="dh011">Sản phẩm</th>
+                                <th data-bt7-dh="dh012">Đơn giá lúc đặt</th>
+                                <th data-bt7-dh="dh013">Số lượng</th>
+                                <th data-bt7-dh="dh014">Thành tiền</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($danhSachChiTiet as $item): ?>
                                 <tr>
-                                    <td style="padding: 10px; border: 1px solid #d1d5db;">
-                                        <img src="<?= e($item['anh']) ?>" alt="" style="width: 40px; height: 40px; object-fit: cover; vertical-align: middle; margin-right: 10px;">
+                                    <td data-bt7-dh="dh015">
+                                        <img src="<?= e($item['anh']) ?>" alt="" data-bt7-dh="dh016">
                                         <?= e($item['ten_san_pham']) ?>
                                     </td>
-                                    <td style="padding: 10px; border: 1px solid #d1d5db;"><?= number_format($item['don_gia'], 0, ',', '.') ?> đ</td>
-                                    <td style="padding: 10px; border: 1px solid #d1d5db;"><?= e($item['so_luong']) ?></td>
-                                    <td style="padding: 10px; border: 1px solid #d1d5db; font-weight: bold;"><?= number_format($item['don_gia'] * $item['so_luong'], 0, ',', '.') ?> đ</td>
+                                    <td data-bt7-dh="dh017"><?= number_format($item['don_gia'], 0, ',', '.') ?> đ</td>
+                                    <td data-bt7-dh="dh018"><?= e($item['so_luong']) ?></td>
+                                    <td data-bt7-dh="dh019"><?= number_format($item['don_gia'] * $item['so_luong'], 0, ',', '.') ?> đ</td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
 
-                <a href="don-hang.php" style="display: inline-block; padding: 8px 16px; background: #4b5563; color: white; text-decoration: none; border-radius: 4px;">&larr Quay lại danh sách đơn hàng</a>
+                <a href="don-hang.php" data-bt7-dh="dh020">&larr Quay lại danh sách đơn hàng</a>
         <?php
             }
         } catch (\Exception $e) {
@@ -129,7 +135,7 @@ require_once __DIR__ . '/inc/header.php';
 
     <?php else: ?>
         <!-- HIỂN THỊ DANH SÁCH ĐƠN HÀNG -->
-        <h2 style="color: #1e3a8a; margin-bottom: 20px;"><?= $currentUser['vai_tro'] === 'quan_tri' ? 'Quản Lý Tất Cả Đơn Hàng (Admin)' : 'Đơn Hàng Của Tôi' ?></h2>
+        <h2 data-bt7-dh="dh021"><?= $currentUser['vai_tro'] === 'quan_tri' ? 'Quản Lý Tất Cả Đơn Hàng (Admin)' : 'Đơn Hàng Của Tôi' ?></h2>
 
         <?php
         try {
@@ -146,45 +152,46 @@ require_once __DIR__ . '/inc/header.php';
             } else {
         ?>
                 <!-- Bọc bảng danh sách đơn hàng bằng div cuộn ngang chống vỡ khung -->
-                <div style="width: 100%; overflow-x: auto; margin-bottom: 20px;">
-                    <table style="width: 100%; border-collapse: collapse; min-width: 650px;">
+                <div data-bt7-dh="dh022">
+                    <table data-bt7-dh="dh023">
                         <thead>
-                            <tr style="background: #f3f4f6; text-align: left;">
-                                <th style="padding: 10px; border: 1px solid #d1d5db;">ID</th>
-                                <?php if ($currentUser['vai_tro'] === 'quan_tri'): ?><th style="padding: 10px; border: 1px solid #d1d5db;">Khách hàng</th><?php endif; ?>
-                                <th style="padding: 10px; border: 1px solid #d1d5db;">Ngày đặt</th>
-                                <th style="padding: 10px; border: 1px solid #d1d5db;">Tổng tiền</th>
-                                <th style="padding: 10px; border: 1px solid #d1d5db;">Trạng thái</th>
-                                <th style="padding: 10px; border: 1px solid #d1d5db;">Hành động</th>
+                            <tr data-bt7-dh="dh024">
+                                <th data-bt7-dh="dh025">ID</th>
+                                <?php if ($currentUser['vai_tro'] === 'quan_tri'): ?><th data-bt7-dh="dh026">Khách hàng</th><?php endif; ?>
+                                <th data-bt7-dh="dh027">Ngày đặt</th>
+                                <th data-bt7-dh="dh028">Tổng tiền</th>
+                                <th data-bt7-dh="dh029">Trạng thái</th>
+                                <th data-bt7-dh="dh030">Hành động</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($danhSachDon as $dh): ?>
                                 <tr>
-                                    <td style="padding: 10px; border: 1px solid #d1d5db;">#<?= $dh['id'] ?></td>
+                                    <td data-bt7-dh="dh031">#<?= $dh['id'] ?></td>
                                     <?php if ($currentUser['vai_tro'] === 'quan_tri'): ?>
-                                        <td style="padding: 10px; border: 1px solid #d1d5db;"><?= e($dh['ho_ten'] ?? $dh['email']) ?></td>
+                                        <td data-bt7-dh="dh032"><?= e($dh['ho_ten'] ?? $dh['email']) ?></td>
                                     <?php endif; ?>
-                                    <td style="padding: 10px; border: 1px solid #d1d5db;"><?= e($dh['ngay_tao'] ?? $dh['ngay_dat'] ?? 'N/A') ?></td>
-                                    <td style="padding: 10px; border: 1px solid #d1d5db; font-weight: bold; color: #dc2626;"><?= number_format($dh['tong_tien'], 0, ',', '.') ?> đ</td>
-                                    <td style="padding: 10px; border: 1px solid #d1d5db;">
+                                    <td data-bt7-dh="dh033"><?= e($dh['ngay_tao'] ?? $dh['ngay_dat'] ?? 'N/A') ?></td>
+                                    <td data-bt7-dh="dh034"><?= number_format($dh['tong_tien'], 0, ',', '.') ?> đ</td>
+                                    <td data-bt7-dh="dh035">
                                         <?php if ($currentUser['vai_tro'] === 'quan_tri'): ?>
-                                            <form method="POST" action="don-hang.php" style="display: flex; gap: 5px;">
+                                            <form method="POST" action="don-hang.php" data-bt7-dh="dh036">
+                                                <?= csrf_field() ?>
                                                 <input type="hidden" name="don_hang_id" value="<?= $dh['id'] ?>">
-                                                <select name="trang_thai" style="padding: 4px; border: 1px solid #d1d5db; border-radius: 4px;">
+                                                <select name="trang_thai" data-bt7-dh="dh037">
                                                     <option value="dang_xu_ly" <?= $dh['trang_thai'] === 'dang_xu_ly' ? 'selected' : '' ?>>Đang xử lý</option>
                                                     <option value="dang_giao" <?= $dh['trang_thai'] === 'dang_giao' ? 'selected' : '' ?>>Đang giao</option>
                                                     <option value="hoan_thanh" <?= $dh['trang_thai'] === 'hoan_thanh' ? 'selected' : '' ?>>Hoàn thành</option>
                                                     <option value="da_huy" <?= $dh['trang_thai'] === 'da_huy' ? 'selected' : '' ?>>Đã hủy</option>
                                                 </select>
-                                                <button type="submit" style="padding: 4px 8px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer;">Lưu</button>
+                                                <button type="submit" data-bt7-dh="dh038">Lưu</button>
                                             </form>
                                         <?php else: ?>
-                                            <span style="padding: 4px 8px; background: #e0f2fe; color: #0369a1; border-radius: 4px;"><?= e($dh['trang_thai']) ?></span>
+                                            <span data-bt7-dh="dh039"><?= e($dh['trang_thai']) ?></span>
                                         <?php endif; ?>
                                     </td>
-                                    <td style="padding: 10px; border: 1px solid #d1d5db;">
-                                        <a href="don-hang.php?id=<?= $dh['id'] ?>" style="color: #2563eb; text-decoration: none; font-weight: bold;">Xem chi tiết</a>
+                                    <td data-bt7-dh="dh040">
+                                        <a href="don-hang.php?id=<?= $dh['id'] ?>" data-bt7-dh="dh041">Xem chi tiết</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

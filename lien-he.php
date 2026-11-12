@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/inc/config.php';
+require_once __DIR__ . '/inc/csrf.php';
 
 use App\Data\KhoLienHe;
 
@@ -8,6 +9,7 @@ $loi = [];
 $tenAnh = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_verify();
     // 1. Nhận dữ liệu (Hỗ trợ cả name cũ và name mới từ JS)
     $du['hoten']   = trim($_POST['fullname'] ?? $_POST['hoten'] ?? '');
     $du['email']   = trim($_POST['email'] ?? '');
@@ -111,53 +113,55 @@ unset($_SESSION['flash']);
 
 $tieuDe = 'Liên hệ - Fashion Store';
 $trang = 'lien-he';
+$cssRieng = 'css/lien-he-bt7-csp.css';
 require_once __DIR__ . '/inc/header.php';
 ?>
 
-<main class="noi-dung-chinh" style="max-width: 800px; margin: 30px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-    <h2 style="color: #1e3a8a; border-bottom: 2px solid #2563eb; padding-bottom: 10px; margin-bottom: 20px;">Gửi liên hệ cho chúng tôi</h2>
+<main class="noi-dung-chinh" data-bt7-lh="lh001">
+    <h2 data-bt7-lh="lh002">Gửi liên hệ cho chúng tôi</h2>
 
     <?php if ($tb): ?>
-        <div style="background-color: #d1fae5; color: #065f46; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #10b981;">
+        <div data-bt7-lh="lh003">
             <strong>Thành công!</strong> <?= e($tb) ?>
         </div>
     <?php endif; ?>
 
     <!-- Nơi JS sẽ in thông báo thành công hoặc thất bại -->
-    <div id="ket-qua-form" style="margin-bottom: 15px; font-weight: bold; font-size: 1.1em;"></div>
+    <div id="ket-qua-form" data-bt7-lh="lh004"></div>
 
-    <form id="form-lien-he" method="POST" action="lien-he.php" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 15px;">
+    <form id="form-lien-he" method="POST" action="lien-he.php" enctype="multipart/form-data" data-bt7-lh="lh005">
+        <?= csrf_field() ?>
         <div>
-            <label for="fullname" style="font-weight: bold; display: block; margin-bottom: 5px;">Họ tên *</label>
-            <input type="text" id="fullname" name="fullname" value="<?= e($du['hoten']) ?>" required minlength="3" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
-            <span id="loi-fullname" style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= isset($loi['hoten']) ? e($loi['hoten']) : '' ?></span>
+            <label for="fullname" data-bt7-lh="lh006">Họ tên *</label>
+            <input type="text" id="fullname" name="fullname" value="<?= e($du['hoten']) ?>" required minlength="3" data-bt7-lh="lh007">
+            <span id="loi-fullname" data-bt7-lh="lh008"><?= isset($loi['hoten']) ? e($loi['hoten']) : '' ?></span>
         </div>
 
         <div>
-            <label for="email" style="font-weight: bold; display: block; margin-bottom: 5px;">Email *</label>
-            <input type="email" id="email" name="email" value="<?= e($du['email']) ?>" required style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
-            <span id="loi-email" style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= isset($loi['email']) ? e($loi['email']) : '' ?></span>
+            <label for="email" data-bt7-lh="lh009">Email *</label>
+            <input type="email" id="email" name="email" value="<?= e($du['email']) ?>" required data-bt7-lh="lh010">
+            <span id="loi-email" data-bt7-lh="lh011"><?= isset($loi['email']) ? e($loi['email']) : '' ?></span>
         </div>
 
         <div>
-            <label for="sdt" style="font-weight: bold; display: block; margin-bottom: 5px;">Số điện thoại *</label>
-            <input type="text" id="sdt" name="sdt" value="<?= e($du['sdt']) ?>" required style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
-            <?php if (isset($loi['sdt'])): ?><span style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= e($loi['sdt']) ?></span><?php endif; ?>
+            <label for="sdt" data-bt7-lh="lh012">Số điện thoại *</label>
+            <input type="text" id="sdt" name="sdt" value="<?= e($du['sdt']) ?>" required data-bt7-lh="lh013">
+            <?php if (isset($loi['sdt'])): ?><span data-bt7-lh="lh014"><?= e($loi['sdt']) ?></span><?php endif; ?>
         </div>
 
         <div>
-            <label for="tuoi" style="font-weight: bold; display: block; margin-bottom: 5px;">Tuổi</label>
-            <input type="number" id="tuoi" name="tuoi" value="<?= e($du['tuoi']) ?>" min="10" max="100" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+            <label for="tuoi" data-bt7-lh="lh015">Tuổi</label>
+            <input type="number" id="tuoi" name="tuoi" value="<?= e($du['tuoi']) ?>" min="10" max="100" data-bt7-lh="lh016">
         </div>
 
         <div>
-            <label for="ngay" style="font-weight: bold; display: block; margin-bottom: 5px;">Ngày liên hệ</label>
-            <input type="date" id="ngay" name="ngay" value="<?= $du['ngay'] !== '' ? e($du['ngay']) : date('Y-m-d') ?>" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+            <label for="ngay" data-bt7-lh="lh017">Ngày liên hệ</label>
+            <input type="date" id="ngay" name="ngay" value="<?= $du['ngay'] !== '' ? e($du['ngay']) : date('Y-m-d') ?>" data-bt7-lh="lh018">
         </div>
 
         <div>
-            <label for="chude" style="font-weight: bold; display: block; margin-bottom: 5px;">Chủ đề</label>
-            <select id="chude" name="chude" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+            <label for="chude" data-bt7-lh="lh019">Chủ đề</label>
+            <select id="chude" name="chude" data-bt7-lh="lh020">
                 <option value="Tư vấn mua hàng" <?= $du['chude'] === 'Tư vấn mua hàng' ? 'selected' : '' ?>>Tư vấn mua hàng</option>
                 <option value="Đổi trả sản phẩm" <?= $du['chude'] === 'Đổi trả sản phẩm' ? 'selected' : '' ?>>Đổi trả sản phẩm</option>
                 <option value="Khiếu nại dịch vụ" <?= $du['chude'] === 'Khiếu nại dịch vụ' ? 'selected' : '' ?>>Khiếu nại dịch vụ</option>
@@ -166,18 +170,18 @@ require_once __DIR__ . '/inc/header.php';
         </div>
 
         <div>
-            <label for="anh" style="font-weight: bold; display: block; margin-bottom: 5px;">Ảnh đính kèm (Tùy chọn, tối đa 2MB)</label>
-            <input type="file" id="anh" name="anh" accept="image/jpeg, image/png, image/webp" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
-            <?php if (isset($loi['anh'])): ?><span style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= e($loi['anh']) ?></span><?php endif; ?>
+            <label for="anh" data-bt7-lh="lh021">Ảnh đính kèm (Tùy chọn, tối đa 2MB)</label>
+            <input type="file" id="anh" name="anh" accept="image/jpeg, image/png, image/webp" data-bt7-lh="lh022">
+            <?php if (isset($loi['anh'])): ?><span data-bt7-lh="lh023"><?= e($loi['anh']) ?></span><?php endif; ?>
         </div>
 
         <div>
-            <label for="message" style="font-weight: bold; display: block; margin-bottom: 5px;">Nội dung *</label>
-            <textarea id="message" name="message" rows="5" required minlength="10" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box; resize: vertical;"><?= e($du['noidung']) ?></textarea>
-            <span id="loi-message" style="color: #dc2626; font-size: 0.9em; display: block; margin-top: 5px;"><?= isset($loi['noidung']) ? e($loi['noidung']) : '' ?></span>
+            <label for="message" data-bt7-lh="lh024">Nội dung *</label>
+            <textarea id="message" name="message" rows="5" required minlength="10" data-bt7-lh="lh025"><?= e($du['noidung']) ?></textarea>
+            <span id="loi-message" data-bt7-lh="lh026"><?= isset($loi['noidung']) ? e($loi['noidung']) : '' ?></span>
         </div>
 
-        <button type="submit" id="nut-gui-lien-he" class="nut-bam nut-bam--chinh" style="padding: 12px; font-size: 1.1rem; cursor: pointer; border: none; border-radius: 4px;">Gửi liên hệ</button>
+        <button type="submit" id="nut-gui-lien-he" class="nut-bam nut-bam--chinh" data-bt7-lh="lh027">Gửi liên hệ</button>
     </form>
 </main>
 

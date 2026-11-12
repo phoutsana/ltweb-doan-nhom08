@@ -543,3 +543,14 @@ body.che-do-toi .cn-nav { background-color: #0f172a !important; border: 1px soli
 /* CSS cho Sổ lưu bút */
 .form-nhap { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; }
 body.che-do-toi .form-nhap { background: #0f172a; border-color: #475569; color: #fff; }
+/* BT7_DELETE_PROJECT_BUTTON */
+.bt7-delete-project-btn {
+    background: #ef4444;
+    color: white;
+    padding: 5px 10px;
+    border: 0;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+}

@@ -45,7 +45,7 @@ function csrf_field(): string
 // 3. Xac minh CSRF token truoc khi xu ly POST
 function csrf_verify(): void
 {
-    $submitted = $_POST['csrf_token'] ?? null;
+    $submitted = $_POST['csrf_token'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? null);
     $expected = $_SESSION['csrf_token'] ?? null;
 
     $valid = (

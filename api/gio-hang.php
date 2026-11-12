@@ -7,6 +7,7 @@ set_exception_handler(function ($e) {
 });
 
 require_once __DIR__ . '/../inc/config.php';
+require_once __DIR__ . '/../inc/csrf.php';
 header('Content-Type: application/json; charset=utf-8');
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -20,6 +21,7 @@ if ($method === 'GET') {
 }
 
 if ($method === 'POST') {
+    csrf_verify();
     // Nhận dữ liệu JSON từ JavaScript (fetch)
     $inputData = json_decode(file_get_contents('php://input'), true);
     $sanPhamId = isset($inputData['san_pham_id']) ? (int)$inputData['san_pham_id'] : 0;
@@ -50,28 +52,16 @@ if ($method === 'POST') {
         }
 
         // Khởi tạo giỏ hàng trong session nếu chưa có
-        if (!isset($_SESSION['gio'])) {
-            $_SESSION['gio'] = [];
-        }
-
-        if (isset($_SESSION['gio'][$sanPhamId])) {
-            $_SESSION['gio'][$sanPhamId]['so_luong'] += $soLuong;
-        } else {
-            $_SESSION['gio'][$sanPhamId] = [
-                'id' => $sp['id'],
-                'ten' => $sp['ten'],
-                'gia' => $sp['gia'],
-                'anh' => $sp['anh'],
-                'so_luong' => $soLuong
-            ];
-        }
-
-        // Tính tổng số món trong giỏ để trả về cập nhật header ngay lập tức
-        $tongSoMon = array_sum(array_column($_SESSION['gio'], 'so_luong'));
+        $gioHangService = new \App\Services\GioHang();
+        $gioHangService->them((string) $sanPhamId, $soLuong);
+        $tongSoMon = $gioHangService->tongSoLuong();
 
         http_response_code(200);
         echo json_encode(["thanh_cong" => true, "tong_so_mon" => $tongSoMon], JSON_UNESCAPED_UNICODE);
 
+    } catch (\InvalidArgumentException $e) {
+        http_response_code(422);
+        echo json_encode(["loi" => $e->getMessage()], JSON_UNESCAPED_UNICODE);
     } catch (\Exception $e) {
         http_response_code(500);
         echo json_encode(["loi" => "Lỗi máy chủ"]);

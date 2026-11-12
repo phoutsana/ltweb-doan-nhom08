@@ -1,0 +1,17 @@
+
+# BEGIN BT7 PROTECTION
+<FilesMatch "^(\.env(\..*)?|composer\.(json|lock)|.*\.(sql|bak))$">
+    Require all denied
+</FilesMatch>
+# END BT7 PROTECTION
+
+# BEGIN BT7 APACHE SAFE
+<FilesMatch "(?i)^(\.env(\..*)?|composer\.(json|lock)|.*\.(sql|bak|ps1|zip|http|log))$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(\.git|vendor|inc|src|database|storage|logs|kiemtra)(/|$) - [F,NC]
+</IfModule>
+# END BT7 APACHE SAFE

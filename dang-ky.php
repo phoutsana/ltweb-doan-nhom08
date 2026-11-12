@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/inc/config.php';
+require_once __DIR__ . '/inc/csrf.php';
 
 $loi = '';
 $thanhCong = false;
@@ -9,6 +10,7 @@ $emailNhap = '';
 $hoTenNhap = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_verify();
     $hoTenNhap = trim($_POST['ho_ten'] ?? '');
     $emailNhap = trim($_POST['email'] ?? '');
     $matKhauNhap = $_POST['mat_khau'] ?? '';
@@ -54,52 +56,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $tieuDe = 'Đăng ký tài khoản - Fashion Store';
 $trang = 'dang-ky';
+$cssRieng = 'css/dang-ky-bt7-csp.css';
 require_once __DIR__ . '/inc/header.php';
 ?>
 
-<main class="noi-dung-chinh" style="max-width: 500px; margin: 40px auto; padding: 30px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #2563eb; padding-bottom: 10px;">
-        <div style="width: 4px; height: 24px; background: #2563eb;"></div>
-        <h2 style="color: #1e3a8a; margin: 0;">Đăng Ký Tài Khoản</h2>
+<main class="noi-dung-chinh" data-bt7-dk="dk001">
+    <div data-bt7-dk="dk002">
+        <div data-bt7-dk="dk003"></div>
+        <h2 data-bt7-dk="dk004">Đăng Ký Tài Khoản</h2>
     </div>
 
     <?php if ($thanhCong): ?>
-        <div style="background-color: #d1fae5; color: #065f46; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #10b981;">
+        <div data-bt7-dk="dk005">
             <strong>Thành công!</strong> Đăng ký tài khoản thành công! Đang chuyển hướng sang trang đăng nhập...<br>
-            Hoặc bạn có thể bấm vào đây: <a href="dang-nhap.php" style="color: #2563eb; font-weight: bold; text-decoration: underline;">đăng nhập ngay</a>.
+            Hoặc bạn có thể bấm vào đây: <a href="dang-nhap.php" data-bt7-dk="dk006">đăng nhập ngay</a>.
         </div>
         <!-- Tự động chuyển hướng sang trang đăng nhập sau 2 giây -->
-        <script>
-            setTimeout(function() {
-                window.location.href = 'dang-nhap.php';
-            }, 2000);
-        </script>
+        <script src="js/dang-ky-bt7-csp.js" defer></script>
     <?php endif; ?>
 
     <?php if (!empty($loi)): ?>
-        <div style="background-color: #fee2e2; color: #991b1b; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #f87171;">
+        <div data-bt7-dk="dk007">
             <strong>Lỗi!</strong> <?= e($loi) ?>
         </div>
     <?php endif; ?>
 
     <?php if (!$thanhCong): ?>
-    <form method="POST" action="dang-ky.php" style="display: flex; flex-direction: column; gap: 15px;">
+    <form method="POST" action="dang-ky.php" data-bt7-dk="dk008">
+        <?= csrf_field() ?>
         <div>
-            <label for="ho_ten" style="font-weight: bold; display: block; margin-bottom: 5px;">Họ và tên *</label>
-            <input type="text" id="ho_ten" name="ho_ten" value="<?= e($hoTenNhap) ?>" required style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+            <label for="ho_ten" data-bt7-dk="dk009">Họ và tên *</label>
+            <input type="text" id="ho_ten" name="ho_ten" value="<?= e($hoTenNhap) ?>" required data-bt7-dk="dk010">
         </div>
 
         <div>
-            <label for="email" style="font-weight: bold; display: block; margin-bottom: 5px;">Email *</label>
-            <input type="email" id="email" name="email" value="<?= e($emailNhap) ?>" required style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+            <label for="email" data-bt7-dk="dk011">Email *</label>
+            <input type="email" id="email" name="email" value="<?= e($emailNhap) ?>" required data-bt7-dk="dk012">
         </div>
 
         <div>
-            <label for="mat_khau" style="font-weight: bold; display: block; margin-bottom: 5px;">Mật khẩu (tối thiểu 7 ký tự) *</label>
-            <input type="password" id="mat_khau" name="mat_khau" required minlength="7" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; box-sizing: border-box;">
+            <label for="mat_khau" data-bt7-dk="dk013">Mật khẩu (tối thiểu 7 ký tự) *</label>
+            <input type="password" id="mat_khau" name="mat_khau" required minlength="7" data-bt7-dk="dk014">
         </div>
 
-        <button type="submit" class="nut-bam nut-bam--chinh" style="padding: 12px; font-size: 1.1rem; cursor: pointer; border: none; border-radius: 4px; background-color: #2563eb; color: white; font-weight: bold;">Đăng ký</button>
+        <button type="submit" class="nut-bam nut-bam--chinh" data-bt7-dk="dk015">Đăng ký</button>
     </form>
     <?php endif; ?>
 </main>
