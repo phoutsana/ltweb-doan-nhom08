@@ -41,3 +41,27 @@
 .bt7-admin-submenu a:hover, .bt7-admin-submenu a:focus-visible {
     text-decoration: underline;
 }
+
+/* BT7 - Dang xuat bang POST */
+
+.bt7-logout-form {
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+.bt7-logout-button {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.bt7-logout-button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+}
