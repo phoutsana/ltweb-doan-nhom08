@@ -1,0 +1,119 @@
+﻿C:\ltweb-doan-nhom08-hoan-thien\dang-ky.php:12: if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\dang-ky.php:13: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\dang-ky.php:41: $stmt = $pdo->prepare("INSERT INTO nguoi_dung (ho_ten, email, mat_khau, vai_tro) VALUES (?, ?, ?, ?)");
+C:\ltweb-doan-nhom08-hoan-thien\dang-nhap.php:12: if ($_SESSION['user']['vai_tro'] === 'quan_tri') {
+C:\ltweb-doan-nhom08-hoan-thien\dang-nhap.php:25: if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\dang-nhap.php:27: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\dang-nhap.php:75: "SELECT id, email, mat_khau, ho_ten, vai_tro
+C:\ltweb-doan-nhom08-hoan-thien\dang-nhap.php:108: 'vai_tro' => $nguoiDung['vai_tro']
+C:\ltweb-doan-nhom08-hoan-thien\dang-nhap.php:112: if ($nguoiDung['vai_tro'] === 'quan_tri') {
+C:\ltweb-doan-nhom08-hoan-thien\dang-xuat.php:16: if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\dang-xuat.php:23: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\dat-hang.php:21: if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\dat-hang.php:30: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\dat-hang.php:124: "INSERT INTO don_hang
+C:\ltweb-doan-nhom08-hoan-thien\dat-hang.php:125: (nguoi_dung_id, tong_tien, trang_thai)
+C:\ltweb-doan-nhom08-hoan-thien\dat-hang.php:135: 'UPDATE san_pham
+C:\ltweb-doan-nhom08-hoan-thien\dat-hang.php:142: 'INSERT INTO chi_tiet_don
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:13: if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:14: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:26: if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['don_hang_id'], $_POST['trang_thai'])) {
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:27: if ($currentUser['vai_tro'] === 'quan_tri') {
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:36: $stmtUp = $pdo->prepare("UPDATE don_hang SET trang_thai = ? WHERE id = ?");
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:76: if ($currentUser['vai_tro'] === 'quan_tri') {
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:80: $stmt = $pdo->prepare("SELECT * FROM don_hang WHERE id = ? AND nguoi_dung_id = ? LIMIT 1");
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:138: <h2 data-bt7-dh="dh021"><?= $currentUser['vai_tro'] === 'quan_tri' ? 'Quản Lý Tất Cả Đơn Hàng (Admin)' : 'Đơn Hàng Của Tôi' ?></h2>
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:142: if ($currentUser['vai_tro'] === 'quan_tri') {
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:143: $stmt = $pdo->query("SELECT dh.*, nd.ho_ten, nd.email FROM don_hang dh JOIN nguoi_dung nd ON dh.nguoi_dung_id = nd.id ORDER BY dh.id ASC");
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:145: $stmt = $pdo->prepare("SELECT * FROM don_hang WHERE nguoi_dung_id = ? ORDER BY id ASC");
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:160: <?php if ($currentUser['vai_tro'] === 'quan_tri'): ?><th data-bt7-dh="dh026">Khách hàng</th><?php endif; ?>
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:171: <?php if ($currentUser['vai_tro'] === 'quan_tri'): ?>
+C:\ltweb-doan-nhom08-hoan-thien\don-hang.php:177: <?php if ($currentUser['vai_tro'] === 'quan_tri'): ?>
+C:\ltweb-doan-nhom08-hoan-thien\gio-hang.php:11: if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\gio-hang.php:13: // Ham csrf_verify() se tra 403 va dung neu token thieu hoac sai.
+C:\ltweb-doan-nhom08-hoan-thien\gio-hang.php:14: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\lien-he.php:11: if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\lien-he.php:12: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\quan-tri-san-pham.php:8: ($_SESSION['user']['vai_tro'] ?? null) !== 'quan_tri') {
+C:\ltweb-doan-nhom08-hoan-thien\quan-tri.php:6: if (!isset($_SESSION['user']) || $_SESSION['user']['vai_tro'] !== 'quan_tri') {
+C:\ltweb-doan-nhom08-hoan-thien\sua-san-pham.php:10: ($_SESSION['user']['vai_tro'] ?? null) !== 'quan_tri'
+C:\ltweb-doan-nhom08-hoan-thien\sua-san-pham.php:16: $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+C:\ltweb-doan-nhom08-hoan-thien\sua-san-pham.php:28: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\sua-san-pham.php:139: // Chi UPDATE khi tat ca du lieu hop le.
+C:\ltweb-doan-nhom08-hoan-thien\sua-san-pham.php:142: $stmtUpdate = $pdo->prepare(
+C:\ltweb-doan-nhom08-hoan-thien\sua-san-pham.php:143: 'UPDATE san_pham
+C:\ltweb-doan-nhom08-hoan-thien\thanh-toan.php:59: if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\them-san-pham.php:9: if (!is_array($nguoiDung) || ($nguoiDung['vai_tro'] ?? null) !== 'quan_tri') {
+C:\ltweb-doan-nhom08-hoan-thien\them-san-pham.php:30: if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\them-san-pham.php:32: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\them-san-pham.php:188: 'INSERT INTO san_pham
+C:\ltweb-doan-nhom08-hoan-thien\xoa-san-pham.php:8: if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\xoa-san-pham.php:17: ($_SESSION['user']['vai_tro'] ?? null) !== 'quan_tri'
+C:\ltweb-doan-nhom08-hoan-thien\xoa-san-pham.php:24: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\xoa-san-pham.php:38: $stmt = $pdo->prepare('DELETE FROM san_pham WHERE id = ?');
+C:\ltweb-doan-nhom08-hoan-thien\api\gio-hang.php:13: $method = $_SERVER['REQUEST_METHOD'];
+C:\ltweb-doan-nhom08-hoan-thien\api\gio-hang.php:24: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:12: function csrf_token(): string
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:21: !isset($_SESSION['csrf_token']) ||
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:22: !is_string($_SESSION['csrf_token']) ||
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:23: $_SESSION['csrf_token'] === ''
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:25: $_SESSION['csrf_token'] = bin2hex(
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:30: return $_SESSION['csrf_token'];
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:36: return '<input type="hidden" name="csrf_token" value="' .
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:38: csrf_token(),
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:46: function csrf_verify(): void
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:48: $submitted = $_POST['csrf_token'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? null);
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:49: $expected = $_SESSION['csrf_token'] ?? null;
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:52: ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' &&
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:111: return csrf_token();
+C:\ltweb-doan-nhom08-hoan-thien\inc\csrf.php:114: function csrfField(): string
+C:\ltweb-doan-nhom08-hoan-thien\inc\header.php:26: ($nguoiDung['vai_tro'] ?? '') === 'quan_tri';
+C:\ltweb-doan-nhom08-hoan-thien\src\Data\KhoLienHe.php:19: $sql = "INSERT INTO lien_he (ho_ten, email, sdt, chu_de, noi_dung, anh, ngay_gui)
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:41: $laChuTrang = $idChu > 0 && $idDangNhap === $idChu;
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:47: FROM tv_cau_hoi WHERE mssv = ? ORDER BY ma_cau');
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:69: if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:77: if (!$laChuTrang) {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:87: $dem = $pdo->prepare('SELECT COUNT(*) FROM tv_muc_tieu WHERE mssv = ?');
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:92: $st = $pdo->prepare('INSERT INTO tv_muc_tieu (mssv, noi_dung) VALUES (?, ?)');
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:107: $st = $pdo->prepare('DELETE FROM tv_muc_tieu WHERE id = ? AND mssv = ?');
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:117: $st = $pdo->prepare('UPDATE tv_muc_tieu
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:119: WHERE id = ? AND mssv = ?');
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:149: $st = $pdo->prepare('INSERT INTO tv_ket_qua_trac_nghiem
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:171: FROM tv_muc_tieu WHERE mssv = ? ORDER BY id DESC");
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:179: FROM tv_ket_qua_trac_nghiem WHERE mssv = ? ORDER BY id DESC LIMIT 5');
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:299: <?php if ($laChuTrang): ?>
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:301: <?= csrfField() ?>
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:332: <?php if ($laChuTrang): ?>
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:335: <?= csrfField() ?>
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:342: <?= csrfField() ?>
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224020_chu\gioithieu.php:359: <?= csrfField() ?>
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224040_giang\gioithieu.php:31: WHERE mssv = ?
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224040_giang\gioithieu.php:115: WHERE mssv = ? AND thu = ?
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224094_manh\gioithieu.php:25: if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_luubut'])) {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224094_manh\gioithieu.php:81: if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_tinhdiem'])) {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224094_manh\gioithieu.php:116: if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_danhgia'])) {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224094_manh\gioithieu.php:130: $stmt = db()->prepare("INSERT INTO tv_danh_gia (masv, nguoi_gui, so_sao, nhan_xet, thoi_gian) VALUES (?, ?, ?, ?, NOW())");
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224094_manh\gioithieu.php:261: <?= csrfField() ?>
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224094_manh\gioithieu.php:292: <?= csrfField() ?>
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224094_manh\gioithieu.php:312: <?= csrfField() ?>
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224094_manh\gioithieu.php:358: if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gui_luu_but'])) {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224094_manh\gioithieu.php:362: $stmt = db()->prepare("INSERT INTO tv_luu_but (masv, ten_nguoi_gui, noi_dung) VALUES (?, ?, ?)");
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224094_manh\gioithieu.php:379: <?= csrfField() ?>
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224182_phaeva\gioithieu.php:12: if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224182_phaeva\gioithieu.php:13: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224182_phaeva\gioithieu.php:22: if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_them_ky_nang'])) {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224182_phaeva\gioithieu.php:31: $stmt = db()->prepare("INSERT INTO tv_ky_nang (masv, tieu_de, mo_ta, muc) VALUES (?, ?, ?, ?)");
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224182_phaeva\gioithieu.php:42: if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_xoa_ky_nang'])) {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224182_phaeva\gioithieu.php:46: $stmt = db()->prepare("DELETE FROM tv_ky_nang WHERE id = ? AND masv = ?");
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224182_phaeva\gioithieu.php:89: if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_tinh_diem'])) {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224182_phaeva\gioithieu.php:107: $stmtDiem = db()->prepare("INSERT INTO tv_diem_hoc_phan (masv, diem_a1, diem_a2, diem_a3, diem_tong_ket) VALUES (?, ?, ?, ?, ?)");
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224184_phoutsana\gioithieu.php:18: if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224184_phoutsana\gioithieu.php:19: csrf_verify();
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224184_phoutsana\gioithieu.php:31: ($currentUser['vai_tro'] ?? '') === 'quan_tri' ||
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224184_phoutsana\gioithieu.php:51: ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' &&
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224184_phoutsana\gioithieu.php:73: if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['them_du_an'])) {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224184_phoutsana\gioithieu.php:85: $stmt = db()->prepare("INSERT INTO tv_du_an (masv, ten_du_an, mo_ta, cong_nghe) VALUES ('3120224184', ?, ?, ?)");
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224184_phoutsana\gioithieu.php:94: ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' &&
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224184_phoutsana\gioithieu.php:114: 'DELETE FROM tv_du_an WHERE id = ? AND masv = ?'
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224184_phoutsana\gioithieu.php:129: if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gui_luu_but'])) {
+C:\ltweb-doan-nhom08-hoan-thien\thanhvien\3120224184_phoutsana\gioithieu.php:137: $stmt = db()->prepare("INSERT INTO tv_luu_but (masv, ten, loi_nhan) VALUES ('3120224184', ?, ?)");

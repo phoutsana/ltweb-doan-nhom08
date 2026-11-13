@@ -9,8 +9,12 @@
  * Cách thử: Mở trình duyệt truy cập http://localhost:8000/thanhvien/3120224094_manh/gioithieu.php
  */
 
-require __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../../inc/csrf.php';
 
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    csrf_verify();
+}
 // Đường dẫn tương đối về thư mục gốc của dự án
 $goc = '../../';
 $tieuDe = 'Trang giới thiệu cá nhân - Lê Văn Mạnh';
@@ -162,10 +166,56 @@ unset($_SESSION['flash_danhgia']);
 
 // Nhúng Header dùng chung của nhóm
 $cssRieng = 'thanhvien/3120224094_manh/bt7-csp.css';
+// Xử lý gửi lưu bút
+if (
+    ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST'
+    && isset($_POST['gui_luu_but'])
+) {
+    csrf_verify();
+
+    $tenNhap = $_POST['ten_nguoi_gui'] ?? null;
+    $noiDungNhap = $_POST['noi_dung'] ?? null;
+
+    $ten = is_string($tenNhap) ? trim($tenNhap) : '';
+    $loiNhan = is_string($noiDungNhap) ? trim($noiDungNhap) : '';
+
+    if (
+        $ten !== ''
+        && $loiNhan !== ''
+        && mb_strlen($ten) <= 100
+        && mb_strlen($loiNhan) <= 5000
+    ) {
+        $stmt = db()->prepare(
+            'INSERT INTO tv_luu_but (mssv, ten, loi_nhan)
+             VALUES (?, ?, ?)'
+        );
+
+        $stmt->execute([
+            '3120224094',
+            $ten,
+            $loiNhan
+        ]);
+
+        header('Location: gioithieu.php', true, 303);
+        exit;
+    }
+}
+
+// Lấy danh sách lưu bút
+$stmt_lb = db()->prepare(
+    'SELECT id, ten, loi_nhan, ngay_tao
+     FROM tv_luu_but
+     WHERE mssv = ?
+     ORDER BY id DESC'
+);
+
+$stmt_lb->execute(['3120224094']);
+
+$danh_sach_luu_but = $stmt_lb->fetchAll(PDO::FETCH_ASSOC);
+
+// Nạp header chung trước khi hiển thị HTML
 require __DIR__ . '/../../inc/header.php';
 ?>
-
-<link rel="stylesheet" href="style-canhan.css">
 
 <!-- Header Banner Xanh Dương -->
 <header class="header-banner">
@@ -257,7 +307,8 @@ require __DIR__ . '/../../inc/header.php';
 
     <!-- 5. MÁY TÍNH ĐIỂM HỌC PHẦN -->
     <section id="tinh-diem" class="card">
-        <h2 class="card-title">🧮 Máy tính điểm học phần (PHP)</h2>
+    <h2 class="card-title">🧮 Máy tính điểm học phần (PHP)</h2>
+    <form method="post" action="gioithieu.php#tinh-diem">
         <?= csrfField() ?>
             <input type="hidden" name="action_tinhdiem" value="1">
             <div data-bt7-csp="csp001">
@@ -289,7 +340,8 @@ require __DIR__ . '/../../inc/header.php';
         <?php if ($thongBaoLuuBut !== ''): ?>
             <div data-bt7-csp="csp007"><?= e($thongBaoLuuBut) ?></div>
         <?php endif; ?>
-        <?= csrfField() ?>
+        <form method="post" action="gioithieu.php#tuong-tac">
+    <?= csrfField() ?>
             <input type="hidden" name="action_luubut" value="1">
             <div class="form-group"><input type="text" name="ten" value="<?= e($duLieuLuuBut['ten']) ?>" placeholder="Tên của bạn..."></div>
             <div class="form-group"><textarea name="noidung" rows="3" placeholder="Nhập lời nhắn..."><?= e($duLieuLuuBut['noidung']) ?></textarea></div>
@@ -309,7 +361,8 @@ require __DIR__ . '/../../inc/header.php';
             <div data-bt7-csp="csp011"><?= e($thongBaoDanhGia) ?></div>
         <?php endif; ?>
 
-        <?= csrfField() ?>
+        <form method="post" action="gioithieu.php#danh-gia-trang">
+    <?= csrfField() ?>
             <input type="hidden" name="action_danhgia" value="1">
             <div class="form-group">
                 <input type="text" name="nguoi_gui" value="<?= e($duLieuDanhGia['nguoi_gui']) ?>" placeholder="Họ và tên bạn...">
@@ -348,34 +401,11 @@ require __DIR__ . '/../../inc/header.php';
         <a href="<?= $goc ?>index.php" class="btn-back" data-bt7-csp="csp019">&larr; Quay về trang chủ nhóm</a>
     </div>
 
-</main>
-
-<script src="js/canhan.js"></script>
-
-<?php require __DIR__ . '/../../inc/footer.php'; ?>
-<?php
-// Xử lý khi người dùng gửi lưu bút mới
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gui_luu_but'])) {
-    $ten_nguoi_gui = trim($_POST['ten_nguoi_gui']);
-    $noi_dung = trim($_POST['noi_dung']);
-    if (!empty($ten_nguoi_gui) && !empty($noi_dung)) {
-        $stmt = db()->prepare("INSERT INTO tv_luu_but (masv, ten_nguoi_gui, noi_dung) VALUES (?, ?, ?)");
-        $stmt->execute(['3120224094', $ten_nguoi_gui, $noi_dung]);
-        header("Location: gioithieu.php");
-        exit;
-    }
-}
-
-// Lấy danh sách lưu bút từ CSDL
-$stmt_lb = db()->prepare("SELECT * FROM tv_luu_but WHERE masv = ? ORDER BY thoi_gian DESC");
-$stmt_lb->execute(['3120224094']);
-$danh_sach_luu_but = $stmt_lb->fetchAll();
-?>
-
 <!-- HTML Giao diện Sổ lưu bút -->
-<div class="card mb-4">
+<section class="card">
     <div class="card-header bg-primary text-white">📖 Sổ lưu bút (CSDL MySQL)</div>
     <div class="card-body">
+    <form method="post" action="gioithieu.php">
         <?= csrfField() ?>
             <div class="mb-3">
                 <input type="text" name="ten_nguoi_gui" class="form-control" placeholder="Tên của bạn..." required>
@@ -393,8 +423,16 @@ $danh_sach_luu_but = $stmt_lb->fetchAll();
             <?php else: ?>
                 <?php foreach ($danh_sach_luu_but as $lb): ?>
                     <div class="list-group-item mb-2">
-                        <h6 class="mb-1 text-bold"><?= htmlspecialchars($lb['ten_nguoi_gui']) ?> <small class="text-muted float-end"><?= $lb['thoi_gian'] ?></small></h6>
-                        <p class="mb-1"><?= nl2br(htmlspecialchars($lb['noi_dung'])) ?></p>
+                        <h6 class="mb-1 text-bold">
+    <?= e($lb['ten']) ?>
+    <small class="text-muted float-end">
+        <?= e((string) $lb['ngay_tao']) ?>
+    </small>
+</h6>
+
+<p class="mb-1">
+    <?= nl2br(e($lb['loi_nhan'])) ?>
+</p>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -403,19 +441,20 @@ $danh_sach_luu_but = $stmt_lb->fetchAll();
 </div>
 <?php
 // Xử lý tìm kiếm dự án
-$tu_khoa = isset($_GET['tu_khoa']) ? trim($_GET['tu_khoa']) : '';
+$tuKhoaNhap = $_GET['tu_khoa'] ?? '';
+$tu_khoa = is_string($tuKhoaNhap) ? trim($tuKhoaNhap) : '';
 if ($tu_khoa !== '') {
-    $stmt_da = db()->prepare("SELECT * FROM tv_du_an WHERE masv = ? AND (ten_du_an LIKE ? OR cong_nghe LIKE ?)");
+    $stmt_da = db()->prepare("SELECT * FROM tv_du_an WHERE mssv = ? AND (ten_du_an LIKE ? OR cong_nghe LIKE ?)");
     $stmt_da->execute(['3120224094', "%$tu_khoa%", "%$tu_khoa%"]);
 } else {
-    $stmt_da = db()->prepare("SELECT * FROM tv_du_an WHERE masv = ?");
+    $stmt_da = db()->prepare("SELECT * FROM tv_du_an WHERE mssv = ?");
     $stmt_da->execute(['3120224094']);
 }
 $danh_sach_du_an = $stmt_da->fetchAll();
 ?>
 
 <!-- HTML Giao diện Dự án cá nhân -->
-<div class="card mb-4">
+<section class="card">
     <div class="card-header bg-success text-white">🚀 Dự án cá nhân (Tìm kiếm & Lọc CSDL)</div>
     <div class="card-body">
         <!-- Form Tìm kiếm -->
@@ -447,3 +486,8 @@ $danh_sach_du_an = $stmt_da->fetchAll();
         </div>
     </div>
 </div>
+</main>
+
+<script src="js/canhan.js"></script>
+
+<?php require __DIR__ . '/../../inc/footer.php'; ?>
