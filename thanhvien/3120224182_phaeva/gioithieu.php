@@ -12,6 +12,10 @@ $goc = '../../';
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     csrf_verify();
 }
+
+// Bật quyền quản lý/xóa cho chủ trang (phục vụ kiểm thử Phần B)
+$coQuyenDuAn = true; 
+
 $thongBaoKyNang = '';
 $loiKyNang = '';
 $loiDiem = '';
@@ -20,6 +24,11 @@ $loiDiem = '';
 // CHỨC NĂNG 1: THÊM & XÓA KỸ NĂNG (TƯƠNG TÁC CSDL tv_ky_nang)
 // ==========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_them_ky_nang'])) {
+    if (!$coQuyenDuAn) {
+        http_response_code(403);
+        exit('Không có quyền thêm kỹ năng.');
+    }
+
     $tieuDeKyNang = trim($_POST['tieu_de'] ?? '');
     $moTaKyNang = trim($_POST['mo_ta'] ?? '');
     $mucKyNang = trim($_POST['muc'] ?? 'lap-trinh');
@@ -40,6 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_them_ky_nang'])) 
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_xoa_ky_nang'])) {
+    if (!$coQuyenDuAn) {
+        http_response_code(403);
+        exit('Không có quyền xóa kỹ năng.');
+    }
+
     $idXoa = filter_input(INPUT_POST, 'id_ky_nang', FILTER_VALIDATE_INT);
     if ($idXoa) {
         try {
@@ -154,6 +168,7 @@ require_once __DIR__ . '/../../inc/header.php';
         <div class="thong-tin-chi-tiet" data-bt7-css="p007">
             <h2 data-bt7-css="p008">Giới thiệu bản thân</h2>
             <p><strong>Họ và tên:</strong> KEOPHOXAY Phaeva</p>
+            <p><strong>Mã sinh viên:</strong> 3120224182</p>
             <p><strong>Ngành học:</strong> Công nghệ Thông tin</p>
             <p><strong>Trường:</strong> Trường Đại học Sư phạm – Đại học Đà Nẵng</p>
             <p><strong>Vai trò trong nhóm:</strong> Thiết kế giao diện &amp; Hỗ trợ code</p>
@@ -208,16 +223,18 @@ require_once __DIR__ . '/../../inc/header.php';
         <?php else: ?>
             <ul data-bt7-css="p013">
                 <?php foreach ($kyNangHienThi as $kn): ?>
-                    <li data-bt7-css="p014">
+                    <li data-bt7-css="p014" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <div>
                             <strong data-bt7-css="p015"><?= e($kn['tieu_de']) ?>:</strong>
                             <span><?= e($kn['mo_ta']) ?></span>
                         </div>
-                        <form action="gioithieu.php#ky-nang" method="POST" data-bt7-confirm-delete data-bt7-css="p016">
-                            <?= csrf_field() ?>
-                            <input type="hidden" name="id_ky_nang" value="<?= (int) $kn['id'] ?>">
-                            <button type="submit" name="btn_xoa_ky_nang" class="btn-xoa">Xóa</button>
-                        </form>
+                        <?php if ($coQuyenDuAn): ?>
+                            <form action="gioithieu.php#ky-nang" method="POST" data-bt7-confirm-delete data-bt7-css="p016" style="margin: 0;">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="id_ky_nang" value="<?= (int) $kn['id'] ?>">
+                                <button type="submit" name="btn_xoa_ky_nang" class="btn-xoa" style="background: #dc3545; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer;">Xóa</button>
+                            </form>
+                        <?php endif; ?>
                     </li>
                 <?php endforeach; ?>
             </ul>
