@@ -9,7 +9,8 @@ $stmtDm = $pdo->query("SELECT id, ten FROM danh_muc");
 $danhMucList = $stmtDm->fetchAll();
 
 // --- NHẬN THAM SỐ TỪ BIỂU MẪU GET ---
-$tuKhoa = trim($_GET['q'] ?? '');
+$qNhap = $_GET['q'] ?? '';
+$tuKhoa = is_string($qNhap) ? trim($qNhap) : '';
 $danhMucId = filter_var($_GET['dm'] ?? '', FILTER_VALIDATE_INT);
 $giaToiDa = filter_var($_GET['gia_toi_da'] ?? '', FILTER_VALIDATE_INT);
 $sapXep = trim($_GET['sx'] ?? '');
