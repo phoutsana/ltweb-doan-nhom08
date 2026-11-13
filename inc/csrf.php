@@ -76,7 +76,6 @@ function csrf_verify(): void
             $path,
             403
         );
-
         http_response_code(403);
 
 $loi = 'Trang đã hết hạn, hãy tải lại trang rồi gửi lại';
