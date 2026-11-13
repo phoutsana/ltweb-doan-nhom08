@@ -40,3 +40,9 @@
 [data-bt7-dh="dh039"] { padding: 4px 8px; background: #e0f2fe; color: #0369a1; border-radius: 4px; }
 [data-bt7-dh="dh040"] { padding: 10px; border: 1px solid #d1d5db; }
 [data-bt7-dh="dh041"] { color: #2563eb; text-decoration: none; font-weight: bold; }
+/* BT7 - Loai bo CSS noi tuyen */
+.don-hang-trong {
+    text-align: center;
+    color: #6b7280;
+    padding: 20px;
+}

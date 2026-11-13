@@ -77,9 +77,42 @@ function csrf_verify(): void
             403
         );
 
-        // Tu choi yeu cau khong hop le
         http_response_code(403);
 
-        exit('CSRF token khong hop le');
+$loi = 'Trang đã hết hạn, hãy tải lại trang rồi gửi lại';
+
+// Kiem tra request co phai API JSON
+$duongDan = (string) ($_SERVER['SCRIPT_NAME'] ?? '');
+
+$contentType = strtolower(
+    (string) ($_SERVER['CONTENT_TYPE'] ?? '')
+);
+
+$laJson = str_contains($duongDan, '/api/')
+    || str_contains($contentType, 'application/json');
+
+if ($laJson) {
+    header('Content-Type: application/json; charset=utf-8');
+
+    echo json_encode(
+        ['loi' => $loi],
+        JSON_UNESCAPED_UNICODE
+    );
+
+    exit;
+}
+
+header('Content-Type: text/plain; charset=utf-8');
+exit($loi);
     }
+}
+// Ten ham tuong thich voi de Bai tap 7
+function csrfToken(): string
+{
+    return csrf_token();
+}
+
+function csrfField(): string
+{
+    return csrf_field();
 }

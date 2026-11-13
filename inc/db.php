@@ -14,28 +14,33 @@ function db(): PDO
         return $pdo;
     }
 
-    // 1. Cau hinh ket noi
-    $host = '127.0.0.1';
-    $port = 3306;
-    $dbName = 'ltweb_nhom08';
-    $username = 'bt7_web_nhom08';
+    // BT7 - Doc cau hinh CSDL tu tep .env
+$host = (string) ($_ENV['DB_HOST'] ?? '');
 
-    // 2. Doc mat khau tu bien moi truong
-    $host = (string) ($_ENV['DB_HOST'] ?? $_SERVER['DB_HOST'] ?? $host);
-    $port = (int) ($_ENV['DB_PORT'] ?? $_SERVER['DB_PORT'] ?? $port);
-    $dbName = (string) ($_ENV['DB_DATABASE'] ?? $_SERVER['DB_DATABASE'] ?? $dbName);
-    $username = (string) ($_ENV['DB_USERNAME'] ?? $_SERVER['DB_USERNAME'] ?? $username);
+$port = filter_var(
+    $_ENV['DB_PORT'] ?? '3306',
+    FILTER_VALIDATE_INT
+);
 
-    $password = $_ENV['DB_PASSWORD'] ?? $_SERVER['DB_PASSWORD'] ?? null;
-    if (!is_string($password) || $password === '') {
-        $password = getenv('BT7_DB_PASSWORD');
-    }
+$dbName = (string) ($_ENV['DB_DATABASE'] ?? '');
 
-    if (!is_string($password) || $password === '') {
-        throw new RuntimeException(
-            'Chua cau hinh mat khau co so du lieu.'
-        );
-    }
+$username = (string) ($_ENV['DB_USERNAME'] ?? '');
+
+// Cho phep mat khau rong voi root tren XAMPP
+$password = (string) ($_ENV['DB_PASSWORD'] ?? '');
+
+// Kiem tra cau hinh bat buoc
+if ($host === '' || $dbName === '' || $username === '') {
+    throw new RuntimeException(
+        'Thieu cau hinh ket noi co so du lieu.'
+    );
+}
+
+if ($port === false || $port < 1 || $port > 65535) {
+    throw new RuntimeException(
+        'Cong ket noi CSDL khong hop le.'
+    );
+}
 
     // 3. DSN su dung utf8mb4
     $dsn = sprintf(

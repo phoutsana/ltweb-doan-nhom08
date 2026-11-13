@@ -148,7 +148,7 @@ require_once __DIR__ . '/inc/header.php';
             $danhSachDon = $stmt->fetchAll();
 
             if (empty($danhSachDon)) {
-                echo "<p style='text-align: center; color: #6b7280; padding: 20px;'>Chưa có đơn hàng nào.</p>";
+                echo '<p class="don-hang-trong">Chưa có đơn hàng nào.</p>';
             } else {
         ?>
                 <!-- Bọc bảng danh sách đơn hàng bằng div cuộn ngang chống vỡ khung -->

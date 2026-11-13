@@ -71,9 +71,10 @@ ini_set('error_log', __DIR__ . '/../logs/php-error.log');
     "default-src 'self'; " .
     "script-src 'self'; " .
     "style-src 'self'; " .
-    "img-src 'self' data: https:; " .
+    "img-src 'self' data:; " .
     "font-src 'self' data:; " .
     "connect-src 'self' https://api.open-meteo.com; " .
+    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; " .
     "form-action 'self'; " .
     "object-src 'none'; " .
     "base-uri 'self'; " .

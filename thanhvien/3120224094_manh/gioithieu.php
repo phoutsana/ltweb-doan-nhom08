@@ -258,7 +258,7 @@ require __DIR__ . '/../../inc/header.php';
     <!-- 5. MÁY TÍNH ĐIỂM HỌC PHẦN -->
     <section id="tinh-diem" class="card">
         <h2 class="card-title">🧮 Máy tính điểm học phần (PHP)</h2>
-        <form method="POST" action="gioithieu.php#tinh-diem" novalidate class="feedback-form">
+        <?= csrfField() ?>
             <input type="hidden" name="action_tinhdiem" value="1">
             <div data-bt7-csp="csp001">
                 <div class="form-group" data-bt7-csp="csp002">
@@ -289,7 +289,7 @@ require __DIR__ . '/../../inc/header.php';
         <?php if ($thongBaoLuuBut !== ''): ?>
             <div data-bt7-csp="csp007"><?= e($thongBaoLuuBut) ?></div>
         <?php endif; ?>
-        <form method="POST" action="gioithieu.php#tuong-tac" novalidate class="feedback-form">
+        <?= csrfField() ?>
             <input type="hidden" name="action_luubut" value="1">
             <div class="form-group"><input type="text" name="ten" value="<?= e($duLieuLuuBut['ten']) ?>" placeholder="Tên của bạn..."></div>
             <div class="form-group"><textarea name="noidung" rows="3" placeholder="Nhập lời nhắn..."><?= e($duLieuLuuBut['noidung']) ?></textarea></div>
@@ -309,7 +309,7 @@ require __DIR__ . '/../../inc/header.php';
             <div data-bt7-csp="csp011"><?= e($thongBaoDanhGia) ?></div>
         <?php endif; ?>
 
-        <form method="POST" action="gioithieu.php#danh-gia-trang" novalidate class="feedback-form">
+        <?= csrfField() ?>
             <input type="hidden" name="action_danhgia" value="1">
             <div class="form-group">
                 <input type="text" name="nguoi_gui" value="<?= e($duLieuDanhGia['nguoi_gui']) ?>" placeholder="Họ và tên bạn...">
@@ -376,7 +376,7 @@ $danh_sach_luu_but = $stmt_lb->fetchAll();
 <div class="card mb-4">
     <div class="card-header bg-primary text-white">📖 Sổ lưu bút (CSDL MySQL)</div>
     <div class="card-body">
-        <form method="POST" class="mb-4">
+        <?= csrfField() ?>
             <div class="mb-3">
                 <input type="text" name="ten_nguoi_gui" class="form-control" placeholder="Tên của bạn..." required>
             </div>

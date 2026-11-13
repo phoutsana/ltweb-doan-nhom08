@@ -25,10 +25,6 @@ $mssvChu = '3120224020';
 $emailChu = 'chu.bt6@example.com'; // Tai khoan thu duoc khai bao trong seed_phanb_chu.sql.
 $khoaKetQua = 'chu_3120224020_ket_qua_trac_nghiem';
 $khoaThongBao = 'chu_3120224020_thong_bao';
-$khoaCsrf = 'chu_3120224020_csrf';
-if (empty($_SESSION[$khoaCsrf]) || !is_string($_SESSION[$khoaCsrf])) {
-    $_SESSION[$khoaCsrf] = bin2hex(random_bytes(32));
-}
 
 $pdo = db();
 // Xac minh tai khoan chu trang trong nguoi_dung, khong can sua bang chung thanh_vien.
@@ -71,13 +67,11 @@ $giaTriMucTieu = '';
 $traLoiCu = [];
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
-    $tokenGui = $_POST['csrf_token'] ?? null;
+
+    // CSRF da duoc kiem tra trong inc/config.php
     $hanhDong = $_POST['hanh_dong'] ?? null;
 
-    if (!is_string($tokenGui) || !hash_equals($_SESSION[$khoaCsrf], $tokenGui)) {
-        $loiChung = 'Yêu cầu không hợp lệ. Hãy tải lại trang và thử lại.';
-        http_response_code(400);
-    } elseif (!is_string($hanhDong)) {
+    if (!is_string($hanhDong)) {
         $loiChung = 'Thao tác không hợp lệ.';
     } elseif (in_array($hanhDong, ['them_muc_tieu', 'doi_trang_thai', 'xoa_muc_tieu'], true)) {
         if (!$laChuTrang) {
@@ -304,7 +298,7 @@ echo $htmlHeader;
         <?php endif; ?>
         <?php if ($laChuTrang): ?>
             <form method="post" action="gioithieu.php#muc-tieu" class="chu-form-muc-tieu" novalidate>
-                <input type="hidden" name="csrf_token" value="<?= e($_SESSION[$khoaCsrf]) ?>">
+                <?= csrfField() ?>
                 <input type="hidden" name="hanh_dong" value="them_muc_tieu">
                 <label for="chu-noi-dung-muc-tieu">Mục tiêu mới (3 - 120 ký tự)</label>
                 <div class="chu-hang-nhap">
@@ -338,14 +332,14 @@ echo $htmlHeader;
                         <?php if ($laChuTrang): ?>
                             <div class="chu-thao-tac">
                                 <form method="post" action="gioithieu.php#muc-tieu">
-                                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION[$khoaCsrf]) ?>">
+                                    <?= csrfField() ?>
                                     <input type="hidden" name="id_muc_tieu" value="<?= e((string) $mucTieu['id']) ?>">
                                     <button class="chu-nut chu-nut-phu" type="submit" name="hanh_dong" value="doi_trang_thai">
                                         <?= (int) $mucTieu['hoan_thanh'] === 1 ? 'Làm lại' : 'Hoàn thành' ?>
                                     </button>
                                 </form>
                                 <form method="post" action="gioithieu.php#muc-tieu">
-                                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION[$khoaCsrf]) ?>">
+                                    <?= csrfField() ?>
                                     <input type="hidden" name="id_muc_tieu" value="<?= e((string) $mucTieu['id']) ?>">
                                     <button class="chu-nut chu-nut-xoa" type="submit" name="hanh_dong" value="xoa_muc_tieu">Xóa</button>
                                 </form>
@@ -362,7 +356,7 @@ echo $htmlHeader;
         <h2>Trắc nghiệm kiến thức lập trình (MySQL/PDO)</h2>
         <p>Câu hỏi lấy từ MySQL; máy chủ chấm điểm và lưu kết quả vào MySQL.</p>
         <form method="post" action="gioithieu.php#trac-nghiem" class="chu-form-trac-nghiem" novalidate>
-            <input type="hidden" name="csrf_token" value="<?= e($_SESSION[$khoaCsrf]) ?>">
+            <?= csrfField() ?>
             <input type="hidden" name="hanh_dong" value="nop_trac_nghiem">
             <?php foreach ($cauHoi as $maCau => $cau): ?>
                 <fieldset class="chu-cau-hoi">
