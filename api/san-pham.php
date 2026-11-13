@@ -38,7 +38,8 @@ try {
     }
 
     // Trường hợp 2: Tìm kiếm theo từ khóa (?q=...)
-    $q = trim($_GET['q'] ?? '');
+    $qNhap = $_GET['q'] ?? '';
+    $q = is_string($qNhap) ? trim($qNhap) : '';
     $tuKhoa = '%' . addcslashes($q, '%_\\') . '%';
 
     $stmt = $pdo->prepare("SELECT id, danh_muc_id, ten, gia, ton_kho, anh FROM san_pham WHERE ten LIKE ? LIMIT 20");

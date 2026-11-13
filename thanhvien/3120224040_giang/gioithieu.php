@@ -10,14 +10,121 @@ declare(strict_types=1);
  */
 
 require_once __DIR__ . '/../../inc/config.php';
-
+require_once __DIR__ . '/../../inc/csrf.php';
 $goc = '../../';
 $tieuDe = 'Giới thiệu Ngô Hương Giang | Fashion Store';
 $trang = '';
 $cssRieng = 'thanhvien/3120224040_giang/bt7-csp.css';
 
 const MSSV_GIANG = '3120224040';
+// Email tai khoan dang nhap cua chu trang
+const EMAIL_CHU_TRANG_GIANG = 'giangngo706@gmail.com';
 
+$emailHienTai = $_SESSION['user']['email'] ?? null;
+
+$laChuTrangGiang = is_string($emailHienTai)
+    && strcasecmp($emailHienTai, EMAIL_CHU_TRANG_GIANG) === 0;
+
+// Xu ly POST an toan
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    csrf_verify();
+
+    if (($_POST['hanh_dong'] ?? null) === 'xoa_loi_nhan') {
+
+        // Chi chu trang duoc xoa
+        if (!$laChuTrangGiang) {
+            http_response_code(403);
+            exit('Ban khong co quyen xoa loi nhan.');
+        }
+
+        // Kiem tra ID
+        $idNhap = $_POST['id'] ?? null;
+
+        $idXoa = is_string($idNhap)
+            ? filter_var($idNhap, FILTER_VALIDATE_INT, [
+                'options' => ['min_range' => 1]
+            ])
+            : false;
+
+        if ($idXoa === false) {
+            http_response_code(400);
+            exit('ID khong hop le.');
+        }
+
+        // Chi xoa loi nhan thuoc trang Giang
+        $stXoa = db()->prepare(
+            'DELETE FROM tv_luu_but
+             WHERE id = ? AND mssv = ?'
+        );
+
+        $stXoa->execute([$idXoa, MSSV_GIANG]);
+
+        if ($stXoa->rowCount() === 0) {
+            http_response_code(404);
+            exit('Khong tim thay loi nhan thuoc trang Giang.');
+        }
+
+        header(
+            'Location: gioithieu.php?lb=xoa#so-luu-but',
+            true,
+            303
+        );
+        exit;
+    }
+}
+// BT7 - So luu but ca nhan cua Giang
+$loiLuuButGiang = '';
+
+// Xu ly gui loi nhan - CSRF da duoc kiem tra trong inc/config.php
+if (
+    ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST'
+    && ($_POST['hanh_dong'] ?? null) === 'gui_loi_nhan'
+) {
+    $tenGui = $_POST['ten'] ?? null;
+    $noiDungGui = $_POST['loi_nhan'] ?? null;
+
+    if (!is_string($tenGui) || !is_string($noiDungGui)) {
+        $loiLuuButGiang = 'Du lieu khong hop le.';
+    } else {
+        $tenGui = trim($tenGui);
+        $noiDungGui = trim($noiDungGui);
+
+        if (
+            $tenGui === '' ||
+            $noiDungGui === '' ||
+            strlen($tenGui) > 100 ||
+            strlen($noiDungGui) > 5000
+        ) {
+            $loiLuuButGiang = 'Vui long nhap ten va loi nhan hop le.';
+        } else {
+            $themLuuBut = db()->prepare(
+                'INSERT INTO tv_luu_but (mssv, ten, loi_nhan)
+                 VALUES (?, ?, ?)'
+            );
+
+            $themLuuBut->execute([
+                MSSV_GIANG,
+                $tenGui,
+                $noiDungGui
+            ]);
+
+            header('Location: gioithieu.php?lb=ok#so-luu-but', true, 303);
+            exit;
+        }
+    }
+}
+
+// Lay danh sach loi nhan cua trang Giang
+$truyVanLuuBut = db()->prepare(
+    'SELECT id, ten, loi_nhan, ngay_tao
+     FROM tv_luu_but
+     WHERE mssv = ?
+     ORDER BY id DESC
+     LIMIT 20'
+);
+
+$truyVanLuuBut->execute([MSSV_GIANG]);
+$danhSachLuuBut = $truyVanLuuBut->fetchAll(PDO::FETCH_ASSOC);
 /*
  * Đọc dữ liệu thời khóa biểu từ MySQL.
  * Bảng: tv_thoi_khoa_bieu.
@@ -487,7 +594,97 @@ require __DIR__ . '/../../inc/header.php';
             </div>
         <?php endif; ?>
     </section>
+<!-- BT7 - SO LUU BUT CUA GIANG -->
+<section id="so-luu-but" class="info-card">
+    <h2 class="card-title">Sổ lưu bút của Giang</h2>
 
+    <p>Để lại lời nhắn cho Giang nhé!</p>
+
+    <?php if (($_GET['lb'] ?? null) === 'ok'): ?>
+        <p role="status">Đã gửi lời nhắn thành công.</p>
+    <?php endif; ?>
+
+    <?php if ($loiLuuButGiang !== ''): ?>
+        <p role="alert">
+            <?= e($loiLuuButGiang) ?>
+        </p>
+    <?php endif; ?>
+
+    <form method="post" action="gioithieu.php#so-luu-but">
+        <?= csrfField() ?>
+
+        <input
+            type="hidden"
+            name="hanh_dong"
+            value="gui_loi_nhan"
+        >
+
+        <p>
+            <label for="ten-luu-but">Tên người gửi:</label>
+            <input
+                type="text"
+                id="ten-luu-but"
+                name="ten"
+                maxlength="100"
+                required
+            >
+        </p>
+
+        <p>
+            <label for="noi-dung-luu-but">Lời nhắn:</label>
+            <textarea
+                id="noi-dung-luu-but"
+                name="loi_nhan"
+                rows="4"
+                maxlength="5000"
+                required
+            ></textarea>
+        </p>
+
+        <button type="submit" class="action-btn-small">
+            Gửi lời nhắn
+        </button>
+    </form>
+
+    <h3>Danh sách lời nhắn</h3>
+
+    <?php if (empty($danhSachLuuBut)): ?>
+        <p>Chưa có lời nhắn nào.</p>
+    <?php else: ?>
+        <?php foreach ($danhSachLuuBut as $loiNhan): ?>
+            <div class="card-body-text">
+                <p>
+                    <strong><?= e($loiNhan['ten']) ?></strong>
+                </p>
+
+                <p>
+                    <?= nl2br(e($loiNhan['loi_nhan'])) ?>
+                </p>
+                <?php if ($laChuTrangGiang): ?>
+    <form method="post" action="gioithieu.php#so-luu-but">
+        <?= csrfField() ?>
+
+        <input
+            type="hidden"
+            name="hanh_dong"
+            value="xoa_loi_nhan"
+        >
+
+        <input
+            type="hidden"
+            name="id"
+            value="<?= (int) $loiNhan['id'] ?>"
+        >
+
+        <button type="submit" class="action-btn-small">
+            Xóa lời nhắn
+        </button>
+    </form>
+<?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</section>
 </main>
 
 <!-- Chân trang cá nhân -->
