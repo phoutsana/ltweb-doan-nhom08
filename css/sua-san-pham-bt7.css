@@ -1,0 +1,37 @@
+/* BT7: Giao dien chuc nang sua san pham (khong dung CSS noi tuyen). */
+.bt7-sua-sp {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+}
+.bt7-sua-sp h2 { margin: 0 0 20px; color: #1e3a8a; }
+.bt7-sua-sp__form { display: flex; flex-direction: column; gap: 16px; }
+.bt7-sua-sp__field { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+.bt7-sua-sp__field label { font-weight: 600; color: #1f2937; }
+.bt7-sua-sp__field input,
+.bt7-sua-sp__field select {
+    width: 100%; padding: 10px; border: 1px solid #cbd5e1;
+    border-radius: 5px; box-sizing: border-box; background: #fff;
+    color: #111827;
+}
+.bt7-sua-sp__field input:focus,
+.bt7-sua-sp__field select:focus { outline: 2px solid #93c5fd; outline-offset: 1px; }
+.bt7-sua-sp__row { display: flex; gap: 15px; }
+.bt7-sua-sp__error { color: #b91c1c; font-size: .9rem; }
+.bt7-sua-sp__actions { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.bt7-sua-sp__submit {
+    padding: 10px 18px; border: none; border-radius: 5px;
+    background: #2563eb; color: white; font-weight: 600; cursor: pointer;
+}
+.bt7-sua-sp__submit:hover { background: #1d4ed8; }
+.bt7-sua-sp__back { color: #2563eb; text-decoration: none; padding: 10px; }
+.bt7-sua-sp__back:hover { text-decoration: underline; }
+@media (max-width: 600px) {
+    .bt7-sua-sp { margin: 16px; padding: 16px; }
+    .bt7-sua-sp__row { flex-direction: column; }
+    .bt7-sua-sp__actions { justify-content: space-between; }
+}

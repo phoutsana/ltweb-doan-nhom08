@@ -1,45 +1,52 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const addToCartForms = document.querySelectorAll('.form-them-gio-hang');
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.form-them-gio-hang').forEach(form => {
+        form.addEventListener('submit', async event => {
+            event.preventDefault();
 
-    addToCartForms.forEach(form => {
-        form.addEventListener('submit', function (e) {
-            e.preventDefault(); // Chặn form load lại trang
+            const data = new FormData(form);
+            const id = Number(data.get('id'));
+            const soLuong = Number(data.get('so_luong') || 1);
+            const token = String(data.get('csrf_token') || '');
 
-            const formData = new FormData(this);
-            const sanPhamId = formData.get('san_pham_id');
-            const soLuong = formData.get('so_luong') || 1;
+            if (!Number.isInteger(id) || id <= 0 || !token) {
+                alert('Du lieu san pham hoac ma CSRF khong hop le.');
+                return;
+            }
 
-            fetch('api/gio-hang.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    san_pham_id: parseInt(sanPhamId),
-                    so_luong: parseInt(soLuong)
-                })
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Lỗi thêm vào giỏ hàng');
-                return response.json();
-            })
-            .then(data => {
-                if (data.thanh_cong) {
-                    // Cập nhật số lượng món trên header ngay lập tức
-                    const badge = document.querySelector('.so-luong-gio-hang');
-                    if (badge) {
-                        badge.textContent = `(${data.tong_so_mon})`;
-                    }
-                    alert('Đã thêm sản phẩm vào giỏ hàng thành công!');
-                } else {
-                    alert(data.loi || 'Không thể thêm vào giỏ hàng.');
+            const button = form.querySelector('button[type="submit"]');
+            if (button) button.disabled = true;
+
+            try {
+                const response = await fetch('api/gio-hang.php', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': token
+                    },
+                    body: JSON.stringify({
+                        san_pham_id: id,
+                        so_luong: soLuong
+                    })
+                });
+
+                const result = await response.json().catch(() => null);
+
+                if (!response.ok || !result?.thanh_cong) {
+                    throw new Error(result?.loi || `HTTP ${response.status}`);
                 }
-            })
-            .catch(error => {
-                console.error('Lỗi:', error);
-                // Fallback: nếu lỗi fetch thì cho phép form submit truyền thống
-                this.submit();
-            });
+
+                const badge = document.querySelector('.so-luong-gio-hang');
+                if (badge) {
+                    badge.textContent = String(result.tong_so_mon);
+                }
+
+                alert('Da them san pham vao gio hang!');
+            } catch (error) {
+                alert(error instanceof Error ? error.message : 'Loi ket noi');
+            } finally {
+                if (button) button.disabled = false;
+            }
         });
     });
 });

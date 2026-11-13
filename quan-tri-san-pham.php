@@ -1,106 +1,113 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/inc/config.php';
 
-// Kiểm tra quyền quản trị (Chặn truy cập trái phép)
-if (!isset($_SESSION['user']) || $_SESSION['user']['vai_tro'] !== 'quan_tri') {
+require_once __DIR__ . '/inc/config.php';
+require_once __DIR__ . '/inc/csrf.php';
+
+if (!is_array($_SESSION['user'] ?? null) ||
+    ($_SESSION['user']['vai_tro'] ?? null) !== 'quan_tri') {
     http_response_code(403);
-    die("<h1>Lỗi 403</h1><p>Bạn không có quyền truy cập trang này.</p>");
+    exit('Bạn không có quyền truy cập trang này.');
 }
 
 $pdo = db();
+$sanPhams = $pdo->query(
+    'SELECT sp.id, sp.ten, sp.gia, sp.ton_kho, sp.anh,
+            dm.ten AS ten_danh_muc
+     FROM san_pham sp
+     LEFT JOIN danh_muc dm ON sp.danh_muc_id = dm.id
+     ORDER BY sp.id ASC'
+)->fetchAll(PDO::FETCH_ASSOC);
 
-// Lấy danh sách sản phẩm kết hợp với tên danh mục
-$sql = "SELECT sp.id, sp.ten, sp.gia, sp.ton_kho, dm.ten as ten_danh_muc, sp.anh 
-        FROM san_pham sp 
-        LEFT JOIN danh_muc dm ON sp.danh_muc_id = dm.id 
-        ORDER BY sp.id ASC";
-$stmt = $pdo->query($sql);
-$sanPhams = $stmt->fetchAll();
-
-$tieuDe = 'Quản lý sản phẩm';
+$tieuDe = 'Quản lý sản phẩm - Fashion Store';
+$trang = 'quan-tri-san-pham';
+$cssRieng = 'css/quan-tri-san-pham-bt7.css';
 require_once __DIR__ . '/inc/header.php';
 ?>
-
-<main class="noi-dung-chinh" style="max-width: 1100px; margin: 40px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin: 0; color: #1e3a8a;">Quản Lý Sản Phẩm</h2>
-        <a href="them-san-pham.php" style="padding: 10px 15px; background: #10b981; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; transition: background 0.3s;">
-            + Thêm Sản Phẩm Mới
-        </a>
+<main class="noi-dung-chinh bt7-products">
+    <div class="bt7-products-top">
+        <h2>Quản lý sản phẩm</h2>
+        <a class="bt7-btn bt7-add" href="them-san-pham.php">+ Thêm sản phẩm mới</a>
     </div>
 
-    <!-- Hiển thị thông báo (Thành công hoặc Lỗi) -->
-    <?php if (isset($_GET['tb']) && $_GET['tb'] === 'thanh_cong'): ?>
-        <div style="background: #d1fae5; color: #065f46; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #10b981; font-weight: bold;">
-            Thao tác thành công!
-        </div>
+    <?php if (($_GET['tb'] ?? '') === 'thanh_cong'): ?>
+        <p class="bt7-notice bt7-success" role="status">Thao tác thành công!</p>
     <?php endif; ?>
 
-    <?php if (isset($_GET['loi']) && $_GET['loi'] === 'dang_dung'): ?>
-        <div style="background: #fee2e2; color: #b91c1c; padding: 12px; border-radius: 4px; margin-bottom: 20px; border-left: 4px solid #ef4444; font-weight: bold;">
-            Không thể xóa: Sản phẩm này đã có khách đặt hàng (Vi phạm khóa ngoại 1451).
-        </div>
+    <?php if (($_GET['loi'] ?? '') === 'dang_dung'): ?>
+        <p class="bt7-notice bt7-error" role="alert">
+            Không thể xóa: sản phẩm đã có khách đặt hàng.
+        </p>
     <?php endif; ?>
 
-    <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 800px;">
+    <div class="bt7-table-wrap">
+        <table class="bt7-table">
             <thead>
-                <tr style="background: #f3f4f6; color: #374151;">
-                    <th style="padding: 12px; border: 1px solid #e5e7eb;">ID</th>
-                    <th style="padding: 12px; border: 1px solid #e5e7eb; text-align: center;">Ảnh</th>
-                    <th style="padding: 12px; border: 1px solid #e5e7eb;">Tên sản phẩm</th>
-                    <th style="padding: 12px; border: 1px solid #e5e7eb;">Danh mục</th>
-                    <th style="padding: 12px; border: 1px solid #e5e7eb;">Giá (VNĐ)</th>
-                    <th style="padding: 12px; border: 1px solid #e5e7eb; text-align: center;">Tồn kho</th>
-                    <th style="padding: 12px; border: 1px solid #e5e7eb; text-align: center;">Hành động</th>
+                <tr>
+                    <th>ID</th>
+                    <th>Ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th>Giá (VNĐ)</th>
+                    <th>Tồn kho</th>
+                    <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($sanPhams as $sp): ?>
                     <tr>
-                        <td style="padding: 12px; border: 1px solid #e5e7eb;"><?= $sp['id'] ?></td>
-                        <td style="padding: 12px; border: 1px solid #e5e7eb; text-align: center;">
+                        <td><?= (int) $sp['id'] ?></td>
+                        <td>
                             <?php if (!empty($sp['anh'])): ?>
-                                <img src="<?= htmlspecialchars($sp['anh']) ?>" alt="Ảnh SP" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
+                                <img
+                                    class="bt7-product-img"
+                                    src="<?= e((string) $sp['anh']) ?>"
+                                    alt="Ảnh <?= e((string) $sp['ten']) ?>"
+                                    width="50"
+                                    height="50"
+                                    loading="lazy"
+                                >
                             <?php else: ?>
-                                <span style="color: #9ca3af; font-size: 12px;">Chưa có</span>
+                                Chưa có
                             <?php endif; ?>
                         </td>
-                        <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: 500;">
-                            <?= htmlspecialchars($sp['ten']) ?>
+                        <td class="bt7-product-name">
+                            <?= e((string) $sp['ten']) ?>
                         </td>
-                        <td style="padding: 12px; border: 1px solid #e5e7eb;">
-                            <?= htmlspecialchars($sp['ten_danh_muc'] ?? 'Không có') ?>
+                        <td>
+                            <?= e((string) ($sp['ten_danh_muc'] ?? 'Không có')) ?>
                         </td>
-                        <td style="padding: 12px; border: 1px solid #e5e7eb; color: #e11d48; font-weight: bold;">
-                            <?= number_format((float)$sp['gia'], 0, ',', '.') ?> đ
+                        <td class="bt7-price">
+                            <?= number_format((float) $sp['gia'], 0, ',', '.') ?> đ
                         </td>
-                        <td style="padding: 12px; border: 1px solid #e5e7eb; text-align: center;">
-                            <?php if ($sp['ton_kho'] <= 0): ?>
-                                <span style="color: red; font-weight: bold; background: #fee2e2; padding: 2px 6px; border-radius: 4px;">Hết hàng</span>
-                            <?php else: ?>
-                                <span style="color: #047857; font-weight: bold;"><?= $sp['ton_kho'] ?></span>
-                            <?php endif; ?>
+                        <td class="bt7-stock">
+                            <?= (int) $sp['ton_kho'] <= 0 ? 'Hết hàng' : (int) $sp['ton_kho'] ?>
                         </td>
-                        <td style="padding: 12px; border: 1px solid #e5e7eb;">
-                            <div style="display: flex; gap: 8px; justify-content: center;">
-                                <a href="sua-san-pham.php?id=<?= $sp['id'] ?>" style="padding: 6px 12px; background: #f59e0b; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 500;">Sửa</a>
+                        <td>
+                            <div class="bt7-actions">
+                                <a
+                                    class="bt7-btn bt7-edit"
+                                    href="sua-san-pham.php?id=<?= (int) $sp['id'] ?>"
+                                >Sửa</a>
 
-                                <!-- XÓA BẰNG POST: Chống xóa nhầm và chống SQL Injection -->
-                                <form method="POST" action="xoa-san-pham.php" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');" style="margin: 0;">
-                                    <input type="hidden" name="id" value="<?= $sp['id'] ?>">
-                                    <button type="submit" style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer;">Xóa</button>
+                                <form method="post"
+                                      action="xoa-san-pham.php"
+                                      data-confirm-delete>
+                                    <?= csrf_field() ?>
+                                    <input type="hidden"
+                                           name="id"
+                                           value="<?= (int) $sp['id'] ?>">
+                                    <button class="bt7-btn bt7-delete"
+                                            type="submit">Xóa</button>
                                 </form>
                             </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
 
-                <?php if (empty($sanPhams)): ?>
+                <?php if (!$sanPhams): ?>
                     <tr>
-                        <td colspan="7" style="padding: 20px; text-align: center; color: #6b7280; font-style: italic;">
+                        <td colspan="7" class="bt7-empty">
                             Chưa có sản phẩm nào trong hệ thống.
                         </td>
                     </tr>
@@ -110,4 +117,5 @@ require_once __DIR__ . '/inc/header.php';
     </div>
 </main>
 
+<script src="js/quan-tri-san-pham.js" defer></script>
 <?php require_once __DIR__ . '/inc/footer.php'; ?>

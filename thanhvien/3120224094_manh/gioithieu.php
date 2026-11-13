@@ -9,8 +9,12 @@
  * Cách thử: Mở trình duyệt truy cập http://localhost:8000/thanhvien/3120224094_manh/gioithieu.php
  */
 
-require __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../../inc/csrf.php';
 
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    csrf_verify();
+}
 // Đường dẫn tương đối về thư mục gốc của dự án
 $goc = '../../';
 $tieuDe = 'Trang giới thiệu cá nhân - Lê Văn Mạnh';
@@ -161,10 +165,57 @@ $thongBaoDanhGia = $_SESSION['flash_danhgia'] ?? '';
 unset($_SESSION['flash_danhgia']);
 
 // Nhúng Header dùng chung của nhóm
+$cssRieng = 'thanhvien/3120224094_manh/bt7-csp.css';
+// Xử lý gửi lưu bút
+if (
+    ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST'
+    && isset($_POST['gui_luu_but'])
+) {
+    csrf_verify();
+
+    $tenNhap = $_POST['ten_nguoi_gui'] ?? null;
+    $noiDungNhap = $_POST['noi_dung'] ?? null;
+
+    $ten = is_string($tenNhap) ? trim($tenNhap) : '';
+    $loiNhan = is_string($noiDungNhap) ? trim($noiDungNhap) : '';
+
+    if (
+        $ten !== ''
+        && $loiNhan !== ''
+        && mb_strlen($ten) <= 100
+        && mb_strlen($loiNhan) <= 5000
+    ) {
+        $stmt = db()->prepare(
+            'INSERT INTO tv_luu_but (mssv, ten, loi_nhan)
+             VALUES (?, ?, ?)'
+        );
+
+        $stmt->execute([
+            '3120224094',
+            $ten,
+            $loiNhan
+        ]);
+
+        header('Location: gioithieu.php', true, 303);
+        exit;
+    }
+}
+
+// Lấy danh sách lưu bút
+$stmt_lb = db()->prepare(
+    'SELECT id, ten, loi_nhan, ngay_tao
+     FROM tv_luu_but
+     WHERE mssv = ?
+     ORDER BY id DESC'
+);
+
+$stmt_lb->execute(['3120224094']);
+
+$danh_sach_luu_but = $stmt_lb->fetchAll(PDO::FETCH_ASSOC);
+
+// Nạp header chung trước khi hiển thị HTML
 require __DIR__ . '/../../inc/header.php';
 ?>
-
-<link rel="stylesheet" href="style-canhan.css">
 
 <!-- Header Banner Xanh Dương -->
 <header class="header-banner">
@@ -256,27 +307,28 @@ require __DIR__ . '/../../inc/header.php';
 
     <!-- 5. MÁY TÍNH ĐIỂM HỌC PHẦN -->
     <section id="tinh-diem" class="card">
-        <h2 class="card-title">🧮 Máy tính điểm học phần (PHP)</h2>
-        <form method="POST" action="gioithieu.php#tinh-diem" novalidate class="feedback-form">
+    <h2 class="card-title">🧮 Máy tính điểm học phần (PHP)</h2>
+    <form method="post" action="gioithieu.php#tinh-diem">
+        <?= csrfField() ?>
             <input type="hidden" name="action_tinhdiem" value="1">
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <div class="form-group" style="flex: 1; min-width: 150px;">
+            <div data-bt7-csp="csp001">
+                <div class="form-group" data-bt7-csp="csp002">
                     <label for="a1">Điểm A1 (20%):</label>
                     <input type="number" step="0.1" id="a1" name="a1" value="<?= e($diemA1) ?>" placeholder="Ví dụ: 8.5">
                 </div>
-                <div class="form-group" style="flex: 1; min-width: 150px;">
+                <div class="form-group" data-bt7-csp="csp003">
                     <label for="a2">Điểm A2 (30%):</label>
                     <input type="number" step="0.1" id="a2" name="a2" value="<?= e($diemA2) ?>" placeholder="Ví dụ: 7.0">
                 </div>
-                <div class="form-group" style="flex: 1; min-width: 150px;">
+                <div class="form-group" data-bt7-csp="csp004">
                     <label for="a3">Điểm A3 (50%):</label>
                     <input type="number" step="0.1" id="a3" name="a3" value="<?= e($diemA3) ?>" placeholder="Ví dụ: 9.0">
                 </div>
             </div>
-            <button type="submit" class="btn-submit" style="margin-top: 10px;">Tính điểm</button>
+            <button type="submit" class="btn-submit" data-bt7-csp="csp005">Tính điểm</button>
         </form>
         <?php if ($diemTongKet !== null): ?>
-            <div style="margin-top: 20px; padding: 15px; background-color: #dcfce7; border-radius: 8px; color: #166534; font-weight: 600;">
+            <div data-bt7-csp="csp006">
                 🎉 Điểm tổng kết: <?= number_format($diemTongKet, 2) ?> / 10
             </div>
         <?php endif; ?>
@@ -286,9 +338,10 @@ require __DIR__ . '/../../inc/header.php';
     <section id="tuong-tac" class="card">
         <h2 class="card-title">💬 Sổ lưu bút cá nhân (Lưu tệp)</h2>
         <?php if ($thongBaoLuuBut !== ''): ?>
-            <div style="padding: 12px; background-color: #e0f2fe; border-radius: 6px; color: #0369a1; margin-bottom: 15px;"><?= e($thongBaoLuuBut) ?></div>
+            <div data-bt7-csp="csp007"><?= e($thongBaoLuuBut) ?></div>
         <?php endif; ?>
-        <form method="POST" action="gioithieu.php#tuong-tac" novalidate class="feedback-form">
+        <form method="post" action="gioithieu.php#tuong-tac">
+    <?= csrfField() ?>
             <input type="hidden" name="action_luubut" value="1">
             <div class="form-group"><input type="text" name="ten" value="<?= e($duLieuLuuBut['ten']) ?>" placeholder="Tên của bạn..."></div>
             <div class="form-group"><textarea name="noidung" rows="3" placeholder="Nhập lời nhắn..."><?= e($duLieuLuuBut['noidung']) ?></textarea></div>
@@ -299,22 +352,23 @@ require __DIR__ . '/../../inc/header.php';
     <!-- 7. HÒM THƯ GÓP Ý & ĐÁNH GIÁ SAO (BẢNG tv_danh_gia) -->
     <section id="danh-gia-trang" class="card">
         <h2 class="card-title">⭐ Hòm thư Góp ý & Đánh giá Sao (Bảng tv_danh_gia)</h2>
-        <div style="background: #fdf2f8; border: 1px solid #fbcfe8; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
-            <span style="font-size: 1.5rem; font-weight: bold; color: #db2777;"><?= $diemTrungBinh ?> / 5.0 ⭐</span>
-            <p style="margin: 5px 0 0 0; color: #831843;">Tổng hợp từ <strong><?= $tongLuotDanhGia ?></strong> lượt đánh giá qua hàm SQL <code>AVG()</code>.</p>
+        <div data-bt7-csp="csp008">
+            <span data-bt7-csp="csp009"><?= $diemTrungBinh ?> / 5.0 ⭐</span>
+            <p data-bt7-csp="csp010">Tổng hợp từ <strong><?= $tongLuotDanhGia ?></strong> lượt đánh giá qua hàm SQL <code>AVG()</code>.</p>
         </div>
 
         <?php if ($thongBaoDanhGia !== ''): ?>
-            <div style="padding: 12px; background-color: #fce7f3; border-radius: 6px; color: #831843; margin-bottom: 15px;"><?= e($thongBaoDanhGia) ?></div>
+            <div data-bt7-csp="csp011"><?= e($thongBaoDanhGia) ?></div>
         <?php endif; ?>
 
-        <form method="POST" action="gioithieu.php#danh-gia-trang" novalidate class="feedback-form">
+        <form method="post" action="gioithieu.php#danh-gia-trang">
+    <?= csrfField() ?>
             <input type="hidden" name="action_danhgia" value="1">
             <div class="form-group">
                 <input type="text" name="nguoi_gui" value="<?= e($duLieuDanhGia['nguoi_gui']) ?>" placeholder="Họ và tên bạn...">
             </div>
             <div class="form-group">
-                <select name="so_sao" style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <select name="so_sao" data-bt7-csp="csp012">
                     <option value="5">⭐⭐⭐⭐⭐ (5 sao - Tuyệt vời)</option>
                     <option value="4">⭐⭐⭐⭐ (4 sao - Rất tốt)</option>
                     <option value="3">⭐⭐⭐ (3 sao - Tạm ổn)</option>
@@ -328,54 +382,31 @@ require __DIR__ . '/../../inc/header.php';
             <button type="submit" class="btn-submit">Gửi đánh giá</button>
         </form>
 
-        <h4 style="margin-top: 25px; margin-bottom: 12px;">💬 Góp ý từ CSDL:</h4>
+        <h4 data-bt7-csp="csp013">💬 Góp ý từ CSDL:</h4>
         <?php if (empty($danhSachDanhGia)): ?>
-            <p style="color: #64748b; font-style: italic;">Chưa có góp ý nào.</p>
+            <p data-bt7-csp="csp014">Chưa có góp ý nào.</p>
         <?php else: ?>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div data-bt7-csp="csp015">
                 <?php foreach ($danhSachDanhGia as $dg): ?>
-                    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px;">
+                    <div data-bt7-csp="csp016">
                         <strong><?= e($dg['nguoi_gui']) ?> (<?= (int)$dg['so_sao'] ?> ⭐)</strong>
-                        <p style="margin: 4px 0 0 0; color: #334155;"><?= e($dg['nhan_xet']) ?></p>
+                        <p data-bt7-csp="csp017"><?= e($dg['nhan_xet']) ?></p>
                     </div>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
     </section>
 
-    <div class="back-buttons" style="margin-top: 20px;">
-        <a href="<?= $goc ?>index.php" class="btn-back" style="text-decoration: none; color: #1e42a0; font-weight: 500;">&larr; Quay về trang chủ nhóm</a>
+    <div class="back-buttons" data-bt7-csp="csp018">
+        <a href="<?= $goc ?>index.php" class="btn-back" data-bt7-csp="csp019">&larr; Quay về trang chủ nhóm</a>
     </div>
 
-</main>
-
-<script src="js/canhan.js"></script>
-
-<?php require __DIR__ . '/../../inc/footer.php'; ?>
-<?php
-// Xử lý khi người dùng gửi lưu bút mới
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gui_luu_but'])) {
-    $ten_nguoi_gui = trim($_POST['ten_nguoi_gui']);
-    $noi_dung = trim($_POST['noi_dung']);
-    if (!empty($ten_nguoi_gui) && !empty($noi_dung)) {
-        $stmt = db()->prepare("INSERT INTO tv_luu_but (masv, ten_nguoi_gui, noi_dung) VALUES (?, ?, ?)");
-        $stmt->execute(['3120224094', $ten_nguoi_gui, $noi_dung]);
-        header("Location: gioithieu.php");
-        exit;
-    }
-}
-
-// Lấy danh sách lưu bút từ CSDL
-$stmt_lb = db()->prepare("SELECT * FROM tv_luu_but WHERE masv = ? ORDER BY thoi_gian DESC");
-$stmt_lb->execute(['3120224094']);
-$danh_sach_luu_but = $stmt_lb->fetchAll();
-?>
-
 <!-- HTML Giao diện Sổ lưu bút -->
-<div class="card mb-4">
+<section class="card">
     <div class="card-header bg-primary text-white">📖 Sổ lưu bút (CSDL MySQL)</div>
     <div class="card-body">
-        <form method="POST" class="mb-4">
+    <form method="post" action="gioithieu.php">
+        <?= csrfField() ?>
             <div class="mb-3">
                 <input type="text" name="ten_nguoi_gui" class="form-control" placeholder="Tên của bạn..." required>
             </div>
@@ -392,8 +423,16 @@ $danh_sach_luu_but = $stmt_lb->fetchAll();
             <?php else: ?>
                 <?php foreach ($danh_sach_luu_but as $lb): ?>
                     <div class="list-group-item mb-2">
-                        <h6 class="mb-1 text-bold"><?= htmlspecialchars($lb['ten_nguoi_gui']) ?> <small class="text-muted float-end"><?= $lb['thoi_gian'] ?></small></h6>
-                        <p class="mb-1"><?= nl2br(htmlspecialchars($lb['noi_dung'])) ?></p>
+                        <h6 class="mb-1 text-bold">
+    <?= e($lb['ten']) ?>
+    <small class="text-muted float-end">
+        <?= e((string) $lb['ngay_tao']) ?>
+    </small>
+</h6>
+
+<p class="mb-1">
+    <?= nl2br(e($lb['loi_nhan'])) ?>
+</p>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -402,19 +441,20 @@ $danh_sach_luu_but = $stmt_lb->fetchAll();
 </div>
 <?php
 // Xử lý tìm kiếm dự án
-$tu_khoa = isset($_GET['tu_khoa']) ? trim($_GET['tu_khoa']) : '';
+$tuKhoaNhap = $_GET['tu_khoa'] ?? '';
+$tu_khoa = is_string($tuKhoaNhap) ? trim($tuKhoaNhap) : '';
 if ($tu_khoa !== '') {
-    $stmt_da = db()->prepare("SELECT * FROM tv_du_an WHERE masv = ? AND (ten_du_an LIKE ? OR cong_nghe LIKE ?)");
+    $stmt_da = db()->prepare("SELECT * FROM tv_du_an WHERE mssv = ? AND (ten_du_an LIKE ? OR cong_nghe LIKE ?)");
     $stmt_da->execute(['3120224094', "%$tu_khoa%", "%$tu_khoa%"]);
 } else {
-    $stmt_da = db()->prepare("SELECT * FROM tv_du_an WHERE masv = ?");
+    $stmt_da = db()->prepare("SELECT * FROM tv_du_an WHERE mssv = ?");
     $stmt_da->execute(['3120224094']);
 }
 $danh_sach_du_an = $stmt_da->fetchAll();
 ?>
 
 <!-- HTML Giao diện Dự án cá nhân -->
-<div class="card mb-4">
+<section class="card">
     <div class="card-header bg-success text-white">🚀 Dự án cá nhân (Tìm kiếm & Lọc CSDL)</div>
     <div class="card-body">
         <!-- Form Tìm kiếm -->
@@ -446,3 +486,8 @@ $danh_sach_du_an = $stmt_da->fetchAll();
         </div>
     </div>
 </div>
+</main>
+
+<script src="js/canhan.js"></script>
+
+<?php require __DIR__ . '/../../inc/footer.php'; ?>

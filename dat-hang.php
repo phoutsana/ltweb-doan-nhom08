@@ -2,110 +2,239 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/inc/config.php';
+require_once __DIR__ . '/inc/csrf.php';
 
-// Bắt buộc phải đăng nhập và gửi yêu cầu bằng POST
-if (!isset($_SESSION['user']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: dang-nhap.php');
+/*
+ * BT7 - ĐẶT HÀNG AN TOÀN
+ * - Chỉ cho phép POST
+ * - Kiểm tra CSRF
+ * - Kiểm tra đăng nhập
+ * - Đồng bộ giỏ hàng $_SESSION['gio'] với BT6
+ * - Kiểm tra tồn kho và khóa dòng bằng FOR UPDATE
+ * - Sử dụng Prepared Statements
+ * - Transaction, COMMIT và ROLLBACK
+ * - Không hiển thị lỗi SQL cho khách hàng
+ */
+
+// 1. Chỉ cho phép phương thức POST.
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
+    header('Allow: POST');
+    http_response_code(405);
+    header('Content-Type: text/plain; charset=UTF-8');
+    exit('405 Method Not Allowed');
+}
+
+// 2. Kiểm tra mã CSRF.
+csrf_verify();
+
+// 3. Kiểm tra đăng nhập.
+if (
+    !isset($_SESSION['user']) ||
+    !is_array($_SESSION['user'])
+) {
+    header('Location: dang-nhap.php', true, 303);
     exit;
 }
 
+$userId = filter_var(
+    $_SESSION['user']['id'] ?? null,
+    FILTER_VALIDATE_INT,
+    ['options' => ['min_range' => 1]]
+);
+
+if ($userId === false || $userId === null) {
+    http_response_code(403);
+    exit('403 Forbidden');
+}
+
+// 4. Lấy giỏ hàng thống nhất với gio-hang.php.
 $gioHang = $_SESSION['gio'] ?? [];
-if (empty($gioHang)) {
-    header('Location: gio-hang.php');
+
+if (!is_array($gioHang) || empty($gioHang)) {
+    $_SESSION['gio_hang_loi'] = 'Giỏ hàng đang trống.';
+    header('Location: gio-hang.php', true, 303);
     exit;
 }
 
-$pdo = \db();
+$pdo = null;
+$donHangId = null;
 
 try {
-    // Bắt đầu giao dịch (Transaction)
+    // 5. Bắt đầu giao dịch.
+    $pdo = db();
     $pdo->beginTransaction();
 
-    $userId = $_SESSION['user']['id'];
-    $tongTien = 0;
+    $tongTien = 0.0;
     $chiTietHopLe = [];
 
-    // Duyệt qua giỏ hàng để khóa dòng và kiểm tra tồn kho
+    // Chuẩn bị câu SQL khóa dòng sản phẩm.
+    $stmtCheck = $pdo->prepare(
+        'SELECT id, ten, gia, ton_kho
+         FROM san_pham
+         WHERE id = ?
+         FOR UPDATE'
+    );
+
+    // 6. Kiểm tra toàn bộ sản phẩm trong giỏ.
     foreach ($gioHang as $idSp => $item) {
-        $id = (int)$idSp;
-        $soLuongMua = is_array($item) ? (int)($item['so_luong'] ?? 1) : (int)$item;
+        $id = filter_var(
+            $idSp,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]]
+        );
 
-        if ($id <= 0 || $soLuongMua <= 0) continue;
-
-        // Khóa dòng sản phẩm để kiểm tra tồn kho an toàn tuyệt đối (SELECT ... FOR UPDATE)
-        $stmtCheck = $pdo->prepare("SELECT id, ten, gia, ton_kho FROM san_pham WHERE id = ? FOR UPDATE");
-        $stmtCheck->execute([$id]);
-        $spDb = $stmtCheck->fetch();
-
-        // NẾU KHÔNG ĐỦ TỒN KHO HOẶC HẾT HÀNG -> Hủy giao dịch (Rollback) và thông báo giữ nguyên giỏ
-        if (!$spDb || (int)$spDb['ton_kho'] < $soLuongMua) {
-            $pdo->rollBack();
-            
-            $tenSp = $spDb ? $spDb['ten'] : "Sản phẩm #{$id}";
-            $tonKhoCon = $spDb ? $spDb['ton_kho'] : 0;
-
-            echo "<div style='max-width: 650px; margin: 50px auto; background: #fee2e2; color: #991b1b; padding: 25px; border: 1px solid #f87171; border-radius: 8px; font-family: sans-serif; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>";
-            echo "<h3 style='margin-top:0; color: #b91c1c;'>❌ Đặt hàng không thành công!</h3>";
-            echo "<p>Sản phẩm '<strong>" . htmlspecialchars($tenSp) . "</strong>' không đủ số lượng trong kho.</p>";
-            echo "<p>Số lượng tồn kho hiện tại: <strong>{$tonKhoCon}</strong> | Số lượng bạn muốn mua: <strong>{$soLuongMua}</strong></p>";
-            echo "<hr style='border:0; border-top:1px solid #fca5a5; margin: 15px 0;'>";
-            echo "<p><em>Giỏ hàng của bạn vẫn được giữ nguyên để bạn có thể điều chỉnh lại số lượng.</em></p>";
-            echo "<br><a href='gio-hang.php' style='display: inline-block; background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;'>Quay lại giỏ hàng</a>";
-            echo "</div>";
-            exit;
+        if ($id === false || $id === null) {
+            throw new InvalidArgumentException(
+                'Mã sản phẩm trong giỏ hàng không hợp lệ.'
+            );
         }
 
-        $thanhTien = (float)$spDb['gia'] * $soLuongMua;
-        $tongTien += $thanhTien;
+        // Hỗ trợ cả hai cấu trúc giỏ hàng BT6.
+        $soLuongRaw = is_array($item)
+            ? ($item['so_luong'] ?? null)
+            : $item;
+
+        $soLuongMua = filter_var(
+            $soLuongRaw,
+            FILTER_VALIDATE_INT,
+            ['options' => ['min_range' => 1]]
+        );
+
+        if ($soLuongMua === false || $soLuongMua === null) {
+            throw new InvalidArgumentException(
+                'Số lượng sản phẩm không hợp lệ.'
+            );
+        }
+
+        $stmtCheck->execute([$id]);
+        $spDb = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+        if (!$spDb) {
+            throw new DomainException(
+                'Một sản phẩm trong giỏ hàng không còn tồn tại.'
+            );
+        }
+
+        if ((int)$spDb['ton_kho'] < $soLuongMua) {
+            throw new DomainException(
+                'Sản phẩm "' . $spDb['ten'] .
+                '" không đủ tồn kho. Hiện còn ' .
+                (int)$spDb['ton_kho'] . ' sản phẩm.'
+            );
+        }
+
+        // Giá phải lấy từ CSDL, không tin dữ liệu phía client.
+        $gia = (float)$spDb['gia'];
+
+        if (!is_finite($gia) || $gia < 0) {
+            throw new RuntimeException(
+                'Giá sản phẩm không hợp lệ.'
+            );
+        }
+
+        $tongTien += $gia * $soLuongMua;
 
         $chiTietHopLe[] = [
-            'id' => $id,
+            'id' => (int)$spDb['id'],
             'so_luong' => $soLuongMua,
-            'gia' => (float)$spDb['gia']
+            'don_gia' => $gia
         ];
     }
 
     if (empty($chiTietHopLe)) {
-        $pdo->rollBack();
-        header('Location: gio-hang.php');
-        exit;
+        throw new InvalidArgumentException(
+            'Giỏ hàng không có sản phẩm hợp lệ.'
+        );
     }
 
-    // 1. Tạo đơn hàng mới trong bảng don_hang (Không dùng cột ngay_tao để tránh lỗi SQL)
-    $stmtDh = $pdo->prepare("INSERT INTO don_hang (nguoi_dung_id, tong_tien, trang_thai) VALUES (?, ?, 'dang_xu_ly')");
+    // 7. Tạo đơn hàng.
+    $stmtDh = $pdo->prepare(
+        "INSERT INTO don_hang
+         (nguoi_dung_id, tong_tien, trang_thai)
+         VALUES (?, ?, 'dang_xu_ly')"
+    );
+
     $stmtDh->execute([$userId, $tongTien]);
-    $donHangId = $pdo->lastInsertId();
 
-    // 2. Trừ tồn kho và lưu chi tiết đơn hàng
-    foreach ($chiTietHopLe as $ct) {
-        // Trừ tồn kho sản phẩm
-        $stmtUp = $pdo->prepare("UPDATE san_pham SET ton_kho = ton_kho - ? WHERE id = ?");
-        $stmtUp->execute([$ct['so_luong'], $ct['id']]);
+    $donHangId = (int)$pdo->lastInsertId();
 
-        // Lưu chi tiết đơn hàng
-        $stmtCt = $pdo->prepare("INSERT INTO chi_tiet_don (don_hang_id, san_pham_id, so_luong, don_gia) VALUES (?, ?, ?, ?)");
-        $stmtCt->execute([$donHangId, $ct['id'], $ct['so_luong'], $ct['gia']]);
+    if ($donHangId <= 0) {
+        throw new RuntimeException(
+            'Không thể tạo đơn hàng.'
+        );
     }
 
-    // Xác nhận giao dịch thành công (Commit)
+    // 8. Chuẩn bị câu SQL trừ tồn kho.
+    $stmtUp = $pdo->prepare(
+        'UPDATE san_pham
+         SET ton_kho = ton_kho - ?
+         WHERE id = ? AND ton_kho >= ?'
+    );
+
+    // 9. Chuẩn bị câu SQL lưu chi tiết đơn hàng.
+    $stmtCt = $pdo->prepare(
+        'INSERT INTO chi_tiet_don
+         (don_hang_id, san_pham_id, so_luong, don_gia)
+         VALUES (?, ?, ?, ?)'
+    );
+
+    foreach ($chiTietHopLe as $ct) {
+        $stmtUp->execute([
+            $ct['so_luong'],
+            $ct['id'],
+            $ct['so_luong']
+        ]);
+
+        if ($stmtUp->rowCount() !== 1) {
+            throw new RuntimeException(
+                'Không thể cập nhật tồn kho sản phẩm.'
+            );
+        }
+
+        $stmtCt->execute([
+            $donHangId,
+            $ct['id'],
+            $ct['so_luong'],
+            $ct['don_gia']
+        ]);
+    }
+
+    // 10. Hoàn tất giao dịch.
     $pdo->commit();
 
-    // Xóa sạch giỏ hàng sau khi đặt thành công
-    unset($_SESSION['gio']);
-
-    // Chuyển hướng đến trang lịch sử đơn hàng với thông báo thành công
-    header("Location: don-hang.php?id={$donHangId}&dat_hang=thanh_cong");
-    exit;
-
-} catch (\Exception $e) {
-    if ($pdo->inTransaction()) {
+} catch (Throwable $e) {
+    // 11. Rollback nếu xảy ra lỗi.
+    if ($pdo instanceof PDO && $pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    
-    echo "<div style='max-width: 600px; margin: 50px auto; background: #fee2e2; color: #991b1b; padding: 20px; border: 1px solid #f87171; border-radius: 8px; font-family: sans-serif;'>";
-    echo "<h3 style='margin-top:0; color: #b91c1c;'>Lỗi hệ thống khi đặt hàng:</h3>";
-    echo "<p>" . htmlspecialchars($e->getMessage()) . "</p>";
-    echo "<br><a href='gio-hang.php' style='display: inline-block; background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;'>Quay lại giỏ hàng</a>";
-    echo "</div>";
+
+    // Ghi lỗi ở phía máy chủ.
+    error_log('[BT7_DAT_HANG] ' . $e->getMessage());
+
+    // Chỉ hiển thị lỗi nghiệp vụ an toàn.
+    if (
+        $e instanceof InvalidArgumentException ||
+        $e instanceof DomainException
+    ) {
+        $_SESSION['gio_hang_loi'] = $e->getMessage();
+    } else {
+        $_SESSION['gio_hang_loi'] =
+            'Đặt hàng thất bại. Vui lòng thử lại.';
+    }
+
+    header('Location: gio-hang.php', true, 303);
     exit;
 }
+
+// 12. Chỉ xóa giỏ hàng sau khi COMMIT thành công.
+unset($_SESSION['gio']);
+
+// 13. Chuyển đến trang chi tiết đơn hàng.
+header(
+    'Location: don-hang.php?id=' .
+    urlencode((string)$donHangId) .
+    '&dat_hang=thanh_cong',
+    true,
+    303
+);
+exit;

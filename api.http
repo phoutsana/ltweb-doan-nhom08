@@ -1,36 +1,49 @@
-### 1. Thân không phải JSON (Mong đợi: Mã 400)
-POST http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
-Content-Type: application/json
 
-day_khong_phai_la_json_hop_le
+@baseUrl = http://localhost:8001
 
-### 2. Số lượng âm: sl = -3 (Mong đợi: Mã 422)
-POST http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
+# Gia tri mau - KHONG commit token/cookie that
+@csrfToken = THAY_TOKEN_KHI_KIEM_THU
+@sessionCookie = PHPSESSID=THAY_SESSION_KHI_KIEM_THU
+
+### 1. Tim kiem san pham - 200
+GET {{baseUrl}}/api/san-pham.php?q=ao
+
+### 2. San pham khong ton tai - 404
+GET {{baseUrl}}/api/san-pham.php?id=999999
+
+### 3. Them vao gio hang hop le - 200
+POST {{baseUrl}}/api/gio-hang.php
 Content-Type: application/json
+X-CSRF-Token: {{csrfToken}}
+Cookie: {{sessionCookie}}
+
+{
+  "san_pham_id": 1,
+  "so_luong": 2
+}
+
+### 4. So luong am - 422
+POST {{baseUrl}}/api/gio-hang.php
+Content-Type: application/json
+X-CSRF-Token: {{csrfToken}}
+Cookie: {{sessionCookie}}
 
 {
   "san_pham_id": 1,
   "so_luong": -3
 }
 
-### 3. ID sản phẩm không tồn tại: id = 999999 (Mong đợi: Mã 404)
-POST http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
+### 5. Token CSRF sai - 403
+POST {{baseUrl}}/api/gio-hang.php
 Content-Type: application/json
-
-{
-  "san_pham_id": 999999,
-  "so_luong": 1
-}
-
-### 4. Vượt quá tồn kho (Mong đợi: Mã 422)
-# (Giả sử sản phẩm ID 1 chỉ còn tồn kho ít, bạn truyền số lượng lớn như 999)
-POST http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
-Content-Type: application/json
+X-CSRF-Token: token-sai
+Cookie: {{sessionCookie}}
 
 {
   "san_pham_id": 1,
-  "so_luong": 999
+  "so_luong": 1
 }
 
-### 5. Sai phương thức: DELETE (Mong đợi: Mã 405 kèm header Allow)
-DELETE http://localhost/nhom8/ltweb-doan-nhom08/api/gio-hang.php
+### 6. Xem gio hang - 200
+GET {{baseUrl}}/api/gio-hang.php
+Cookie: {{sessionCookie}}

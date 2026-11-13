@@ -1,0 +1,13 @@
+-- BT7 - NHOM 08
+-- Tai khoan MySQL quyen toi thieu
+-- CAN THAY MAT KHAU MAU TRUOC KHI THUC THI.
+-- KHONG commit mat khau that.
+
+CREATE USER IF NOT EXISTS 'nhom08_app'@'127.0.0.1'
+IDENTIFIED BY 'THAY_MAT_KHAU_MANH_TRUOC_KHI_CHAY';
+
+GRANT SELECT, INSERT, UPDATE, DELETE
+ON `ltweb_nhom08`.*
+TO 'nhom08_app'@'127.0.0.1';
+
+SHOW GRANTS FOR 'nhom08_app'@'127.0.0.1';

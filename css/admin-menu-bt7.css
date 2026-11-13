@@ -1,0 +1,14 @@
+/* BT7 - CSS cho menu quan tri */
+#submenu-admin[hidden] {
+    display: none !important;
+}
+
+#submenu-admin:not([hidden]) {
+    display: block !important;
+}
+
+/* BT7 - Menu di dong */
+#menu-chinh.bt7-menu-open {
+    display: flex !important;
+    flex-direction: column;
+}

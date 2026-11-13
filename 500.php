@@ -8,20 +8,7 @@ http_response_code(500);
 <head>
     <meta charset="UTF-8">
     <title>500 - Lỗi máy chủ</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            text-align: center;
-            padding-top: 100px;
-            background: #f3f4f6;
-            color: #333;
-        }
-
-        h1 {
-            font-size: 3rem;
-            color: #dc2626;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/trang-loi.css">
 </head>
 
 <body>

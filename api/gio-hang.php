@@ -9,6 +9,7 @@ set_exception_handler(function ($e) {
 });
 
 require_once __DIR__ . '/../inc/config.php';
+require_once __DIR__ . '/../inc/csrf.php';
 header('Content-Type: application/json; charset=utf-8');
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -23,6 +24,7 @@ if ($method === 'GET') {
 
 // 2. Xử lý phương thức POST: Thêm sản phẩm vào giỏ hàng
 if ($method === 'POST') {
+      csrf_verify();
     $rawInput = file_get_contents('php://input');
     
     // Kiểm tra thân request có phải là JSON hợp lệ hay không -> Bắt buộc trả về 400 nếu sai

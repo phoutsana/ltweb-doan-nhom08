@@ -2,7 +2,8 @@
     "name": "nhom08/ltweb-doan",
     "require": {
         "php": ">=8.1",
-        "monolog/monolog": "^3.12"
+        "monolog/monolog": "^3.12",
+        "vlucas/phpdotenv": "5.8"
     },
     "autoload": {
         "psr-4": {

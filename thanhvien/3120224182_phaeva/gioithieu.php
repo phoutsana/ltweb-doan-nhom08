@@ -6,8 +6,16 @@
  */
 
 require_once __DIR__ . '/../../inc/config.php';
+require_once __DIR__ . '/../../inc/csrf.php';
 
 $goc = '../../';
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
+    csrf_verify();
+}
+
+// Bật quyền quản lý/xóa cho chủ trang (phục vụ kiểm thử Phần B)
+$coQuyenDuAn = true;
+
 $thongBaoKyNang = '';
 $loiKyNang = '';
 $loiDiem = '';
@@ -16,6 +24,11 @@ $loiDiem = '';
 // CHỨC NĂNG 1: THÊM & XÓA KỸ NĂNG (TƯƠNG TÁC CSDL tv_ky_nang)
 // ==========================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_them_ky_nang'])) {
+    if (!$coQuyenDuAn) {
+        http_response_code(403);
+        exit('Không có quyền thêm kỹ năng.');
+    }
+
     $tieuDeKyNang = trim($_POST['tieu_de'] ?? '');
     $moTaKyNang = trim($_POST['mo_ta'] ?? '');
     $mucKyNang = trim($_POST['muc'] ?? 'lap-trinh');
@@ -36,6 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_them_ky_nang'])) 
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_xoa_ky_nang'])) {
+    if (!$coQuyenDuAn) {
+        http_response_code(403);
+        exit('Không có quyền xóa kỹ năng.');
+    }
+
     $idXoa = filter_input(INPUT_POST, 'id_ky_nang', FILTER_VALIDATE_INT);
     if ($idXoa) {
         try {
@@ -98,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['btn_tinh_diem'])) {
         $loiDiem = 'Lỗi: Vui lòng nhập cả 3 điểm hợp lệ từ 0 đến 10!';
     } else {
         $diemTK = round((0.2 * $a1) + (0.3 * $a2) + (0.5 * $a3), 1);
-        
+
         try {
             $stmtDiem = db()->prepare("INSERT INTO tv_diem_hoc_phan (masv, diem_a1, diem_a2, diem_a3, diem_tong_ket) VALUES (?, ?, ?, ?, ?)");
             $stmtDiem->execute(['3120224182', $a1, $a2, $a3, $diemTK]);
@@ -124,41 +142,16 @@ try {
 }
 
 $tieuDe = 'Giới thiệu cá nhân - KEOPHOXAY Phaeva';
+$cssRieng = 'thanhvien/3120224182_phaeva/bt7-csp.css';
 require_once __DIR__ . '/../../inc/header.php';
 ?>
 
-<script>
-(function () {
-    const cssTrangCaNhan = `
-        .ph-header { background: linear-gradient(135deg, #1d3383, #112059); color: #fff; text-align: center; padding: 30px 15px; margin-top: 20px; border-radius: 8px 8px 0 0; }
-        .ph-nav { background: #112059; padding: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; border-radius: 0 0 8px 8px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,.1); }
-        .ph-nav a { color: #fff; text-decoration: none; padding: 8px 15px; font-weight: bold; border-radius: 20px; transition: background .2s; font-size: 15px; }
-        .ph-nav a:hover { background: rgba(255,255,255,.2); }
-        .ph-btn-loc { background: #e2e8f0; border: 0; padding: 8px 15px; border-radius: 20px; cursor: pointer; text-decoration: none; color: #334155; font-weight: bold; margin: 5px; display: inline-block; transition: all .2s; }
-        .ph-btn-loc.active { background: #1d3383; color: #fff; }
-        .ph-btn-loc:hover { background: #cbd5e1; }
-        .form-diem, .form-them-kn { background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; max-width: 500px; margin: 0 auto 20px auto; }
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #1d3383; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px; box-sizing: border-box; }
-        .btn-submit { background: #1d3383; color: #fff; padding: 10px 20px; border: 0; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
-        .btn-submit:hover { background: #112059; }
-        .btn-xoa { background: #dc2626; color: #fff; border: 0; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .btn-xoa:hover { background: #b91c1c; }
-        .alert-error { color: #dc2626; background: #fee2e2; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-weight: bold; text-align: center; }
-        .alert-success { color: #15803d; background: #dcfce7; padding: 15px; border-radius: 4px; margin-bottom: 15px; font-weight: bold; text-align: center; font-size: 16px; border: 1px solid #bbf7d0; }
-        @media (max-width: 600px) { .ph-nav { gap: 6px; } .ph-nav a { padding: 8px 10px; } }
-    `;
-    const styleTag = document.createElement('style');
-    styleTag.textContent = cssTrangCaNhan;
-    document.head.appendChild(styleTag);
-}());
-</script>
+<script src="js/bt7-csp.js" defer></script>
 
-<main class="noi-dung-chinh" style="max-width: 1000px; margin: 0 auto;">
+<main class="noi-dung-chinh" data-bt7-css="p001">
     <header class="ph-header">
-        <h1 style="font-size: 28px; margin: 0; color: white;">Trang giới thiệu cá nhân</h1>
-        <p style="margin-top: 8px; font-style: italic;">Sinh viên Công nghệ Thông tin - Đam mê Thiết kế &amp; Lập trình Web</p>
+        <h1 data-bt7-css="p002">Trang giới thiệu cá nhân</h1>
+        <p data-bt7-css="p003">Sinh viên Công nghệ Thông tin - Đam mê Thiết kế &amp; Lập trình Web</p>
     </header>
 
     <nav class="ph-nav" aria-label="Điều hướng trang cá nhân">
@@ -168,13 +161,14 @@ require_once __DIR__ . '/../../inc/header.php';
         <a href="#thoi-khoa-bieu">Lịch học</a>
     </nav>
 
-    <section id="gioi-thieu" class="khoi-noi-dung" style="display: flex; flex-wrap: wrap; gap: 30px; align-items: flex-start;">
-        <figure style="margin: 0; max-width: 250px;">
-            <img src="../../images/avatar-phaeva.jpg" alt="Ảnh chân dung của KEOPHOXAY Phaeva" style="width: 100%; border-radius: 8px; border: 4px solid #1d3383;">
+    <section id="gioi-thieu" class="khoi-noi-dung" data-bt7-css="p004">
+        <figure data-bt7-css="p005">
+            <img src="../../images/avatar-phaeva.jpg" alt="Ảnh chân dung của KEOPHOXAY Phaeva" data-bt7-css="p006">
         </figure>
-        <div class="thong-tin-chi-tiet" style="flex: 1; min-width: 250px;">
-            <h2 style="color: #1d3383;">Giới thiệu bản thân</h2>
+        <div class="thong-tin-chi-tiet" data-bt7-css="p007">
+            <h2 data-bt7-css="p008">Giới thiệu bản thân</h2>
             <p><strong>Họ và tên:</strong> KEOPHOXAY Phaeva</p>
+            <p><strong>Mã sinh viên:</strong> 3120224182</p>
             <p><strong>Ngành học:</strong> Công nghệ Thông tin</p>
             <p><strong>Trường:</strong> Trường Đại học Sư phạm – Đại học Đà Nẵng</p>
             <p><strong>Vai trò trong nhóm:</strong> Thiết kế giao diện &amp; Hỗ trợ code</p>
@@ -184,7 +178,7 @@ require_once __DIR__ . '/../../inc/header.php';
 
     <!-- CHỨC NĂNG 1: QUẢN LÝ KỸ NĂNG (LỌC, THÊM, XÓA TỪ CSDL) -->
     <section id="ky-nang" class="khoi-noi-dung">
-        <h2 style="color: #1d3383; text-align: center;">Chức năng 1: Quản lý Kỹ năng (CSDL tv_ky_nang)</h2>
+        <h2 data-bt7-css="p009">Chức năng 1: Quản lý Kỹ năng (CSDL tv_ky_nang)</h2>
 
         <?php if ($thongBaoKyNang !== ''): ?>
             <div class="alert-success"><?= e($thongBaoKyNang) ?></div>
@@ -194,8 +188,9 @@ require_once __DIR__ . '/../../inc/header.php';
         <?php endif; ?>
 
         <div class="form-them-kn">
-            <h3 style="color: #1d3383; font-size: 16px; margin-top: 0;">Thêm kỹ năng mới vào CSDL</h3>
+            <h3 data-bt7-css="p010">Thêm kỹ năng mới vào CSDL</h3>
             <form action="gioithieu.php#ky-nang" method="POST">
+                <?= csrf_field() ?>
                 <div class="form-group">
                     <label for="tieu_de">Tiêu đề kỹ năng:</label>
                     <input type="text" id="tieu_de" name="tieu_de" required placeholder="Ví dụ: Lập trình PHP nâng cao">
@@ -216,7 +211,7 @@ require_once __DIR__ . '/../../inc/header.php';
             </form>
         </div>
 
-        <div style="margin-bottom: 20px; text-align: center;">
+        <div data-bt7-css="p011">
             <a href="gioithieu.php?loc=tat-ca#ky-nang" class="ph-btn-loc <?= $boLoc === 'tat-ca' ? 'active' : '' ?>">Tất cả</a>
             <a href="gioithieu.php?loc=lap-trinh#ky-nang" class="ph-btn-loc <?= $boLoc === 'lap-trinh' ? 'active' : '' ?>">Lập trình</a>
             <a href="gioithieu.php?loc=cong-cu#ky-nang" class="ph-btn-loc <?= $boLoc === 'cong-cu' ? 'active' : '' ?>">Công cụ</a>
@@ -224,19 +219,22 @@ require_once __DIR__ . '/../../inc/header.php';
         </div>
 
         <?php if (empty($kyNangHienThi)): ?>
-            <p style="text-align: center; color: #ef4444; font-style: italic;">Không tìm thấy kỹ năng nào trong nhóm này.</p>
+            <p data-bt7-css="p012">Không tìm thấy kỹ năng nào trong nhóm này.</p>
         <?php else: ?>
-            <ul style="line-height: 1.8; padding-left: 0; max-width: 600px; margin: 0 auto;">
+            <ul data-bt7-css="p013">
                 <?php foreach ($kyNangHienThi as $kn): ?>
-                    <li style="margin-bottom: 10px; padding: 12px; background: #f8fafc; border-left: 4px solid #1d3383; border-radius: 4px; list-style-type: none; display: flex; justify-content: space-between; align-items: center;">
+                    <li data-bt7-css="p014" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <div>
-                            <strong style="color: #1d3383;"><?= e($kn['tieu_de']) ?>:</strong>
+                            <strong data-bt7-css="p015"><?= e($kn['tieu_de']) ?>:</strong>
                             <span><?= e($kn['mo_ta']) ?></span>
                         </div>
-                        <form action="gioithieu.php#ky-nang" method="POST" onsubmit="return confirm('Bạn có chắc muốn xóa kỹ năng này?');" style="margin: 0;">
-                            <input type="hidden" name="id_ky_nang" value="<?= (int) $kn['id'] ?>">
-                            <button type="submit" name="btn_xoa_ky_nang" class="btn-xoa">Xóa</button>
-                        </form>
+                        <?php if ($coQuyenDuAn): ?>
+                            <form action="gioithieu.php#ky-nang" method="POST" data-bt7-confirm-delete data-bt7-css="p016" style="margin: 0;">
+                                <?= csrf_field() ?>
+                                <input type="hidden" name="id_ky_nang" value="<?= (int) $kn['id'] ?>">
+                                <button type="submit" name="btn_xoa_ky_nang" class="btn-xoa" style="background: #dc3545; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer;">Xóa</button>
+                            </form>
+                        <?php endif; ?>
                     </li>
                 <?php endforeach; ?>
             </ul>
@@ -245,9 +243,9 @@ require_once __DIR__ . '/../../inc/header.php';
 
     <!-- CHỨC NĂNG 2: MÁY TÍNH ĐIỂM HỌC PHẦN (LƯU VÀO CSDL tv_diem_hoc_phan) -->
     <section id="diem-hoc-phan" class="khoi-noi-dung">
-        <h2 style="color: #1d3383; text-align: center;">Chức năng 2: Máy tính & Lưu điểm học phần (CSDL)</h2>
+        <h2 data-bt7-css="p017">Chức năng 2: Máy tính & Lưu điểm học phần (CSDL)</h2>
         <div class="form-diem">
-            <p style="text-align: center; margin-bottom: 20px; font-style: italic;">Công thức: 0.2 × A1 + 0.3 × A2 + 0.5 × A3</p>
+            <p data-bt7-css="p018">Công thức: 0.2 × A1 + 0.3 × A2 + 0.5 × A3</p>
 
             <?php if ($loiDiem !== ''): ?>
                 <div class="alert-error"><?= e($loiDiem) ?></div>
@@ -258,6 +256,7 @@ require_once __DIR__ . '/../../inc/header.php';
             <?php endif; ?>
 
             <form action="gioithieu.php?loc=<?= e(urlencode($boLoc)) ?>#diem-hoc-phan" method="POST">
+                <?= csrf_field() ?>
                 <div class="form-group">
                     <label for="a1">Điểm Chuyên cần &amp; Bài tập (A1 - 20%):</label>
                     <input type="number" id="a1" name="a1" step="0.1" min="0" max="10" required placeholder="Nhập điểm từ 0 đến 10">
@@ -274,26 +273,26 @@ require_once __DIR__ . '/../../inc/header.php';
             </form>
 
             <?php if (!empty($lichSuDiem)): ?>
-                <div style="margin-top: 25px;">
-                    <h3 style="color: #1d3383; font-size: 14px; margin-bottom: 10px;">Lịch sử tính điểm gần đây (từ CSDL):</h3>
-                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                <div data-bt7-css="p019">
+                    <h3 data-bt7-css="p020">Lịch sử tính điểm gần đây (từ CSDL):</h3>
+                    <table data-bt7-css="p021">
                         <thead>
-                            <tr style="background: #1d3383; color: white;">
-                                <th style="padding: 6px; border: 1px solid #cbd5e1;">A1</th>
-                                <th style="padding: 6px; border: 1px solid #cbd5e1;">A2</th>
-                                <th style="padding: 6px; border: 1px solid #cbd5e1;">A3</th>
-                                <th style="padding: 6px; border: 1px solid #cbd5e1;">Tổng kết</th>
-                                <th style="padding: 6px; border: 1px solid #cbd5e1;">Thời gian</th>
+                            <tr data-bt7-css="p022">
+                                <th data-bt7-css="p023">A1</th>
+                                <th data-bt7-css="p024">A2</th>
+                                <th data-bt7-css="p025">A3</th>
+                                <th data-bt7-css="p026">Tổng kết</th>
+                                <th data-bt7-css="p027">Thời gian</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($lichSuDiem as $ls): ?>
                                 <tr>
-                                    <td style="padding: 6px; border: 1px solid #cbd5e1; text-align: center;"><?= e((string)$ls['diem_a1']) ?></td>
-                                    <td style="padding: 6px; border: 1px solid #cbd5e1; text-align: center;"><?= e((string)$ls['diem_a2']) ?></td>
-                                    <td style="padding: 6px; border: 1px solid #cbd5e1; text-align: center;"><?= e((string)$ls['diem_a3']) ?></td>
-                                    <td style="padding: 6px; border: 1px solid #cbd5e1; text-align: center; font-weight: bold; color: #15803d;"><?= e((string)$ls['diem_tong_ket']) ?></td>
-                                    <td style="padding: 6px; border: 1px solid #cbd5e1; text-align: center; font-size: 11px;"><?= e((string)$ls['ngay_tinh']) ?></td>
+                                    <td data-bt7-css="p028"><?= e((string)$ls['diem_a1']) ?></td>
+                                    <td data-bt7-css="p029"><?= e((string)$ls['diem_a2']) ?></td>
+                                    <td data-bt7-css="p030"><?= e((string)$ls['diem_a3']) ?></td>
+                                    <td data-bt7-css="p031"><?= e((string)$ls['diem_tong_ket']) ?></td>
+                                    <td data-bt7-css="p032"><?= e((string)$ls['ngay_tinh']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -305,11 +304,11 @@ require_once __DIR__ . '/../../inc/header.php';
 
     <!-- THỜI KHÓA BIỂU -->
     <section id="thoi-khoa-bieu" class="khoi-noi-dung">
-        <h2 style="color: #1d3383;">Thời khóa biểu học kỳ này</h2>
+        <h2 data-bt7-css="p033">Thời khóa biểu học kỳ này</h2>
         <div class="hop-bang">
-            <table style="width: 100%; min-width: 600px;">
-                <caption style="text-align: left; padding: 10px 0; font-weight: bold;">Lịch học hàng tuần của Phaeva</caption>
-                <thead style="background-color: #1d3383; color: white;">
+            <table data-bt7-css="p034">
+                <caption data-bt7-css="p035">Lịch học hàng tuần của Phaeva</caption>
+                <thead data-bt7-css="p036">
                     <tr>
                         <th scope="col">Buổi</th><th scope="col">Thứ 2</th><th scope="col">Thứ 3</th>
                         <th scope="col">Thứ 4</th><th scope="col">Thứ 5</th><th scope="col">Thứ 6</th>
@@ -324,9 +323,9 @@ require_once __DIR__ . '/../../inc/header.php';
         </div>
     </section>
 
-    <div style="text-align: center; margin: 30px 0;">
-        <a href="../../index.php" style="display: inline-block; margin: 5px; padding: 10px 20px; background: #1d3383; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">Quay về trang chủ nhóm</a>
-        <a href="../../gioi-thieu.php" style="display: inline-block; margin: 5px; padding: 10px 20px; background: #64748b; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">Quay về trang giới thiệu nhóm</a>
+    <div data-bt7-css="p037">
+        <a href="../../index.php" data-bt7-css="p038">Quay về trang chủ nhóm</a>
+        <a href="../../gioi-thieu.php" data-bt7-css="p039">Quay về trang giới thiệu nhóm</a>
     </div>
 </main>
 

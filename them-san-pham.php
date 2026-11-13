@@ -1,171 +1,319 @@
 <?php
-require_once __DIR__ . '/inc/config.php';
+declare(strict_types=1);
 
-// Kiểm tra quyền Quản trị viên
-if (!isset($_SESSION['user']) || $_SESSION['user']['vai_tro'] !== 'quan_tri') {
+require_once __DIR__ . '/inc/config.php';
+require_once __DIR__ . '/inc/csrf.php';
+
+// BT7: Chi quan tri vien moi duoc them san pham.
+$nguoiDung = $_SESSION['user'] ?? null;
+if (!is_array($nguoiDung) || ($nguoiDung['vai_tro'] ?? null) !== 'quan_tri') {
     http_response_code(403);
     exit('Bạn không có quyền truy cập trang này.');
 }
 
-$pdo = \db();
+$pdo = db();
+$danhMucList = $pdo->query('SELECT id, ten FROM danh_muc ORDER BY id ASC')
+    ->fetchAll(PDO::FETCH_ASSOC);
 
-// Lấy danh sách danh mục để hiện ra thẻ select
-$danhMucList = $pdo->query("SELECT id, ten FROM danh_muc")->fetchAll();
-
-// Mảng chứa các lỗi chi tiết cho từng trường
 $errors = [];
+$form = [
+    'danh_muc_id' => '',
+    'ten' => '',
+    'gia' => '',
+    'ton_kho' => '',
+    'mau_sac' => '',
+    'kich_thuoc' => '',
+    'video' => '',
+    'mo_ta' => '',
+];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $danhMucId = (int)($_POST['danh_muc_id'] ?? 0);
-    $ten = trim($_POST['ten'] ?? '');
-    $gia = filter_var($_POST['gia'], FILTER_VALIDATE_INT);
-    $tonKho = filter_var($_POST['ton_kho'], FILTER_VALIDATE_INT);
-    $mauSac = trim($_POST['mau_sac'] ?? '');
-    $kichThuoc = trim($_POST['kich_thuoc'] ?? '');
-    $video = trim($_POST['video'] ?? '');
-    $moTa = trim($_POST['mo_ta'] ?? '');
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    // Bat buoc kiem tra token truoc khi xu ly yeu cau thay doi du lieu.
+    csrf_verify();
 
-    // 1. Kiểm tra Tên sản phẩm không được để trống
-    if (empty($ten)) {
+    // Chi lay chuoi: tranh loi TypeError khi nguoi dung gui mang tu POST.
+    foreach (array_keys($form) as $field) {
+        $value = $_POST[$field] ?? '';
+        $form[$field] = is_string($value) ? trim($value) : '';
+    }
+
+    $danhMucId = filter_var(
+        $form['danh_muc_id'],
+        FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 1]]
+    );
+    $gia = filter_var(
+        $form['gia'],
+        FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 1]]
+    );
+    $tonKho = filter_var(
+        $form['ton_kho'],
+        FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 0]]
+    );
+
+    if ($form['ten'] === '') {
         $errors['ten'] = 'Tên sản phẩm không được để trống.';
+    } elseif (strlen($form['ten']) > 255) {
+        $errors['ten'] = 'Tên sản phẩm quá dài.';
     }
 
-    // 2. Kiểm tra Giá phải lớn hơn hoặc bằng 1.000đ (hoặc > 0 tùy theo test case, ở đây giữ nguyên logic >= 1000 hoặc bạn có thể chỉnh theo ý muốn)
-    if ($gia === false || $gia <= 0) {
-        $errors['gia'] = 'Giá sản phẩm phải lớn hơn 0.';
+    if ($gia === false) {
+        $errors['gia'] = 'Giá sản phẩm phải là số nguyên lớn hơn 0.';
+    }
+    if ($tonKho === false) {
+        $errors['ton_kho'] = 'Tồn kho phải là số nguyên không âm.';
     }
 
-    // 3. Kiểm tra Tồn kho không được nhỏ hơn 0 (bắt lỗi -1)
-    if ($tonKho === false || $tonKho < 0) {
-        $errors['ton_kho'] = 'Tồn kho không được nhỏ hơn 0.';
+    // Danh muc duoc kiem tra bang prepared statement.
+    if ($danhMucId === false) {
+        $errors['danh_muc'] = 'Danh mục không hợp lệ.';
+    } else {
+        $stmtCheckDM = $pdo->prepare('SELECT COUNT(*) FROM danh_muc WHERE id = ?');
+        $stmtCheckDM->execute([$danhMucId]);
+        if ((int) $stmtCheckDM->fetchColumn() === 0) {
+            $errors['danh_muc'] = 'Danh mục không tồn tại.';
+        }
     }
 
-    // 4. Kiểm tra danh mục có tồn tại trong database không (bắt lỗi danh mục 999)
-    $stmtCheckDM = $pdo->prepare("SELECT COUNT(*) FROM danh_muc WHERE id = ?");
-    $stmtCheckDM->execute([$danhMucId]);
-    if ($stmtCheckDM->fetchColumn() == 0) {
-        $errors['danh_muc'] = 'Danh mục không hợp lệ hoặc không tồn tại.';
+    // Chi chap nhan link YouTube HTTPS, tranh luu javascript:/data: URL.
+    if ($form['video'] !== '') {
+        $url = filter_var($form['video'], FILTER_VALIDATE_URL);
+        $scheme = is_string($url) ? strtolower((string) parse_url($url, PHP_URL_SCHEME)) : '';
+        $host = is_string($url) ? strtolower((string) parse_url($url, PHP_URL_HOST)) : '';
+        $youtubeHosts = [
+            'youtube.com', 'www.youtube.com',
+            'youtube-nocookie.com', 'www.youtube-nocookie.com',
+            'youtu.be', 'www.youtu.be',
+        ];
+        if ($url === false || $scheme !== 'https' || !in_array($host, $youtubeHosts, true)) {
+            $errors['video'] = 'Chỉ chấp nhận liên kết YouTube HTTPS hợp lệ.';
+        }
     }
 
-    // Xử lý upload ảnh nếu không có lỗi cơ bản
     $anh = '';
-    if (empty($errors) && isset($_FILES['anh']) && $_FILES['anh']['error'] === UPLOAD_ERR_OK) {
-        $fileTmp = $_FILES['anh']['tmp_name'];
-        $fileName = time() . '_' . basename($_FILES['anh']['name']);
-        $uploadDir = __DIR__ . '/uploads/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-        if (move_uploaded_file($fileTmp, $uploadDir . $fileName)) {
-            $anh = 'uploads/' . $fileName;
+    $savedFile = null;
+
+    // Chi xu ly upload khi cac truong khac hop le.
+    if ($errors === [] && isset($_FILES['anh'])) {
+        $file = $_FILES['anh'];
+        if (!is_array($file) || !isset($file['error']) || !is_int($file['error'])) {
+            $errors['anh'] = 'Dữ liệu upload không hợp lệ.';
+        } elseif ($file['error'] !== UPLOAD_ERR_NO_FILE) {
+            if ($file['error'] !== UPLOAD_ERR_OK) {
+                $errors['anh'] = 'Upload ảnh thất bại.';
+            } elseif (
+                !isset($file['size'], $file['tmp_name']) ||
+                !is_int($file['size']) ||
+                !is_string($file['tmp_name']) ||
+                $file['size'] < 1 ||
+                $file['size'] > 2 * 1024 * 1024 ||
+                !is_uploaded_file($file['tmp_name'])
+            ) {
+                $errors['anh'] = 'Tệp ảnh không hợp lệ hoặc vượt quá 2 MB.';
+            } elseif (!extension_loaded('gd') || !extension_loaded('fileinfo')) {
+                $errors['anh'] = 'Máy chủ thiếu thư viện xử lý ảnh.';
+            } else {
+                $tmp = $file['tmp_name'];
+                $mime = (new finfo(FILEINFO_MIME_TYPE))->file($tmp);
+                $info = @getimagesize($tmp);
+                $isJpeg = is_array($info) && ($info[2] ?? null) === IMAGETYPE_JPEG
+                    && $mime === 'image/jpeg';
+                $isPng = is_array($info) && ($info[2] ?? null) === IMAGETYPE_PNG
+                    && $mime === 'image/png';
+
+                if (!$isJpeg && !$isPng) {
+                    $errors['anh'] = 'Chỉ chấp nhận ảnh JPG hoặc PNG hợp lệ.';
+                } else {
+                    $width = (int) $info[0];
+                    $height = (int) $info[1];
+                    if (
+                        $width < 1 || $height < 1 ||
+                        $width > 4000 || $height > 4000 ||
+                        $width * $height > 12000000
+                    ) {
+                        $errors['anh'] = 'Kích thước ảnh không hợp lệ hoặc quá lớn.';
+                    } else {
+                        try {
+                            $image = $isJpeg
+                                ? @imagecreatefromjpeg($tmp)
+                                : @imagecreatefrompng($tmp);
+                        } catch (Throwable $e) {
+                            $image = false;
+                        }
+
+                        if ($image === false) {
+                            $errors['anh'] = 'Không đọc được nội dung ảnh.';
+                        } else {
+                            $extension = $isJpeg ? 'jpg' : 'png';
+                            $filename = bin2hex(random_bytes(16)) . '.' . $extension;
+                            $uploadDir = __DIR__ . '/uploads/';
+
+                            if (
+                                !is_dir($uploadDir) &&
+                                !@mkdir($uploadDir, 0755, true) &&
+                                !is_dir($uploadDir)
+                            ) {
+                                $errors['anh'] = 'Không tạo được thư mục upload.';
+                            } else {
+                                $destination = $uploadDir . $filename;
+                                // Giai ma va tao lai file anh, khong luu ten/file goc.
+                                if ($isPng) {
+                                    imagealphablending($image, false);
+                                    imagesavealpha($image, true);
+                                    $saved = @imagepng($image, $destination, 6);
+                                } else {
+                                    $saved = @imagejpeg($image, $destination, 85);
+                                }
+                                if ($saved) {
+                                    $anh = 'uploads/' . $filename;
+                                    $savedFile = $destination;
+                                } else {
+                                    @unlink($destination);
+                                    $errors['anh'] = 'Không lưu được ảnh.';
+                                }
+                            }
+                            imagedestroy($image);
+                        }
+                    }
+                }
+            }
         }
     }
 
-    // Nếu không có lỗi nào thì tiến hành INSERT vào Database
-    if (empty($errors)) {
+    if ($errors === []) {
         try {
-            $stmt = $pdo->prepare("INSERT INTO san_pham (danh_muc_id, ten, gia, ton_kho, anh, mau_sac, kich_thuoc, video, mo_ta, ngay_tao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-            $stmt->execute([$danhMucId, $ten, $gia, $tonKho, $anh, $mauSac, $kichThuoc, $video, $moTa]);
+            $stmt = $pdo->prepare(
+                'INSERT INTO san_pham
+                 (danh_muc_id, ten, gia, ton_kho, anh,
+                  mau_sac, kich_thuoc, video, mo_ta, ngay_tao)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())'
+            );
+            $stmt->execute([
+                $danhMucId,
+                $form['ten'],
+                $gia,
+                $tonKho,
+                $anh,
+                $form['mau_sac'],
+                $form['kich_thuoc'],
+                $form['video'],
+                $form['mo_ta'],
+            ]);
 
-            // PRG (Post-Redirect-Get) kèm thông báo thành công
-            header('Location: quan-tri.php?thanh_cong=them');
+            // Giu duong dan chuyen huong tu ma goc cua nhom.
+            header('Location: quan-tri.php?thanh_cong=them', true, 303);
             exit;
-        } catch (\PDOException $e) {
-            error_log("Lỗi thêm sản phẩm: " . $e->getMessage());
+        } catch (PDOException $e) {
+            // Neu DB that bai, xoa anh moi de tranh file rac.
+            if (is_string($savedFile) && is_file($savedFile)) {
+                @unlink($savedFile);
+            }
+            error_log('[BT7_THEM_SAN_PHAM] ' . $e->getMessage());
             $errors['chung'] = 'Không thể thêm sản phẩm vào cơ sở dữ liệu.';
         }
     }
 }
 
 $tieuDe = 'Thêm sản phẩm - Fashion Store';
+$trang = 'them-san-pham';
+$cssRieng = 'css/them-san-pham-bt7.css';
 require_once __DIR__ . '/inc/header.php';
 ?>
-
-<main class="noi-dung-chinh" style="max-width: 600px; margin: 30px auto; padding: 25px; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-    <h2 style="color: #1e3a8a; margin-bottom: 20px;">Thêm Sản Phẩm Mới</h2>
+<main class="noi-dung-chinh bt7-product-add">
+    <h2 class="bt7-product-add__title">Thêm Sản Phẩm Mới</h2>
 
     <?php if (!empty($errors['chung'])): ?>
-        <div style="background: #fee2e2; color: #991b1b; padding: 10px; border-radius: 4px; margin-bottom: 15px;"><?= e($errors['chung']) ?></div>
+        <div class="bt7-product-add__error" role="alert"><?= e((string) $errors['chung']) ?></div>
     <?php endif; ?>
 
-    <form method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 12px;">
-        <!-- Danh mục -->
-        <div>
-            <label style="font-weight: bold;">Danh mục *</label>
-            <select name="danh_muc_id" style="width: 100%; padding: 8px; border: 1px solid <?= isset($errors['danh_muc']) ? 'red' : '#d1d5db' ?>; border-radius: 4px;">
+    <form method="post" enctype="multipart/form-data" class="bt7-product-add__form">
+        <?= csrf_field() ?>
+
+        <div class="bt7-product-add__field">
+            <label for="danh_muc_id">Danh mục *</label>
+            <select id="danh_muc_id" name="danh_muc_id"
+                    class="bt7-product-add__control<?= isset($errors['danh_muc']) ? ' bt7-product-add__control--error' : '' ?>"
+                    required>
+                <option value="">-- Chọn danh mục --</option>
                 <?php foreach ($danhMucList as $dm): ?>
-                    <option value="<?= $dm['id'] ?>" <?= (isset($_POST['danh_muc_id']) && $_POST['danh_muc_id'] == $dm['id']) ? 'selected' : '' ?>>
-                        <?= e($dm['ten']) ?>
+                    <option value="<?= (int) $dm['id'] ?>"
+                        <?= $form['danh_muc_id'] === (string) $dm['id'] ? 'selected' : '' ?>>
+                        <?= e((string) $dm['ten']) ?>
                     </option>
                 <?php endforeach; ?>
-                <!-- Giữ lại hiển thị option 999 nếu người dùng vừa hack qua DevTools -->
-                <?php if (isset($_POST['danh_muc_id']) && $_POST['danh_muc_id'] == 999): ?>
+                <?php if ($form['danh_muc_id'] === '999'): ?>
                     <option value="999" selected>Danh mục không tồn tại (999)</option>
                 <?php endif; ?>
             </select>
             <?php if (isset($errors['danh_muc'])): ?>
-                <div style="color: red; font-size: 13px; margin-top: 4px;"><?= e($errors['danh_muc']) ?></div>
+                <div class="bt7-product-add__field-error" role="alert"><?= e((string) $errors['danh_muc']) ?></div>
             <?php endif; ?>
         </div>
 
-        <!-- Tên sản phẩm -->
-        <div>
-            <label style="font-weight: bold;">Tên sản phẩm *</label>
-            <input type="text" name="ten" value="<?= e($_POST['ten'] ?? '') ?>" style="width: 100%; padding: 8px; border: 1px solid <?= isset($errors['ten']) ? 'red' : '#d1d5db' ?>; border-radius: 4px;">
+        <div class="bt7-product-add__field">
+            <label for="ten">Tên sản phẩm *</label>
+            <input id="ten" class="bt7-product-add__control<?= isset($errors['ten']) ? ' bt7-product-add__control--error' : '' ?>"
+                   type="text" name="ten" maxlength="255" required value="<?= e($form['ten']) ?>">
             <?php if (isset($errors['ten'])): ?>
-                <div style="color: red; font-size: 13px; margin-top: 4px;"><?= e($errors['ten']) ?></div>
+                <div class="bt7-product-add__field-error" role="alert"><?= e((string) $errors['ten']) ?></div>
             <?php endif; ?>
         </div>
 
-        <!-- Giá & Tồn kho -->
-        <div style="display: flex; gap: 10px;">
-            <div style="flex: 1;">
-                <label style="font-weight: bold;">Giá (VNĐ) *</label>
-                <input type="number" name="gia" value="<?= e($_POST['gia'] ?? '') ?>" style="width: 100%; padding: 8px; border: 1px solid <?= isset($errors['gia']) ? 'red' : '#d1d5db' ?>; border-radius: 4px;">
+        <div class="bt7-product-add__two-columns">
+            <div class="bt7-product-add__field">
+                <label for="gia">Giá (VNĐ) *</label>
+                <input id="gia" class="bt7-product-add__control<?= isset($errors['gia']) ? ' bt7-product-add__control--error' : '' ?>"
+                       type="number" name="gia" min="1" step="1" required value="<?= e($form['gia']) ?>">
                 <?php if (isset($errors['gia'])): ?>
-                    <div style="color: red; font-size: 13px; margin-top: 4px;"><?= e($errors['gia']) ?></div>
+                    <div class="bt7-product-add__field-error" role="alert"><?= e((string) $errors['gia']) ?></div>
                 <?php endif; ?>
             </div>
-            <div style="flex: 1;">
-                <label style="font-weight: bold;">Tồn kho</label>
-                <input type="number" name="ton_kho" value="<?= e($_POST['ton_kho'] ?? '') ?>" style="width: 100%; padding: 8px; border: 1px solid <?= isset($errors['ton_kho']) ? 'red' : '#d1d5db' ?>; border-radius: 4px;">
+            <div class="bt7-product-add__field">
+                <label for="ton_kho">Tồn kho *</label>
+                <input id="ton_kho" class="bt7-product-add__control<?= isset($errors['ton_kho']) ? ' bt7-product-add__control--error' : '' ?>"
+                       type="number" name="ton_kho" min="0" step="1" required value="<?= e($form['ton_kho']) ?>">
                 <?php if (isset($errors['ton_kho'])): ?>
-                    <div style="color: red; font-size: 13px; margin-top: 4px;"><?= e($errors['ton_kho']) ?></div>
+                    <div class="bt7-product-add__field-error" role="alert"><?= e((string) $errors['ton_kho']) ?></div>
                 <?php endif; ?>
             </div>
         </div>
 
-        <!-- Ảnh đại diện -->
-        <div>
-            <label style="font-weight: bold;">Ảnh đại diện</label>
-            <input type="file" name="anh" accept="image/*" style="width: 100%; padding: 6px; border: 1px solid #d1d5db; border-radius: 4px;">
+        <div class="bt7-product-add__field">
+            <label for="anh">Ảnh đại diện (JPG/PNG, tối đa 2 MB)</label>
+            <input id="anh" class="bt7-product-add__control" type="file" name="anh" accept="image/jpeg,image/png">
+            <?php if (isset($errors['anh'])): ?>
+                <div class="bt7-product-add__field-error" role="alert"><?= e((string) $errors['anh']) ?></div>
+            <?php endif; ?>
         </div>
 
-        <!-- Màu sắc & Kích thước -->
-        <div style="display: flex; gap: 10px;">
-            <div style="flex: 1;">
-                <label style="font-weight: bold;">Màu sắc</label>
-                <input type="text" name="mau_sac" value="<?= e($_POST['mau_sac'] ?? '') ?>" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+        <div class="bt7-product-add__two-columns">
+            <div class="bt7-product-add__field">
+                <label for="mau_sac">Màu sắc</label>
+                <input id="mau_sac" class="bt7-product-add__control" type="text" name="mau_sac" value="<?= e($form['mau_sac']) ?>">
             </div>
-            <div style="flex: 1;">
-                <label style="font-weight: bold;">Kích thước</label>
-                <input type="text" name="kich_thuoc" value="<?= e($_POST['kich_thuoc'] ?? '') ?>" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+            <div class="bt7-product-add__field">
+                <label for="kich_thuoc">Kích thước</label>
+                <input id="kich_thuoc" class="bt7-product-add__control" type="text" name="kich_thuoc" value="<?= e($form['kich_thuoc']) ?>">
             </div>
         </div>
 
-        <!-- Video -->
-        <div>
-            <label style="font-weight: bold;">Link Video (Embed YouTube)</label>
-            <input type="text" name="video" value="<?= e($_POST['video'] ?? '') ?>" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+        <div class="bt7-product-add__field">
+            <label for="video">Link Video (Embed YouTube HTTPS)</label>
+            <input id="video" class="bt7-product-add__control<?= isset($errors['video']) ? ' bt7-product-add__control--error' : '' ?>"
+                   type="url" name="video" placeholder="https://www.youtube.com/embed/..." value="<?= e($form['video']) ?>">
+            <?php if (isset($errors['video'])): ?>
+                <div class="bt7-product-add__field-error" role="alert"><?= e((string) $errors['video']) ?></div>
+            <?php endif; ?>
         </div>
 
-        <!-- Mô tả -->
-        <div>
-            <label style="font-weight: bold;">Mô tả</label>
-            <textarea name="mo_ta" rows="4" style="width: 100%; padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;"><?= e($_POST['mo_ta'] ?? '') ?></textarea>
+        <div class="bt7-product-add__field">
+            <label for="mo_ta">Mô tả</label>
+            <textarea id="mo_ta" class="bt7-product-add__control" name="mo_ta" rows="4"><?= e($form['mo_ta']) ?></textarea>
         </div>
 
-        <button type="submit" style="padding: 10px; background: #2563eb; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">Lưu sản phẩm</button>
+        <button type="submit" class="nut-bam nut-bam--chinh bt7-product-add__submit">Lưu sản phẩm</button>
     </form>
 </main>
 <?php require_once __DIR__ . '/inc/footer.php'; ?>

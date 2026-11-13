@@ -1,39 +1,59 @@
 <?php
 declare(strict_types=1);
+
 require_once __DIR__ . '/inc/config.php';
+require_once __DIR__ . '/inc/csrf.php';
 
-// 1. KIỂM TRA QUYỀN QUẢN TRỊ (Bảo mật: khách hàng không được phép xóa)
-if (!isset($_SESSION['user']) || $_SESSION['user']['vai_tro'] !== 'quan_tri') {
-    http_response_code(403);
-    die("<h1>Lỗi 403: Truy cập bị từ chối.</h1><p>Bạn không có quyền thực hiện thao tác xóa sản phẩm này!</p>");
-}
-
-// 2. KIỂM TRA CA 5: Xóa dữ liệu chỉ nhận POST. Nếu là GET thì chặn lại và báo lỗi 405.
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
+// BT7: Xoa san pham chi duoc thuc hien bang POST.
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'POST') {
     header('Allow: POST');
-    die("<h1>Lỗi 405: Phương thức không được phép (Method Not Allowed).</h1><p>Bạn không thể xóa dữ liệu bằng cách truy cập trực tiếp URL này qua phương thức GET.</p>");
+    http_response_code(405);
+    exit('405 Method Not Allowed');
 }
 
-$pdo = db();
-$id = (int)($_POST['id'] ?? 0);
+// Chi quan tri vien duoc phep xoa san pham.
+if (
+    !is_array($_SESSION['user'] ?? null) ||
+    ($_SESSION['user']['vai_tro'] ?? null) !== 'quan_tri'
+) {
+    http_response_code(403);
+    exit('403 Forbidden');
+}
 
-if ($id > 0) {
-    try {
-        $stmt = $pdo->prepare("DELETE FROM san_pham WHERE id = ?");
-        $stmt->execute([$id]);
-        // Xóa thành công chuyển hướng về trang quản trị
-        header("Location: quan-tri-san-pham.php?tb=thanh_cong");
-        exit;
-    } catch (\PDOException $e) {
-        // KIỂM TRA CA 5: Bắt lỗi khóa ngoại 1451 (sản phẩm đã phát sinh đơn hàng)
-        if ($e->getCode() == '23000' || strpos($e->getMessage(), '1451') !== false) {
-            header("Location: quan-tri-san-pham.php?loi=dang_dung");
-            exit;
-        } else {
-            throw $e;
-        }
+// Token sai hoac thieu: HTTP 403; khong xoa du lieu.
+csrf_verify();
+
+$id = filter_var(
+    $_POST['id'] ?? null,
+    FILTER_VALIDATE_INT,
+    ['options' => ['min_range' => 1]]
+);
+if ($id === false || $id === null) {
+    http_response_code(400);
+    exit('Ma san pham khong hop le.');
+}
+
+try {
+    $pdo = db();
+    $stmt = $pdo->prepare('DELETE FROM san_pham WHERE id = ?');
+    $stmt->execute([$id]);
+
+    if ($stmt->rowCount() < 1) {
+        http_response_code(404);
+        exit('San pham khong ton tai.');
     }
-} else {
-    die("ID không hợp lệ.");
+
+    header('Location: quan-tri-san-pham.php?tb=thanh_cong', true, 303);
+    exit;
+} catch (PDOException $e) {
+    // MySQL 1451: San pham dang duoc tham chieu boi don hang.
+    $mysqlCode = (int) ($e->errorInfo[1] ?? 0);
+    if ($mysqlCode === 1451) {
+        header('Location: quan-tri-san-pham.php?loi=dang_dung', true, 303);
+        exit;
+    }
+
+    error_log('[BT7_XOA_SAN_PHAM] ' . $e->getMessage());
+    http_response_code(500);
+    exit('Khong the xoa san pham. Vui long thu lai sau.');
 }

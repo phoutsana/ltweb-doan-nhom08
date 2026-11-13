@@ -43,13 +43,16 @@ Dự án được tổ chức thành các thư mục và tệp chính như sau:
 
 *Lưu ý: Danh sách trên là các thành phần chính được mô tả cho dự án; cần đối chiếu với cấu trúc mã nguồn thực tế trước khi hoàn thiện README.*
 
-## 3. Hướng dẫn cài đặt và chạy dự án
+## 3. Hướng dẫn cài đặt và chạy dự án Bài 7
 
-**Yêu cầu môi trường:**
-- XAMPP có hỗ trợ PHP từ phiên bản 8.1 trở lên.
-- Apache và MySQL.
+### 3.1. Yêu cầu môi trường
+- PHP 8.1 trở lên, có PDO MySQL.
+- XAMPP (Apache, MySQL) và Composer.
 - Trình duyệt web.
-- Visual Studio Code (khuyến nghị).
+
+### 3.2. Cài đặt thư viện
+Mở Terminal tại thư mục gốc dự án và chạy:
+
 
 **Bước 1: Tải mã nguồn**
 
@@ -58,43 +61,72 @@ Clone dự án về máy tính:
 ```bash
 git clone https://github.com/phoutsana/ltweb-doan-nhom08.git
 cd ltweb-doan-nhom08
+```
+
+**Bước 2: Cài đặt thư viện**
+
+```powershell
 composer install
 ```
+### 3.3. Cấu hình môi trường
+Sao chép `.env.example` thành `.env`:
 
-**Bước 2: Khởi động XAMPP**
-
-Mở XAMPP Control Panel và khởi động Apache, MySQL.
-
-**Bước 3: Tạo cơ sở dữ liệu**
-
-1. Truy cập `http://localhost/phpmyadmin/`.
-2. Tạo cơ sở dữ liệu có tên `ltweb_nhom08`.
-3. Import tệp `database/schema.sql`.
-4. Import tệp `database/seed.sql` để thêm dữ liệu mẫu (nếu có).
-
-**Bước 4: Kiểm tra cấu hình kết nối**
-
-Mở `inc/db.php` và kiểm tra thông tin kết nối cơ sở dữ liệu cho phù hợp với môi trường máy tính.
-
-**Bước 5: Truy cập website**
-
-Nếu sử dụng XAMPP, truy cập đường dẫn tương ứng với thư mục dự án trong `htdocs`, ví dụ:
-
-```text
-http://localhost/nhom08/ltweb-doan-nhom08/
+```powershell
+Copy-Item .env.example .env
 ```
 
-Nếu chạy bằng PHP Development Server, mở Terminal tại thư mục dự án và thực hiện:
+Cấu hình mẫu để giảng viên chạy trên XAMPP:
 
-```bash
+```ini
+APP_DEBUG=true
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=ltweb_nhom08
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Chỉnh các giá trị trong `.env` nếu MySQL trên máy dùng tài khoản, mật khẩu hoặc cổng khác. Không commit `.env` lên GitHub.
+
+### 3.4. Khởi tạo cơ sở dữ liệu
+Bật MySQL trong XAMPP, truy cập `http://localhost/phpmyadmin/` và lần lượt nhập:
+
+1. `database/schema.sql`
+2. `database/seed.sql`
+
+**Chú ý:** `schema.sql` có lệnh `DROP DATABASE`, chỉ nhập trên cơ sở dữ liệu thử nghiệm mới hoặc sau khi đã sao lưu. Không nhập lại trên CSDL đang có dữ liệu cần giữ.
+
+### 3.5. Tài khoản CSDL quyền tối thiểu
+Dùng tài khoản MySQL có quyền quản trị để thực hiện các câu lệnh trong `database/tai-khoan.sql`. Thay chuỗi mật khẩu giữ chỗ bằng một mật khẩu thử nghiệm riêng trước khi chạy, không ghi mật khẩu thật vào Git.
+
+Sau đó chỉnh `.env` để sử dụng `DB_USERNAME=nhom08_app`, `DB_PASSWORD` bằng mật khẩu vừa đặt, và `DB_HOST` khớp với host của tài khoản được tạo trong SQL.
+
+Tài khoản này chỉ được cấp SELECT, INSERT, UPDATE, DELETE trên `ltweb_nhom08.*`; không có CREATE, DROP, ALTER.
+
+### 3.6. Chạy bằng PHP Development Server
+Mở Terminal tại thư mục gốc dự án:
+
+```powershell
 php -S localhost:8000
 ```
 
-Sau đó truy cập:
+Truy cập `http://localhost:8000/`.
 
-```text
-http://localhost:8000/
-```
+### 3.7. Chạy bằng Apache trong XAMPP
+Đặt thư mục dự án trong `C:\xampp\htdocs\ltweb-doan-nhom08`, bật Apache và MySQL rồi truy cập:
+
+`http://localhost/ltweb-doan-nhom08/`
+
+Tệp `.htaccess` chỉ được Apache áp dụng, không có tác dụng với `php -S`.
+
+### 3.8. Kiểm thử sau cài đặt
+- Truy cập trang chủ, đăng nhập, tìm kiếm, giỏ hàng, đơn hàng và quản trị.
+- Chạy các request trong `api.http` với cookie và CSRF hợp lệ.
+- Thực hiện các ca trong `tests/bao-mat.http` theo hướng dẫn.
+- Chạy `composer audit --locked`.
+- Kiểm tra `logs/php-error.log`, `logs/bao-mat.log` và Console trình duyệt.
+
+Không lưu mật khẩu, cookie phiên hoặc token CSRF thật trong mã nguồn và báo cáo.
 
 ## 4. Tài khoản kiểm thử
 

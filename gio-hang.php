@@ -1,130 +1,325 @@
 <?php
 declare(strict_types=1);
+
 require_once __DIR__ . '/inc/config.php';
+require_once __DIR__ . '/inc/csrf.php';
 
-// Xử lý các hành động cập nhật giỏ hàng trực tiếp trên trang giỏ hàng
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// BT7: Quản lý giỏ hàng bằng $_SESSION['gio']
+// Đồng bộ với api/gio-hang.php của nhánh main.
+
+if (!isset($_SESSION['gio']) || !is_array($_SESSION['gio'])) {
+    $_SESSION['gio'] = [];
+}
+
+// Xử lý yêu cầu thay đổi giỏ hàng.
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
+    csrf_verify();
+
     $hanhDong = $_POST['hanh_dong'] ?? '';
-    $id = (int)($_POST['id'] ?? 0);
+    $id = filter_var(
+        $_POST['id'] ?? null,
+        FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 1]]
+    );
 
-    if ($hanhDong === 'xoa' && $id > 0) {
-        unset($_SESSION['gio'][$id]);
-    } elseif ($hanhDong === 'cap_nhat' && $id > 0) {
-        $soLuongMoi = (int)($_POST['so_luong'] ?? 1);
-        if ($soLuongMoi > 0) {
-            if (isset($_SESSION['gio'][$id])) {
-                if (is_array($_SESSION['gio'][$id])) {
-                    $_SESSION['gio'][$id]['so_luong'] = $soLuongMoi;
-                } else {
-                    $_SESSION['gio'][$id] = $soLuongMoi;
-                }
-            }
-        } else {
+    try {
+        if (!is_string($hanhDong)) {
+            throw new InvalidArgumentException('Thao tác không hợp lệ.');
+        }
+
+        if (!in_array($hanhDong, ['xoa', 'cap_nhat'], true)) {
+            throw new InvalidArgumentException('Thao tác không được hỗ trợ.');
+        }
+
+        if ($id === false || $id === null) {
+            throw new InvalidArgumentException('Mã sản phẩm không hợp lệ.');
+        }
+
+        if ($hanhDong === 'xoa') {
             unset($_SESSION['gio'][$id]);
         }
+
+        if ($hanhDong === 'cap_nhat') {
+            $soLuongMoi = filter_var(
+                $_POST['so_luong'] ?? null,
+                FILTER_VALIDATE_INT,
+                ['options' => ['min_range' => 1]]
+            );
+
+            if ($soLuongMoi === false || $soLuongMoi === null) {
+                throw new InvalidArgumentException('Số lượng phải là số nguyên dương.');
+            }
+
+            if (!isset($_SESSION['gio'][$id])) {
+                throw new InvalidArgumentException('Sản phẩm không có trong giỏ hàng.');
+            }
+
+            $stmt = db()->prepare(
+                'SELECT ton_kho FROM san_pham WHERE id = ?'
+            );
+            $stmt->execute([$id]);
+            $sp = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$sp) {
+                throw new InvalidArgumentException('Sản phẩm không tồn tại.');
+            }
+
+            if ($soLuongMoi > (int)$sp['ton_kho']) {
+                throw new InvalidArgumentException('Số lượng vượt quá tồn kho.');
+            }
+
+            if (is_array($_SESSION['gio'][$id])) {
+                $_SESSION['gio'][$id]['so_luong'] = $soLuongMoi;
+            } else {
+                $_SESSION['gio'][$id] = $soLuongMoi;
+            }
+        }
+    } catch (InvalidArgumentException $e) {
+        $_SESSION['gio_hang_loi'] = $e->getMessage();
     }
-    header('Location: gio-hang.php');
+
+    // POST -> Redirect -> GET.
+    header('Location: gio-hang.php', true, 303);
     exit;
 }
 
-// Lấy danh sách giỏ hàng từ session 'gio'
-$gioHang = $_SESSION['gio'] ?? [];
-$tongTien = 0;
+$gioHang = $_SESSION['gio'];
+$tongTien = 0.0;
+
+$thongBaoLoi = $_SESSION['gio_hang_loi'] ?? '';
+unset($_SESSION['gio_hang_loi']);
 
 $tieuDe = 'Giỏ hàng của bạn - Fashion Store';
 $trang = 'gio-hang';
+$cssRieng = 'css/gio-hang.css';
+
 require_once __DIR__ . '/inc/header.php';
 ?>
 
-<main class="noi-dung-chinh" style="max-width: 1000px; margin: 30px auto; padding: 20px;">
-    <div style="border-bottom: 2px solid #2563eb; padding-bottom: 10px; margin-bottom: 25px;">
-        <h2 style="color: #1e3a8a; margin: 0;">Giỏ hàng / Yêu thích của bạn</h2>
-    </div>
+<main class="noi-dung-chinh gio-hang-page">
+    <section class="gio-hang-section">
+        <h2 class="gio-hang-heading">
+            Giỏ hàng / Yêu thích của bạn
+        </h2>
 
-    <?php if (empty($gioHang)): ?>
-        <div style="text-align: center; padding: 50px; background: white; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <p style="font-size: 1.2rem; color: #dc2626; font-weight: bold; margin-bottom: 20px;">Bạn chưa chọn sản phẩm nào!</p>
-            <a href="danh-sach.php" style="display: inline-block; padding: 10px 25px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">Quay lại mua sắm</a>
-        </div>
-    <?php else: ?>
-        <div style="background: white; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 25px;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <thead style="background: #f8fafc; border-bottom: 1px solid #e5e7eb;">
-                    <tr>
-                        <th style="padding: 15px;">Sản phẩm</th>
-                        <th style="padding: 15px; text-align: center;">Đơn giá</th>
-                        <th style="padding: 15px; text-align: center;">Số lượng</th>
-                        <th style="padding: 15px; text-align: right;">Thành tiền</th>
-                        <th style="padding: 15px; text-align: center;">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($gioHang as $idSp => $item): ?>
-                        <?php 
+        <?php if (is_string($thongBaoLoi) && $thongBaoLoi !== ''): ?>
+            <div class="gio-hang-error" role="alert">
+                <strong>Lỗi:</strong>
+                <?= e($thongBaoLoi) ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (empty($gioHang)): ?>
+            <div class="gio-hang-empty">
+                <p>Bạn chưa chọn sản phẩm nào!</p>
+
+                <a
+                    href="danh-sach.php"
+                    class="nut-bam nut-bam--chinh gio-hang-shop-link"
+                >
+                    Quay lại mua sắm
+                </a>
+            </div>
+        <?php else: ?>
+            <div class="gio-hang-table-wrap">
+                <table class="bang-san-pham gio-hang-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">Đơn giá</th>
+                            <th scope="col">Số lượng</th>
+                            <th scope="col">Thành tiền</th>
+                            <th scope="col">Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <?php foreach ($gioHang as $idSp => $item): ?>
+                            <?php
+                            $idSanPham = filter_var(
+                                $idSp,
+                                FILTER_VALIDATE_INT,
+                                ['options' => ['min_range' => 1]]
+                            );
+
+                            if ($idSanPham === false || $idSanPham === null) {
+                                continue;
+                            }
+
                             if (is_array($item)) {
-                                $ten = $item['ten'] ?? 'Sản phẩm';
+                                $ten = (string)($item['ten'] ?? 'Sản phẩm');
                                 $gia = (float)($item['gia'] ?? 0);
                                 $soLuong = (int)($item['so_luong'] ?? 1);
-                                $anh = $item['anh'] ?? '';
+                                $anh = (string)($item['anh'] ?? '');
                             } else {
-                                $stmt = db()->prepare("SELECT ten, gia, anh FROM san_pham WHERE id = ?");
-                                $stmt->execute([$idSp]);
-                                $spDb = $stmt->fetch();
-                                $ten = $spDb['ten'] ?? 'Sản phẩm';
+                                $stmt = db()->prepare(
+                                    'SELECT ten, gia, anh FROM san_pham WHERE id = ?'
+                                );
+                                $stmt->execute([$idSanPham]);
+                                $spDb = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                                if (!$spDb) {
+                                    continue;
+                                }
+
+                                $ten = (string)($spDb['ten'] ?? 'Sản phẩm');
                                 $gia = (float)($spDb['gia'] ?? 0);
                                 $soLuong = (int)$item;
-                                $anh = $spDb['anh'] ?? '';
+                                $anh = (string)($spDb['anh'] ?? '');
                             }
+
+                            if ($soLuong <= 0) {
+                                continue;
+                            }
+
                             $thanhTien = $gia * $soLuong;
                             $tongTien += $thanhTien;
-                        ?>
-                        <tr style="border-bottom: 1px solid #e5e7eb;">
-                            <td style="padding: 15px; display: flex; align-items: center; gap: 15px;">
-                                <?php if (!empty($anh)): ?>
-                                    <img src="<?= e($anh) ?>" alt="<?= e($ten) ?>" style="width: 60px; height: 60px; object-fit: contain; background: #f9fafb; border-radius: 4px; border: 1px solid #e5e7eb; padding: 5px;">
-                                <?php endif; ?>
-                                <span style="font-weight: bold; color: #111827;"><?= e($ten) ?></span>
+                            ?>
+
+                            <tr>
+                                <td class="gio-hang-product-name">
+                                    <?php if ($anh !== ''): ?>
+                                        <img
+                                            class="gio-hang-product-img"
+                                            src="<?= e($anh) ?>"
+                                            alt="<?= e($ten) ?>"
+                                            width="70"
+                                            height="70"
+                                        >
+                                    <?php endif; ?>
+
+                                    <a href="chi-tiet.php?id=<?= (int)$idSanPham ?>">
+                                        <?= e($ten) ?>
+                                    </a>
+                                </td>
+
+                                <td class="gio-hang-unit-price">
+                                    <?= number_format($gia, 0, ',', '.') ?> đ
+                                </td>
+
+                                <td class="gio-hang-center">
+                                    <form
+                                        method="post"
+                                        action="gio-hang.php"
+                                        class="gio-hang-form-qty"
+                                    >
+                                        <?= csrf_field() ?>
+
+                                        <input
+                                            type="hidden"
+                                            name="hanh_dong"
+                                            value="cap_nhat"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="id"
+                                            value="<?= (int)$idSanPham ?>"
+                                        >
+
+                                        <label
+                                            class="gio-hang-sr-only"
+                                            for="so-luong-<?= (int)$idSanPham ?>"
+                                        >
+                                            Số lượng <?= e($ten) ?>
+                                        </label>
+
+                                        <input
+                                            id="so-luong-<?= (int)$idSanPham ?>"
+                                            type="number"
+                                            name="so_luong"
+                                            value="<?= (int)$soLuong ?>"
+                                            min="1"
+                                            step="1"
+                                            required
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="gio-hang-btn-update"
+                                        >
+                                            Cập nhật
+                                        </button>
+                                    </form>
+                                </td>
+
+                                <td class="gio-hang-total-price">
+                                    <?= number_format($thanhTien, 0, ',', '.') ?> đ
+                                </td>
+
+                                <td class="gio-hang-center">
+                                    <form
+                                        method="post"
+                                        action="gio-hang.php"
+                                        class="gio-hang-form-delete"
+                                    >
+                                        <?= csrf_field() ?>
+
+                                        <input
+                                            type="hidden"
+                                            name="hanh_dong"
+                                            value="xoa"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="id"
+                                            value="<?= (int)$idSanPham ?>"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="nut-bam nut-bam--phu gio-hang-btn-delete"
+                                        >
+                                            Xóa
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="gio-hang-summary-label">
+                                Tổng tiền thanh toán:
                             </td>
-                            <td style="padding: 15px; text-align: center; color: #dc2626; font-weight: bold;"><?= number_format($gia, 0, ',', '.') ?> đ</td>
-                            <td style="padding: 15px; text-align: center;">
-                                <form method="POST" action="gio-hang.php" style="display: inline-flex; align-items: center; gap: 5px;">
-                                    <input type="hidden" name="hanh_dong" value="cap_nhat">
-                                    <input type="hidden" name="id" value="<?= (int)$idSp ?>">
-                                    <input type="number" name="so_luong" value="<?= $soLuong ?>" min="1" max="99" style="width: 60px; padding: 5px; text-align: center; border: 1px solid #d1d5db; border-radius: 4px;">
-                                    <button type="submit" style="padding: 5px 10px; background: #4b5563; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem;">Cập nhật</button>
-                                </form>
-                            </td>
-                            <td style="padding: 15px; text-align: right; font-weight: bold; color: #111827;"><?= number_format($thanhTien, 0, ',', '.') ?> đ</td>
-                            <td style="padding: 15px; text-align: center;">
-                                <form method="POST" action="gio-hang.php" onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?');" style="margin: 0;">
-                                    <input type="hidden" name="hanh_dong" value="xoa">
-                                    <input type="hidden" name="id" value="<?= (int)$idSp ?>">
-                                    <button type="submit" style="padding: 6px 12px; background: #dc2626; color: white; border: none; border-radius: 4px; cursor: pointer;">Xóa</button>
-                                </form>
+
+                            <td colspan="2" class="gio-hang-summary-value">
+                                <?= number_format($tongTien, 0, ',', '.') ?> đ
                             </td>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+                    </tfoot>
+                </table>
+            </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px; border-radius: 8px; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-            <div>
-                <span style="font-size: 1.2rem; color: #374151; font-weight: bold;">Tổng tiền thanh toán:</span>
-                <span style="font-size: 1.5rem; color: #dc2626; font-weight: bold; margin-left: 10px;"><?= number_format($tongTien, 0, ',', '.') ?> đ</span>
+            <div class="gio-hang-actions">
+                <div class="gio-hang-actions-right">
+                    <a
+                        href="danh-sach.php"
+                        class="nut-bam nut-bam--phu gio-hang-btn-shop"
+                    >
+                        Tiếp tục mua sắm
+                    </a>
+
+                    <form
+                        action="dat-hang.php"
+                        method="post"
+                        class="gio-hang-form-checkout"
+                    >
+                        <?= csrf_field() ?>
+
+                        <button
+                            type="submit"
+                            class="nut-bam nut-bam--chinh gio-hang-btn-checkout"
+                        >
+                            Tiến hành đặt hàng
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div style="display: flex; gap: 15px; align-items: center;">
-                <a href="danh-sach.php" style="padding: 12px 20px; background: #e5e7eb; color: #374151; text-decoration: none; border-radius: 6px; font-weight: bold;">Tiếp tục mua sắm</a>
-                
-                <!-- Sử dụng form POST chính thức để gửi yêu cầu đặt hàng sang dat-hang.php -->
-                <form action="dat-hang.php" method="POST" style="margin: 0;">
-                    <button type="submit" style="padding: 12px 25px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.3s;">
-                        Tiến hành đặt hàng
-                    </button>
-                </form>
-            </div>
-        </div>
-    <?php endif; ?>
+        <?php endif; ?>
+    </section>
 </main>
 
 <?php require_once __DIR__ . '/inc/footer.php'; ?>

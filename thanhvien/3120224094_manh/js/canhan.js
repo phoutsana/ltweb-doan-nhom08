@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 formResponse.style.display = "block";
                 formResponse.style.color = "#15803d";
                 formResponse.style.backgroundColor = "#dcfce7";
-                formResponse.innerHTML = `Cảm ơn <strong>${userName}</strong> đã gửi lời nhắn! Mạnh sẽ phản hồi sớm nhé.`;
+                formResponse.textContent = `Cảm ơn ${userName} đã gửi lời nhắn! Mạnh sẽ phản hồi sớm nhé!`;
 
                 // Reset form
                 feedbackForm.reset();

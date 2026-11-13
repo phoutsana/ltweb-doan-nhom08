@@ -1,129 +1,313 @@
 <?php
 declare(strict_types=1);
+
 require_once __DIR__ . '/inc/config.php';
+require_once __DIR__ . '/inc/csrf.php';
 
-use App\Data\KhoSanPham;
+$kho = new \App\Data\KhoSanPham();
 
-$kho = new KhoSanPham();
-$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+// Kiểm tra ID sản phẩm.
+$id = filter_input(
+    INPUT_GET,
+    'id',
+    FILTER_VALIDATE_INT,
+    ['options' => ['min_range' => 1]]
+);
 
-$sanPham = $id ? $kho->timTheoId($id) : null;
+$sanPham = ($id !== false && $id !== null)
+    ? $kho->timTheoId($id)
+    : null;
 
 if (!$sanPham) {
     http_response_code(404);
-    require_once __DIR__ . '/404.php';
+    require __DIR__ . '/404.php';
     exit;
 }
 
-$spId = method_exists($sanPham, 'getId') ? $sanPham->getId() : $sanPham->id;
-$spTen = method_exists($sanPham, 'getTen') ? $sanPham->getTen() : $sanPham->ten;
-$spHinhAnh = method_exists($sanPham, 'getHinhAnh') ? $sanPham->getHinhAnh() : $sanPham->anh ?? $sanPham->hinhAnh;
-$spGia = method_exists($sanPham, 'getGia') ? $sanPham->getGia() : $sanPham->gia;
-$spMoTa = method_exists($sanPham, 'getMoTa') ? $sanPham->getMoTa() : $sanPham->mo_ta ?? $sanPham->moTa;
-$spDanhMuc = method_exists($sanPham, 'getDanhMuc') ? $sanPham->getDanhMuc() : $sanPham->danh_muc_id ?? $sanPham->danhMuc;
-$spMauSac = method_exists($sanPham, 'getMauSac') ? $sanPham->getMauSac() : $sanPham->mau_sac ?? $sanPham->mauSac;
-$spKichThuoc = method_exists($sanPham, 'getKichThuoc') ? $sanPham->getKichThuoc() : $sanPham->kich_thuoc ?? $sanPham->kichThuoc;
-$spVideo = method_exists($sanPham, 'getVideo') ? $sanPham->getVideo() : $sanPham->video;
+// Đọc dữ liệu sản phẩm, tương thích model BT6.
+$spId = method_exists($sanPham, 'getId')
+    ? $sanPham->getId()
+    : $sanPham->id;
 
-// Cookie lưu 4 sản phẩm đã xem gần nhất
-$cu = array_map('intval', explode(',', $_COOKIE['da_xem'] ?? ''));
-$moi = array_unique([$spId, ...array_filter($cu)]);
+$spTen = method_exists($sanPham, 'getTen')
+    ? $sanPham->getTen()
+    : $sanPham->ten;
+
+$spHinhAnh = method_exists($sanPham, 'getHinhAnh')
+    ? $sanPham->getHinhAnh()
+    : ($sanPham->anh ?? $sanPham->hinhAnh ?? '');
+
+$spGia = method_exists($sanPham, 'getGia')
+    ? $sanPham->getGia()
+    : $sanPham->gia;
+
+$spMoTa = method_exists($sanPham, 'getMoTa')
+    ? $sanPham->getMoTa()
+    : ($sanPham->mo_ta ?? $sanPham->moTa ?? '');
+
+$spDanhMuc = method_exists($sanPham, 'getDanhMuc')
+    ? $sanPham->getDanhMuc()
+    : ($sanPham->danh_muc_id ?? $sanPham->danhMuc ?? '');
+
+$spMauSac = method_exists($sanPham, 'getMauSac')
+    ? $sanPham->getMauSac()
+    : ($sanPham->mau_sac ?? $sanPham->mauSac ?? '');
+
+$spKichThuoc = method_exists($sanPham, 'getKichThuoc')
+    ? $sanPham->getKichThuoc()
+    : ($sanPham->kich_thuoc ?? $sanPham->kichThuoc ?? '');
+
+$spVideo = method_exists($sanPham, 'getVideo')
+    ? $sanPham->getVideo()
+    : ($sanPham->video ?? '');
+
+// Chuẩn hóa các giá trị hiển thị.
+$spId = (int)$spId;
+$spTen = (string)$spTen;
+$spHinhAnh = (string)$spHinhAnh;
+$spMoTa = (string)$spMoTa;
+$spDanhMuc = (string)$spDanhMuc;
+$spMauSac = (string)$spMauSac;
+$spKichThuoc = (string)$spKichThuoc;
+$spVideo = (string)$spVideo;
+
+// Cookie lưu tối đa 4 sản phẩm đã xem gần nhất.
+$cookieDaXem = $_COOKIE['da_xem'] ?? '';
+
+if (!is_string($cookieDaXem)) {
+    $cookieDaXem = '';
+}
+
+$cu = array_map(
+    'intval',
+    explode(',', $cookieDaXem)
+);
+
+$moi = array_unique([
+    $spId,
+    ...array_filter($cu, static fn($x) => $x > 0)
+]);
+
+$https = (
+    !empty($_SERVER['HTTPS']) &&
+    $_SERVER['HTTPS'] !== 'off'
+);
 
 setcookie('da_xem', implode(',', array_slice($moi, 0, 4)), [
-    'expires'  => time() + 30 * 24 * 3600,
-    'path'     => '/',
+    'expires' => time() + 30 * 24 * 3600,
+    'path' => '/',
+    'secure' => $https,
     'httponly' => true,
     'samesite' => 'Lax',
 ]);
 
 $tieuDe = $spTen . ' - Fashion Store';
 $trang = 'chi-tiet';
+$cssRieng = 'css/chi-tiet-bt7-csp.css';
+
 require_once __DIR__ . '/inc/header.php';
 ?>
 
 <main class="noi-dung-chinh">
-    <article class="the-thong-tin khoi-noi-dung" style="background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+
+    <article
+        class="the-thong-tin khoi-noi-dung"
+        data-bt7-ct="ct001"
+    >
+
         <header>
-            <h2 style="font-size: 2rem; color: #111827; margin-bottom: 20px;"><?= e($spTen) ?></h2>
+            <h2 data-bt7-ct="ct002">
+                <?= e($spTen) ?>
+            </h2>
         </header>
 
-        <figure style="text-align: center; margin-bottom: 30px;">
-            <img src="<?= e($spHinhAnh) ?>" alt="<?= e($spTen) ?>" width="500" height="500" style="max-width: 100%; height: auto; border-radius: 8px; object-fit: contain; background: #f9fafb; padding: 20px;">
+        <!-- Hình ảnh sản phẩm -->
+        <figure data-bt7-ct="ct003">
+            <img
+                src="<?= e($spHinhAnh) ?>"
+                alt="<?= e($spTen) ?>"
+                width="500"
+                height="500"
+                data-bt7-ct="ct004"
+            >
         </figure>
 
-        <section class="khoi-noi-dung" style="margin-bottom: 30px;">
-            <h2 style="border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">Mô tả sản phẩm</h2>
-            <p style="line-height: 1.6; color: #4b5563; margin-top: 15px;"><?= e($spMoTa) ?></p>
+        <!-- Mô tả sản phẩm -->
+        <section
+            class="khoi-noi-dung"
+            data-bt7-ct="ct005"
+        >
+            <h2 data-bt7-ct="ct006">
+                Mô tả sản phẩm
+            </h2>
+
+            <p data-bt7-ct="ct007">
+                <?= e($spMoTa) ?>
+            </p>
         </section>
 
-        <section class="khoi-noi-dung" style="margin-bottom: 30px;">
-            <h2 style="border-bottom: 2px solid #e5e7eb; padding-bottom: 10px;">Thông số sản phẩm</h2>
-            <div class="hop-bang" style="margin-top: 15px;">
-                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <!-- Thông số sản phẩm -->
+        <section
+            class="khoi-noi-dung"
+            data-bt7-ct="ct008"
+        >
+            <h2 data-bt7-ct="ct009">
+                Thông số sản phẩm
+            </h2>
+
+            <div
+                class="hop-bang"
+                data-bt7-ct="ct010"
+            >
+                <table data-bt7-ct="ct011">
+
                     <thead>
-                        <tr style="background: #f3f4f6;">
-                            <th scope="col" style="padding: 12px; border: 1px solid #e5e7eb;">Thông tin</th>
-                            <th scope="col" style="padding: 12px; border: 1px solid #e5e7eb;">Chi tiết</th>
+                        <tr data-bt7-ct="ct012">
+                            <th
+                                scope="col"
+                                data-bt7-ct="ct013"
+                            >
+                                Thông tin
+                            </th>
+
+                            <th
+                                scope="col"
+                                data-bt7-ct="ct014"
+                            >
+                                Chi tiết
+                            </th>
                         </tr>
                     </thead>
+
                     <tbody>
+
                         <tr>
-                            <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;">Danh mục</td>
-                            <td style="padding: 12px; border: 1px solid #e5e7eb;"><?= e($spDanhMuc) ?></td>
+                            <td data-bt7-ct="ct015">
+                                Danh mục
+                            </td>
+
+                            <td data-bt7-ct="ct016">
+                                <?= e($spDanhMuc) ?>
+                            </td>
                         </tr>
+
                         <tr>
-                            <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;">Màu sắc</td>
-                            <td style="padding: 12px; border: 1px solid #e5e7eb;"><?= e($spMauSac) ?></td>
+                            <td data-bt7-ct="ct017">
+                                Màu sắc
+                            </td>
+
+                            <td data-bt7-ct="ct018">
+                                <?= e($spMauSac) ?>
+                            </td>
                         </tr>
+
                         <tr>
-                            <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;">Kích thước</td>
-                            <td style="padding: 12px; border: 1px solid #e5e7eb;"><?= e($spKichThuoc) ?></td>
+                            <td data-bt7-ct="ct019">
+                                Kích thước
+                            </td>
+
+                            <td data-bt7-ct="ct020">
+                                <?= e($spKichThuoc) ?>
+                            </td>
                         </tr>
+
                         <tr>
-                            <td style="padding: 12px; border: 1px solid #e5e7eb; font-weight: bold;">Giá</td>
-                            <td style="padding: 12px; border: 1px solid #e5e7eb; color: #dc2626; font-weight: bold; font-size: 1.2rem;"><?= vnd($spGia) ?></td>
+                            <td data-bt7-ct="ct021">
+                                Giá
+                            </td>
+
+                            <td data-bt7-ct="ct022">
+                                <?= vnd($spGia) ?>
+                            </td>
                         </tr>
+
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <?php if (!empty($spVideo)): ?>
-            <section class="khoi-noi-dung" style="margin-bottom: 30px;">
-                <h2 style="border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; margin-bottom: 15px;">Video giới thiệu</h2>
-                <div class="khung-video" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px;">
-                    <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="<?= e($spVideo) ?>"
+        <!-- Video giới thiệu, nếu có -->
+        <?php if ($spVideo !== ''): ?>
+
+            <section
+                class="khoi-noi-dung"
+                data-bt7-ct="ct023"
+            >
+                <h2 data-bt7-ct="ct024">
+                    Video giới thiệu
+                </h2>
+
+                <div
+                    class="khung-video"
+                    data-bt7-ct="ct025"
+                >
+                    <iframe
+                        src="<?= e($spVideo) ?>"
                         title="Video giới thiệu sản phẩm"
+                        data-bt7-ct="ct026"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen>
-                    </iframe>
+                        allowfullscreen
+                    ></iframe>
                 </div>
             </section>
+
         <?php endif; ?>
 
-        <!-- Form thêm giỏ hàng có class 'form-them-gio-hang' để tệp js/gio-hang.js bắt sự kiện AJAX -->
-        <div style="display: flex; gap: 15px; margin-top: 20px;">
-            <form action="gio-hang.php" method="POST" style="flex: 1;" class="form-them-gio-hang">
-                <input type="hidden" name="san_pham_id" value="<?= e($spId) ?>">
-                <input type="hidden" name="id" value="<?= e($spId) ?>">
-                <button type="submit" name="hanh_dong" value="them" class="nut-bam nut-bam--chinh" style="width: 100%; padding: 15px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: background 0.3s;">
+        <!-- Form thêm giỏ hàng bằng AJAX -->
+        <div data-bt7-ct="ct027">
+
+            <form
+                action="gio-hang.php"
+                method="post"
+                data-bt7-ct="ct028"
+                class="form-them-gio-hang"
+            >
+                <?= csrf_field() ?>
+
+                <!-- Giữ hai tên trường để tương thích JS cũ -->
+                <input
+                    type="hidden"
+                    name="san_pham_id"
+                    value="<?= $spId ?>"
+                >
+
+                <input
+                    type="hidden"
+                    name="id"
+                    value="<?= $spId ?>"
+                >
+
+                <button
+                    type="submit"
+                    name="hanh_dong"
+                    value="them"
+                    class="nut-bam nut-bam--chinh"
+                    data-bt7-ct="ct029"
+                >
                     🛒 Thêm vào giỏ hàng
                 </button>
             </form>
 
-            <button type="button" id="nut-yeu-thich-ct" data-yeu-thich="<?= e($spId) ?>" class="nut-bam" style="padding: 15px 30px; background: white; border: 2px solid #dc2626; color: #dc2626; border-radius: 6px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: background 0.3s;">
+            <!-- Nút yêu thích -->
+            <button
+                type="button"
+                id="nut-yeu-thich-ct"
+                data-yeu-thich="<?= $spId ?>"
+                class="nut-bam"
+                data-bt7-ct="ct030"
+            >
                 ♡ Yêu thích
             </button>
+
         </div>
 
     </article>
+
 </main>
 
-<!-- Nạp đầy đủ các tệp JavaScript xử lý giỏ hàng và tìm kiếm -->
-<script src="js/gio-hang.js"></script>
-<script src="js/tim-kiem.js"></script>
+<!-- JavaScript của trang chi tiết -->
+<script src="js/gio-hang.js" defer></script>
+<script src="js/tim-kiem.js" defer></script>
 <script type="module" src="js/trang-chi-tiet.js"></script>
 
-<?php
-require_once __DIR__ . '/inc/footer.php';
-?>
+<?php require_once __DIR__ . '/inc/footer.php'; ?>

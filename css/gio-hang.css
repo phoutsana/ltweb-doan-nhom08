@@ -1,0 +1,162 @@
+/* BT7 — Giao dien gio hang Fashion Store. Khong su dung CSS inline. */
+.gio-hang-page {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+.gio-hang-section {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+.gio-hang-heading {
+  color: #1e3a8a;
+  border-left: 5px solid #2563eb;
+  padding-left: 15px;
+  margin: 0 0 20px;
+}
+.gio-hang-error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 15px;
+  border: 1px solid #f87171;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+.gio-hang-empty {
+  background: #fff;
+  padding: 40px 20px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+}
+.gio-hang-empty p {
+  font-size: 1.2em;
+  color: #dc2626;
+  font-weight: 700;
+  margin: 0 0 20px;
+}
+.gio-hang-shop-link { display: inline-block; padding: 10px 25px; }
+.gio-hang-table-wrap {
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+}
+.gio-hang-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+}
+.gio-hang-table thead tr, .gio-hang-table tfoot tr { background: #f8fafc; }
+.gio-hang-table thead tr { border-bottom: 2px solid #e5e7eb; }
+.gio-hang-table tbody tr { border-bottom: 1px solid #e5e7eb; }
+.gio-hang-table tbody tr:hover { background: #f8fafc; }
+.gio-hang-table th {
+  padding: 15px;
+  text-align: left;
+  color: #1e3a8a;
+}
+.gio-hang-table td { padding: 15px; }
+.gio-hang-center { text-align: center !important; }
+.gio-hang-product-img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+.gio-hang-product-name { font-weight: 700; }
+.gio-hang-product-name a { text-decoration: none; color: #2563eb; }
+.gio-hang-product-name a:hover { text-decoration: underline; }
+.gio-hang-unit-price { color: #4b5563; }
+.gio-hang-total-price { color: #dc2626; font-weight: 700; }
+.gio-hang-form-qty {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  margin: 0;
+}
+.gio-hang-form-qty input[type="number"] {
+  width: 65px;
+  text-align: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 5px;
+}
+.gio-hang-btn-update {
+  padding: 6px 10px;
+  background: #0ea5e9;
+  border: 1px solid #0ea5e9;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+}
+.gio-hang-form-delete, .gio-hang-form-clear, .gio-hang-form-checkout { margin: 0; }
+.gio-hang-btn-delete {
+  padding: 6px 12px;
+  background: #fee2e2;
+  border: 1px solid #dc2626;
+  color: #dc2626;
+  font-size: .9em;
+  cursor: pointer;
+}
+.gio-hang-summary-label {
+  text-align: right;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: #1f2937;
+  padding: 20px 15px;
+}
+.gio-hang-summary-value {
+  color: #dc2626;
+  font-weight: 700;
+  font-size: 1.3em;
+  padding: 20px 15px;
+}
+.gio-hang-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+.gio-hang-actions-right { display: flex; align-items: center; gap: 10px; }
+.gio-hang-btn-clear { background: #fff; border: 1px solid #64748b; color: #475569; }
+.gio-hang-btn-shop { background: #fff; }
+.gio-hang-btn-checkout { border: 0; cursor: pointer; }
+.gio-hang-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (max-width: 768px) {
+  .gio-hang-page { padding: 0 20px; margin: 24px auto; }
+  .gio-hang-table-wrap {
+    margin: 0 -20px;
+    width: calc(100% + 40px);
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+  }
+  .gio-hang-table td, .gio-hang-table th { padding: 10px 8px; }
+  .gio-hang-actions { flex-direction: column; align-items: stretch; }
+  .gio-hang-actions-right { flex-direction: column; align-items: stretch; width: 100%; }
+  .gio-hang-actions button, .gio-hang-actions a {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 12px;
+    text-align: center;
+  }
+}
