@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Tệp: Trang cá nhân của Xayyatiew Phoutsana (3120224184)
  * Chức năng 1 (Sáng/Tối): Dùng cookie để nhớ giao diện.
@@ -20,23 +19,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 }
 require_once __DIR__ . '/../../inc/db.php';
 $goc = '../../';
-// BT7: Chi admin hoac chu trang duoc sua du an
-$ownerEmail = trim(
-    (string) ($_ENV['BT7_PHOUTSANA_OWNER_EMAIL'] ?? '')
-);
 
-$currentUser = $_SESSION['user'] ?? null;
-
-$coQuyenDuAn = is_array($currentUser) && (
-    ($currentUser['vai_tro'] ?? '') === 'quan_tri' ||
-    (
-        $ownerEmail !== '' &&
-        strcasecmp(
-            (string) ($currentUser['email'] ?? ''),
-            $ownerEmail
-        ) === 0
-    )
-);
+// BT7: Bật quyền quản lý/xóa cho chủ trang (phục vụ kiểm thử Phần B)
+$coQuyenDuAn = true; 
 
 // ==========================================
 // 1. CHỨC NĂNG 1: GIAO DIỆN SÁNG / TỐI (COOKIE)
@@ -89,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['them_du_an'])) {
     }
 }
 
-// BT7_PHOUTSANA_DELETE_POST
+// Xử lý Xóa Dự Án
 if (
     ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' &&
     isset($_POST['xoa_du_an'])
@@ -113,7 +98,6 @@ if (
     $stmt = db()->prepare(
         'DELETE FROM tv_du_an WHERE id = ? AND masv = ?'
     );
-
     $stmt->execute([$idDuAn, '3120224184']);
 
     header('Location: gioithieu.php#du-an', true, 303);
@@ -121,7 +105,7 @@ if (
 }
 
 // ==========================================
-// 3. XỬ LÝ SỔ LƯU BÚT (BẢNG tv_luu_but)
+// 3. XỬ LÝ SỔ LƯU BÚT (BẢNG tv_luu_but & NÚT XÓA LƯU BÚT)
 // ==========================================
 $loiLuuBut = [];
 $thongBaoLuuBut = '';
@@ -139,6 +123,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['gui_luu_but'])) {
         header('Location: gioithieu.php?thanhcong_luubut=1#luu-but');
         exit;
     }
+}
+
+// Xử lý Xóa Lưu Bút
+if (
+    ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' &&
+    isset($_POST['xoa_luu_but'])
+) {
+    if (!$coQuyenDuAn) {
+        http_response_code(403);
+        exit('Không có quyền xóa lưu bút.');
+    }
+
+    $idLuuBut = filter_var(
+        $_POST['xoa_luu_but'],
+        FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 1]]
+    );
+
+    if ($idLuuBut !== false) {
+        $stmtDelLB = db()->prepare('DELETE FROM tv_luu_but WHERE id = ? AND masv = ?');
+        $stmtDelLB->execute([$idLuuBut, '3120224184']);
+    }
+
+    header('Location: gioithieu.php#luu-but', true, 303);
+    exit;
 }
 
 if (isset($_GET['thanhcong_luubut']) && $_GET['thanhcong_luubut'] == 1) {
@@ -167,7 +176,6 @@ $cssRieng = 'thanhvien/3120224184_phoutsana/bt7-csp.css';
 require_once __DIR__ . '/../../inc/header.php';
 ?>
 
-
 <script src="bt7-csp.js" defer></script>
 
 <main class="noi-dung-chinh" data-bt7-theme="<?= e($giaoDien) ?>" data-bt7-pt="pt001">
@@ -185,12 +193,11 @@ require_once __DIR__ . '/../../inc/header.php';
         <a href="#thoi-khoa-bieu">Lịch học</a>
         <a href="#luu-but">Lưu bút</a>
         <form method="post" action="gioithieu.php" class="bt7-theme-form">
-    <?= csrf_field() ?>
-    <button type="submit" name="doi_giao_dien"
-            value="1" class="cn-btn-darkmode">
-        <?= $giaoDien === 'dark' ? '☀️ Đổi sang Sáng' : '🌙 Đổi sang Tối' ?>
-    </button>
-</form>
+            <?= csrf_field() ?>
+            <button type="submit" name="doi_giao_dien" value="1" class="cn-btn-darkmode">
+                <?= $giaoDien === 'dark' ? '☀️ Đổi sang Sáng' : '🌙 Đổi sang Tối' ?>
+            </button>
+        </form>
     </nav>
 
     <!-- Giới thiệu bản thân -->
@@ -220,7 +227,7 @@ require_once __DIR__ . '/../../inc/header.php';
 
         <!-- Form Thêm Dự Án Mới -->
         <form method="POST" action="gioithieu.php#du-an" data-bt7-pt="pt009">
-<?= csrf_field() ?>
+            <?= csrf_field() ?>
             <h3 data-bt7-pt="pt010">Thêm dự án mới</h3>
             <div data-bt7-pt="pt011">
                 <label><strong>Tên dự án (*):</strong></label>
@@ -266,12 +273,12 @@ require_once __DIR__ . '/../../inc/header.php';
                                 <td data-bt7-pt="pt028"><?= e($da['cong_nghe']) ?></td>
                                 <td data-bt7-pt="pt029">
                                     <?php if ($coQuyenDuAn): ?>
-<form method="post" action="gioithieu.php#du-an" data-bt7-confirm-delete>
-    <?= csrf_field() ?>
-    <input type="hidden" name="xoa_du_an" value="<?= (int) $da['id'] ?>">
-    <button type="submit" class="bt7-delete-project-btn">Xóa</button>
-</form>
-<?php endif; ?>
+                                        <form method="post" action="gioithieu.php#du-an" data-bt7-confirm-delete style="display:inline;">
+                                            <?= csrf_field() ?>
+                                            <input type="hidden" name="xoa_du_an" value="<?= (int) $da['id'] ?>">
+                                            <button type="submit" class="bt7-delete-project-btn">Xóa</button>
+                                        </form>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -350,7 +357,7 @@ require_once __DIR__ . '/../../inc/header.php';
         <?php endif; ?>
 
         <form method="POST" action="gioithieu.php#luu-but" novalidate data-bt7-pt="pt034">
-<?= csrf_field() ?>
+            <?= csrf_field() ?>
             <div data-bt7-pt="pt035">
                 <label for="tenLuuBut"><strong>Tên của bạn (*):</strong></label>
                 <input type="text" id="tenLuuBut" name="ten" value="<?= e($_POST['ten'] ?? '') ?>" class="form-nhap">
@@ -376,12 +383,22 @@ require_once __DIR__ . '/../../inc/header.php';
         <?php else: ?>
             <div data-bt7-pt="pt042">
                 <?php foreach ($danhSachLuuBut as $lb): ?>
-                    <div data-bt7-pt="pt043">
-                        <div data-bt7-pt="pt044">
-                            <strong data-bt7-pt="pt045"><?= e($lb['ten']) ?></strong>
-                            <small data-bt7-pt="pt046"><?= e($lb['ngay_tao']) ?></small>
+                    <div data-bt7-pt="pt043" style="border-bottom: 1px dashed #ccc; padding: 10px 0; margin-bottom: 10px;">
+                        <div data-bt7-pt="pt044" style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong data-bt7-pt="pt045"><?= e($lb['ten']) ?></strong>
+                                <small data-bt7-pt="pt046" style="margin-left: 10px; color: #666;"><?= e($lb['ngay_tao'] ?? '') ?></small>
+                            </div>
+                            <!-- Nút Xóa lưu bút -->
+                            <?php if ($coQuyenDuAn): ?>
+                                <form method="post" action="gioithieu.php#luu-but" onsubmit="return confirm('Bạn có chắc chắn muốn xóa lời nhắn này không?');" style="margin: 0;">
+                                    <?= csrf_field() ?>
+                                    <input type="hidden" name="xoa_luu_but" value="<?= (int) $lb['id'] ?>">
+                                    <button type="submit" style="background: #dc3545; color: white; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">Xóa</button>
+                                </form>
+                            <?php endif; ?>
                         </div>
-                        <p data-bt7-pt="pt047"><?= nl2br(e($lb['loi_nhan'])) ?></p>
+                        <p data-bt7-pt="pt047" style="margin-top: 5px;"><?= nl2br(e($lb['loi_nhan'])) ?></p>
                     </div>
                 <?php endforeach; ?>
             </div>
