@@ -123,7 +123,7 @@ Các tài khoản dưới đây được sử dụng để kiểm tra chức nă
 
 | Vai trò | Email | Mật khẩu |
 |---|---|---|
-| Quản trị viên | `admin@gmail.com` | `123456` |
+| Quản trị viên | `admin@fashionstore.com` | `123456` |
 | Khách hàng | `khach1@gmail.com` | `555555` |
 
 *Không sử dụng các mật khẩu kiểm thử này cho tài khoản thực tế hoặc môi trường triển khai công khai.*
