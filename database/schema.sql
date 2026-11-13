@@ -1,5 +1,4 @@
--- schema.sql: Khởi tạo cơ sở dữ liệu cho Fashion Store
--- Lưu ý: DROP DATABASE sẽ xóa toàn bộ dữ liệu cũ.
+-- schema.sql: Khởi tạo cơ sở dữ liệu cho Fashion Store (Đã đồng bộ chuẩn 100%)
 DROP DATABASE IF EXISTS ltweb_nhom08;
 
 CREATE DATABASE ltweb_nhom08
@@ -27,7 +26,7 @@ CREATE TABLE danh_muc (
     slug VARCHAR(100) NOT NULL UNIQUE
 ) ENGINE=InnoDB;
 
--- 3. San pham (Đã bổ sung thêm các cột mau_sac, kich_thuoc, video)
+-- 3. San pham
 CREATE TABLE san_pham (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     danh_muc_id INT UNSIGNED NOT NULL,
@@ -95,7 +94,7 @@ CREATE TABLE chi_tiet_don (
     INDEX idx_chi_tiet_san_pham (san_pham_id)
 ) ENGINE=InnoDB;
 
--- 6. Lien he (Đã bổ sung cột sdt và chu_de)
+-- 6. Lien he
 CREATE TABLE lien_he (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     ho_ten VARCHAR(100) NOT NULL,
@@ -118,49 +117,39 @@ CREATE TABLE thanh_vien (
 
 -- 8. Bảng lưu bút cá nhân (Phần B - tv_luu_but)
 CREATE TABLE tv_luu_but (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    mssv VARCHAR(50) NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    masv VARCHAR(50) NOT NULL,
     ten VARCHAR(100) NOT NULL,
     loi_nhan TEXT NOT NULL,
-    ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_tv_luubut FOREIGN KEY (mssv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
-) ENGINE=InnoDB;
+    thoi_gian DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tv_luubut FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 9. Bảng dự án cá nhân (Phần B - tv_du_an)
 CREATE TABLE tv_du_an (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    mssv VARCHAR(50) NOT NULL,
-    ten_du_an VARCHAR(200) NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    masv VARCHAR(50) NOT NULL,
+    ten_du_an VARCHAR(150) NOT NULL,
     mo_ta TEXT,
     cong_nghe VARCHAR(100),
-    ngay_tao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_tv_duan FOREIGN KEY (mssv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
-) ENGINE=InnoDB;
--- 10. Bang thoi khoa bieu ca nhan
--- Phan B - Ngo Huong Giang - MSSV: 3120224040
--- Luu thoi khoa bieu de tra cuu va xuat CSV bang MySQL
+    link_demo VARCHAR(255),
+    CONSTRAINT fk_tv_duan FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 10. Bảng thời khóa biểu cá nhân (Hương Giang)
 CREATE TABLE tv_thoi_khoa_bieu (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    mssv VARCHAR(50) NOT NULL,
+    masv VARCHAR(50) NOT NULL,
     thu TINYINT UNSIGNED NOT NULL,
     buoi_sang VARCHAR(200) NOT NULL,
     buoi_chieu VARCHAR(200) NOT NULL,
 
-    CONSTRAINT uq_tkb_mssv_thu
-        UNIQUE (mssv, thu),
-
-    CONSTRAINT chk_tkb_thu
-        CHECK (thu BETWEEN 2 AND 6),
-
-    CONSTRAINT fk_tkb_thanh_vien
-        FOREIGN KEY (mssv)
-        REFERENCES thanh_vien(ma_sv)
-        ON DELETE CASCADE
-        ON UPDATE CASCADE
+    CONSTRAINT uq_tkb_masv_thu UNIQUE (masv, thu),
+    CONSTRAINT chk_tkb_thu CHECK (thu BETWEEN 2 AND 6),
+    CONSTRAINT fk_tkb_thanh_vien FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
--- Bảng kỹ năng cá nhân của KEOPHOXAY Phaeva (3120224182)
+-- 11. Bảng kỹ năng cá nhân (Phaeva)
 CREATE TABLE IF NOT EXISTS tv_ky_nang (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     masv VARCHAR(50) NOT NULL,
@@ -170,7 +159,7 @@ CREATE TABLE IF NOT EXISTS tv_ky_nang (
     CONSTRAINT fk_tv_ky_nang_thanh_vien FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Bảng lưu điểm học phần cá nhân của Phaeva
+-- 12. Bảng lưu điểm học phần (Phaeva)
 CREATE TABLE IF NOT EXISTS tv_diem_hoc_phan (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     masv VARCHAR(50) NOT NULL,
@@ -182,7 +171,7 @@ CREATE TABLE IF NOT EXISTS tv_diem_hoc_phan (
     CONSTRAINT fk_tv_diem_thanh_vien FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Bảng riêng duy nhất của Mạnh (tiền tố tv_)
+-- 13. Bảng đánh giá (Mạnh)
 CREATE TABLE IF NOT EXISTS tv_danh_gia (
     id INT AUTO_INCREMENT PRIMARY KEY,
     masv VARCHAR(50) NOT NULL,
@@ -192,43 +181,24 @@ CREATE TABLE IF NOT EXISTS tv_danh_gia (
     thoi_gian DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_danhgia_thanhvien FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
--- 1. Bảng Sổ lưu bút (Chuyển từ JSONL sang MySQL có phân trang và quản lý)
-CREATE TABLE IF NOT EXISTS `tv_luu_but` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `masv` VARCHAR(50) NOT NULL,
-  `ten_nguoi_gui` VARCHAR(100) NOT NULL,
-  `noi_dung` TEXT NOT NULL,
-  `thoi_gian` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT `fk_luubut_thanhvien` FOREIGN KEY (`masv`) REFERENCES `thanh_vien`(`ma_sv`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 2. Bảng Danh sách Dự án (Có tìm kiếm và lọc công nghệ)
-CREATE TABLE IF NOT EXISTS `tv_du_an` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `masv` VARCHAR(50) NOT NULL,
-  `ten_du_an` VARCHAR(150) NOT NULL,
-  `mo_ta` TEXT,
-  `cong_nghe` VARCHAR(100),
-  `link_demo` VARCHAR(255),
-  CONSTRAINT `fk_duan_thanhvien` FOREIGN KEY (`masv`) REFERENCES `thanh_vien`(`ma_sv`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
--- PHAN B - NGUYEN SON CHU (3120224020): CHI DAN CUOI schema.sql.
--- Khong sua 10 bang chung cua nhom.
+-- 14. Bảng mục tiêu (Sơn Chu)
 CREATE TABLE tv_muc_tieu (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    mssv VARCHAR(50) NOT NULL,
+    masv VARCHAR(50) NOT NULL,
     noi_dung VARCHAR(120) NOT NULL,
     hoan_thanh TINYINT(1) NOT NULL DEFAULT 0,
     ngay_tao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_chu_muc_tieu_mssv (mssv),
-    CONSTRAINT fk_chu_muc_tieu FOREIGN KEY (mssv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE,
+    INDEX idx_chu_muc_tieu_masv (masv),
+    CONSTRAINT fk_chu_muc_tieu FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE,
     CONSTRAINT ck_chu_muc_tieu_dodai CHECK (CHAR_LENGTH(TRIM(noi_dung)) BETWEEN 3 AND 120),
     CONSTRAINT ck_chu_muc_tieu_trangthai CHECK (hoan_thanh IN (0,1))
 ) ENGINE=InnoDB;
 
+-- 15. Bảng câu hỏi trắc nghiệm (Sơn Chu)
 CREATE TABLE tv_cau_hoi (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    mssv VARCHAR(50) NOT NULL,
+    masv VARCHAR(50) NOT NULL,
     ma_cau VARCHAR(10) NOT NULL,
     noi_dung VARCHAR(255) NOT NULL,
     lua_chon_a VARCHAR(255) NOT NULL,
@@ -236,18 +206,19 @@ CREATE TABLE tv_cau_hoi (
     lua_chon_c VARCHAR(255) NOT NULL,
     dap_an CHAR(1) NOT NULL,
     giai_thich TEXT NOT NULL,
-    UNIQUE KEY uq_chu_cauhoi (mssv, ma_cau),
-    CONSTRAINT fk_chu_cauhoi FOREIGN KEY (mssv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE,
+    UNIQUE KEY uq_chu_cauhoi (masv, ma_cau),
+    CONSTRAINT fk_chu_cauhoi FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE,
     CONSTRAINT ck_chu_cauhoi_dapan CHECK (dap_an IN ('a','b','c'))
 ) ENGINE=InnoDB;
 
+-- 16. Bảng kết quả trắc nghiệm (Sơn Chu)
 CREATE TABLE tv_ket_qua_trac_nghiem (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    mssv VARCHAR(50) NOT NULL,
+    masv VARCHAR(50) NOT NULL,
     so_cau_dung TINYINT UNSIGNED NOT NULL,
     tong_cau TINYINT UNSIGNED NOT NULL,
     ngay_lam DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_chu_ketqua (mssv, ngay_lam),
-    CONSTRAINT fk_chu_ketqua FOREIGN KEY (mssv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE,
+    INDEX idx_chu_ketqua (masv, ngay_lam),
+    CONSTRAINT fk_chu_ketqua FOREIGN KEY (masv) REFERENCES thanh_vien(ma_sv) ON DELETE CASCADE,
     CONSTRAINT ck_chu_ketqua CHECK (tong_cau > 0 AND so_cau_dung <= tong_cau)
 ) ENGINE=InnoDB;

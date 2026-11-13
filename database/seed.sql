@@ -1,17 +1,14 @@
--- seed.sql: Chèn dữ liệu mẫu cho Fashion Store (Khớp 100% với dữ liệu hiện tại trên phpMyAdmin)
+-- =====================================================
+-- SEED.SQL: DỮ LIỆU MẪU CHUẨN CHO FASHION STORE & PHẦN B
+-- =====================================================
 
 -- 1. Chèn tài khoản mẫu
--- 1. Chèn tài khoản mẫu
--- Admin: admin@fashionstore.com / 123456
--- Khách hàng 1: khach1@gmail.com / 555555
--- Khách hàng 2: khach2@gmail.com / 123456
-
 INSERT INTO nguoi_dung (email, mat_khau, ho_ten, vai_tro, ngay_tao) VALUES
 ('admin@fashionstore.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Quản trị viên', 'quan_tri', NOW()),
 ('khach1@gmail.com', '$2y$10$jMd3STvdUHTq/dcPXWLI2exernFtpfkb11hYIVKT7VBv2iuUNZ68K', 'Nguyễn Văn Khách', 'khach_hang', NOW()),
 ('khach2@gmail.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Trần Thị Mua', 'khach_hang', NOW());
 
--- 2. Chèn danh mục
+-- 2. Chèn danh mục sản phẩm
 INSERT INTO danh_muc (ten, slug) VALUES
 ('Áo Nam', 'ao-nam'),
 ('Quần Nam', 'quan-nam'),
@@ -19,9 +16,8 @@ INSERT INTO danh_muc (ten, slug) VALUES
 ('Phụ Kiện', 'phu-kien'),
 ('Bộ Sưu Tập Cũ', 'bo-suu-tap-cu');
 
--- 3. Chèn 30 sản phẩm (Chính xác theo CSDL hiện tại)
+-- 3. Chèn 30 sản phẩm mẫu
 INSERT INTO san_pham (danh_muc_id, ten, gia, ton_kho, anh, mau_sac, kich_thuoc, video, mo_ta, ngay_tao) VALUES
--- Sản phẩm 1-12
 (1, 'Áo thun nam basic', 150000, 50, 'images/ao-thun-nam.jpg', 'Xanh', 'M, L, XL', 'https://www.youtube.com/embed/Q4T5uVfQ03w?si=dF3zYc-sNa3FOJVl', 'Áo polo nam thiết kế đơn giản, dễ phối đồ.', NOW()),
 (1, 'Áo sơ mi nữ thanh lịch', 350000, 20, 'images/ao-so-mi-nu.jpg', 'Trắng', 'S, M, L', 'https://www.youtube.com/embed/Hf_dMGhF7zM?si=63-j2AgRkYY17aDy', 'Áo sơ mi nữ màu trắng, phù hợp đi học và đi làm.', NOW()),
 (1, 'Áo khoác gió', 450000, 0, 'images/Ao_khoac_gio.jpg', 'Đen', '29, 30, 31, 32', 'https://www.youtube.com/embed/C8373DrkI0w?si=BDVWzNU5Fe57z0c3', 'Áo khoác gió nhẹ, phù hợp sử dụng khi đi ngoài trời...', NOW()),
@@ -34,8 +30,6 @@ INSERT INTO san_pham (danh_muc_id, ten, gia, ton_kho, anh, mau_sac, kich_thuoc, 
 (2, 'Quần kaki nam', 400000, 25, 'images/Quan_kaki_nam.jpg', 'Vàng Đất', '29, 30, 31, 32', 'https://www.youtube.com/embed/CRd_dkot4BM?si=XNjcglVwoKsfcnN4', 'Quần kaki nam phù hợp đi học và đi làm.', NOW()),
 (2, 'Quần short nam', 250000, 40, 'images/Quan_short_nam.jpg', 'Đen, Trắng', 'M, L, XL', 'https://www.youtube.com/embed/ABYuNdnU7Jk?si=v4j2jiIHc-M6HOrG', 'Quần short nam thoải mái cho hoạt động hằng ngày.', NOW()),
 (2, 'Quần jogger nam', 300000, 0, 'images/quan-jogger-nam.jpg', 'Đen, Trắng', 'M, L, XL', 'https://www.youtube.com/embed/g1aicLHOiks?si=qB_2YpZ0JTyFlWNv', 'Quần jogger nam thoải mái cho phong cách năng động...', NOW()),
-
--- Sản phẩm 13-30
 (2, 'Quần đùi mặc nhà', 100000, 60, 'images/quan-dui.jpg', 'Đen', 'M, L, XL', 'https://www.youtube.com/embed/kVR902BXfyQ?si=OYBCXOmcXy0TBkzY', 'Mát mẻ, thoải mái.', NOW()),
 (2, 'Quần kaki ống rộng', 380000, 18, 'images/quan-kaki.jpg', 'Kem', 'M, L, XL', 'https://www.youtube.com/embed/PX-KZoPpIRA?si=S7m6pPsAcwibt7bj', 'Phong cách trẻ trung hiện đại.', NOW()),
 (2, 'Quần jean rách gối cá tính', 450000, 8, 'images/quan-rach.jpg', 'Xanh', 'M, L, XL', 'https://www.youtube.com/embed/ZLDnFExYuMA?si=Uexf_TA2AJC_daNh', 'Dành cho các bạn thích sự phá cách.', NOW()),
@@ -54,133 +48,75 @@ INSERT INTO san_pham (danh_muc_id, ten, gia, ton_kho, anh, mau_sac, kich_thuoc, 
 (4, 'Kính mát thời trang chống UV', 250000, 30, 'images/kinh-mat.jpg', 'Đen', 'FreeSize', 'https://www.youtube.com/embed/tc5yvbyyAzM?si=6cMgwWVMn1NndP4V', 'Bảo vệ mắt khỏi ánh nắng.', NOW()),
 (4, 'Vớ (tất) cotton nam nữ', 300000, 100, 'images/tat.jpg', 'Trắng', 'FreeSize', 'https://www.youtube.com/embed/hveaxrI6JTM?si=Hrld4_0-rNVSQtbp', 'Êm chân, thấm hút mồ hôi.', NOW()),
 (4, 'Khăn choàng cổ len', 180000, 15, 'images/khan-choang.jpg', 'Xanh', 'FreeSize', 'https://www.youtube.com/embed/hGoBWtIfwko?si=jURDQgoqj0ceYDhb', 'Giữ ấm cổ mùa đông.', NOW()),
-(2, 'Quần jean nam Levi''s', 850000, 15, 'images/quan-jean-nam1.jpg', 'Xanh', '29, 30, 31', 'https://www.youtube.com/embed/YVVTN-MwLLs?si=Qjj1SWqdp9KijCX7', 'Quần jean Levi''s chính hãng.', NOW());
+(2, 'Quần jean nam Levi\'s', 850000, 15, 'images/quan-jean-nam1.jpg', 'Xanh', '29, 30, 31', 'https://www.youtube.com/embed/YVVTN-MwLLs?si=Qjj1SWqdp9KijCX7', 'Quần jean Levi\'s chính hãng.', NOW());
 
--- 4. Chèn một số dữ liệu liên hệ mẫu
--- 4. Chèn một số dữ liệu liên hệ mẫu (Cập nhật SĐT và Chủ đề)
+-- 4. Chèn liên hệ mẫu
 INSERT INTO lien_he (ho_ten, email, sdt, chu_de, noi_dung, anh, ngay_gui) VALUES
 ('Hoàng Văn Test', 'test@gmail.com', '0912345678', 'Tư vấn mua hàng', 'Sản phẩm áo thun mặc rất thích, shop tư vấn giúp mình size L nhé.', NULL, NOW()),
 ('Lê Thị Thảo', 'thao@gmail.com', '0987654321', 'Khác', 'Cho mình hỏi quần Jean Levi\'s còn màu sáng không ạ?', 'lienhe_sample.jpg', NOW());
 
--- 5. Chèn dữ liệu Phần B (Thành viên & Bảng cá nhân)
-INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES
-('3120224184', 'Xayyatiew Phoutsana', 'Thành viên nhóm 08')
+-- 5. Dữ liệu Phần B của các thành viên
+-- Phoutsana (3120224184)
+INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES ('3120224184', 'Xayyatiew Phoutsana', 'Thành viên nhóm 08')
 ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
-INSERT INTO tv_du_an (mssv, ten_du_an, mo_ta, cong_nghe) VALUES 
+INSERT INTO tv_du_an (masv, ten_du_an, mo_ta, cong_nghe) VALUES 
 ('3120224184', 'Hệ thống Gợi ý Phim', 'Xây dựng thuật toán TF-IDF và Cosine Similarity gợi ý phim', 'HTML, CSS, JS, Python'),
 ('3120224184', 'Khóa cửa thông minh RFID', 'Nguyên mẫu khóa cửa tự động qua thẻ RFID và Arduino', 'Arduino C, C++, IoT');
 
-INSERT INTO tv_luu_but (mssv, ten, loi_nhan) VALUES 
+INSERT INTO tv_luu_but (masv, ten, loi_nhan) VALUES 
 ('3120224184', 'Nguyễn Văn Bạn', 'Trang cá nhân thiết kế rất đẹp và trực quan!');
 
--- Them thong tin thanh vien Giang
-
-INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom)
-VALUES
-('3120224040', 'Ngô Hương Giang', 'Thành viên nhóm 08');
-
-INSERT INTO tv_thoi_khoa_bieu
-    (mssv, thu, buoi_sang, buoi_chieu)
-VALUES
-    ('3120224040', 2, 'Học tập', 'Tự học'),
-    ('3120224040', 3, 'Học tập', 'Lập trình'),
-    ('3120224040', 4, 'Học tập', 'Làm đồ án'),
-    ('3120224040', 5, 'Học tập', 'Lập trình'),
-    ('3120224040', 6, 'Học tập', 'Tự học');
-
--- Thêm thông tin của Lê Văn Mạnh vào bảng thanh_vien chung
-INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) 
-VALUES ('3120224094', 'Lê Văn Mạnh', 'Thành viên nhóm 08')
+-- Ngô Hương Giang (3120224040)
+INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES ('3120224040', 'Ngô Hương Giang', 'Thành viên nhóm 08')
 ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
--- Dữ liệu mẫu cho Sổ lưu bút của Mạnh
-INSERT INTO tv_luu_but (masv, ten_nguoi_gui, noi_dung) VALUES
+INSERT INTO tv_thoi_khoa_bieu (masv, thu, buoi_sang, buoi_chieu) VALUES 
+('3120224040', 2, 'Học tập', 'Tự học'),
+('3120224040', 3, 'Học tập', 'Lập trình'),
+('3120224040', 4, 'Học tập', 'Làm đồ án'),
+('3120224040', 5, 'Học tập', 'Lập trình'),
+('3120224040', 6, 'Học tập', 'Tự học');
+
+-- Lê Văn Mạnh (3120224094)
+INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES ('3120224094', 'Lê Văn Mạnh', 'Thành viên nhóm 08')
+ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
+
+INSERT INTO tv_luu_but (masv, ten, loi_nhan) VALUES
 ('3120224094', 'Nguyễn Văn A', 'Trang cá nhân thiết kế đẹp và mượt quá bạn ơi!'),
 ('3120224094', 'Trần Thị B', 'Chúc đồ án nhóm mình đạt điểm A+ nhé!');
 
--- Dữ liệu mẫu cho Dự án cá nhân của Mạnh
-INSERT INTO tv_du_an (masv, ten_du_an, mo_ta, cong_nghe, link_demo) VALUES
-('3120224094', 'Website Bán Hàng Điện Tử', 'Xây dựng trang thương mại điện tử bằng PHP thuần và MySQL.', 'PHP, MySQL, Bootstrap', '#'),
-('3120224094', 'Ứng dụng Quản lý Công việc', 'App To-do list cá nhân hỗ trợ phân chia task theo ngày.', 'JavaScript, TailwindCSS', '#');
+INSERT INTO tv_du_an (masv, ten_du_an, mo_ta, cong_nghe) VALUES
+('3120224094', 'Website Bán Hàng Điện Tử', 'Xây dựng trang thương mại điện tử bằng PHP thuần và MySQL.', 'PHP, MySQL, Bootstrap'),
+('3120224094', 'Ứng dụng Quản lý Công việc', 'App To-do list cá nhân hỗ trợ phân chia task theo ngày.', 'JavaScript, TailwindCSS');
 
-INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES 
-('3120224182', 'KEOPHOXAY Phaeva', 'Thiết kế giao diện & Hỗ trợ code')
+-- KEOPHOXAY Phaeva (3120224182)
+INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES ('3120224182', 'KEOPHOXAY Phaeva', 'Thiết kế giao diện & Hỗ trợ code')
 ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
 INSERT INTO tv_ky_nang (masv, tieu_de, mo_ta, muc) VALUES
 ('3120224182', 'Lập trình & Đánh dấu', 'HTML5, CSS3, căn bản về Lập trình web.', 'lap-trinh'),
 ('3120224182', 'Công cụ & Quản lý mã nguồn', 'Sử dụng Git và GitHub để làm việc nhóm.', 'cong-cu'),
 ('3120224182', 'Kỹ năng mềm', 'Kỹ năng làm việc nhóm, giao tiếp và lên kế hoạch dự án.', 'ky-nang-mem');
-INSERT INTO tv_du_an (mssv, ten_du_an, mo_ta, cong_nghe) VALUES
-('3120224184', 'Hệ thống Gợi ý Phim', 'Xây dựng thuật toán TF-IDF và Cosine Similarity gợi ý phim', 'HTML, CSS, JS, Python'),
-('3120224184', 'Khóa cửa thông minh RFID', 'Nguyên mẫu khóa cửa tự động qua thẻ RFID và Arduino', 'Arduino C, C++, IoT');
 
-INSERT INTO tv_luu_but (mssv, ten, loi_nhan) VALUES
-('3120224184', 'Nguyễn Văn Bạn', 'Trang cá nhân thiết kế rất đẹp và trực quan!');
+-- Nguyễn Sơn Chu (3120224020)
+INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES ('3120224020', 'Nguyễn Sơn Chu', 'Thành viên nhóm 08')
+ON DUPLICATE KEY UPDATE ho_ten = VALUES(ho_ten);
 
-
--- =====================================================
--- PHAN B - NGUYEN SON CHU - MSSV: 3120224020
--- =====================================================
-
--- Them thong tin thanh vien
-INSERT INTO thanh_vien (ma_sv, ho_ten, vai_tro_nhom) VALUES
-('3120224020', 'Nguyễn Sơn Chu', 'Thành viên nhóm 08');
-
--- Du lieu mau: Quan ly muc tieu hoc tap
-INSERT INTO tv_muc_tieu (mssv, noi_dung, hoan_thanh) VALUES
+INSERT INTO tv_muc_tieu (masv, noi_dung, hoan_thanh) VALUES
 ('3120224020', 'Ôn PHP 30 phút mỗi ngày', 0),
 ('3120224020', 'Tìm hiểu MySQL và PDO', 1),
 ('3120224020', 'Hoàn thành Bài tập nhóm 6', 0);
 
--- Du lieu mau: Cau hoi trac nghiem lap trinh
-INSERT INTO tv_cau_hoi
-(mssv, ma_cau, noi_dung, lua_chon_a, lua_chon_b, lua_chon_c, dap_an, giai_thich)
-VALUES
-('3120224020', 'q1',
- 'Trong PHP, tên biến bắt đầu bằng ký tự nào?',
- '$', '@', '#', 'a',
- 'Biến PHP được viết với dấu $ ở phía trước tên biến.'),
+INSERT INTO tv_cau_hoi (masv, ma_cau, noi_dung, lua_chon_a, lua_chon_b, lua_chon_c, dap_an, giai_thich) VALUES
+('3120224020', 'q1', 'Trong PHP, tên biến bắt đầu bằng ký tự nào?', '$', '@', '#', 'a', 'Biến PHP được viết với dấu $ ở phía trước tên biến.'),
+('3120224020', 'q2', 'Phương thức HTTP nào thường dùng để gửi biểu mẫu làm thay đổi dữ liệu?', 'GET', 'POST', 'HEAD', 'b', 'POST thường được dùng cho thao tác tạo hoặc cập nhật dữ liệu.'),
+('3120224020', 'q3', 'Hàm PHP nào dùng để mã hóa ký tự đặc biệt khi in ra HTML?', 'strlen()', 'json_decode()', 'htmlspecialchars()', 'c', 'htmlspecialchars() chuyển các ký tự HTML đặc biệt thành thực thể.'),
+('3120224020', 'q4', 'Dữ liệu tham số GET trong URL được truy cập qua biến nào?', '$_COOKIE', '$_GET', '$_FILES', 'b', 'Mảng $_GET chứa các tham số truy vấn được gửi qua URL.'),
+('3120224020', 'q5', 'Mục đích chính của mẫu POST - Redirect - GET (PRG) là gì?', 'Giảm dung lượng ảnh', 'Chống gửi lại biểu mẫu khi tải lại trang', 'Thay thế việc kiểm tra dữ liệu', 'b', 'Chuyển hướng sau POST thành công giúp F5 không gửi lại yêu cầu POST.');
 
-('3120224020', 'q2',
- 'Phương thức HTTP nào thường dùng để gửi biểu mẫu làm thay đổi dữ liệu?',
- 'GET', 'POST', 'HEAD', 'b',
- 'POST thường được dùng cho thao tác tạo hoặc cập nhật dữ liệu.'),
-
-('3120224020', 'q3',
- 'Hàm PHP nào dùng để mã hóa ký tự đặc biệt khi in ra HTML?',
- 'strlen()', 'json_decode()', 'htmlspecialchars()', 'c',
- 'htmlspecialchars() chuyển các ký tự HTML đặc biệt thành thực thể.'),
-
-('3120224020', 'q4',
- 'Dữ liệu tham số GET trong URL được truy cập qua biến nào?',
- '$_COOKIE', '$_GET', '$_FILES', 'b',
- 'Mảng $_GET chứa các tham số truy vấn được gửi qua URL.'),
-
-('3120224020', 'q5',
- 'Mục đích chính của mẫu POST - Redirect - GET (PRG) là gì?',
- 'Giảm dung lượng ảnh',
- 'Chống gửi lại biểu mẫu khi tải lại trang',
- 'Thay thế việc kiểm tra dữ liệu', 'b',
- 'Chuyển hướng sau POST thành công giúp F5 không gửi lại yêu cầu POST.');
-
--- Du lieu mau: Ket qua trac nghiem
-INSERT INTO tv_ket_qua_trac_nghiem
-(mssv, so_cau_dung, tong_cau)
-VALUES
-('3120224020', 4, 5);
--- Phan B - Nguyen Son Chu: Tai khoan chu trang
--- Email: chu.bt6@example.com
--- Mat khau demo: ChuDemo@2026
+INSERT INTO tv_ket_qua_trac_nghiem (masv, so_cau_dung, tong_cau) VALUES ('3120224020', 4, 5);
 
 INSERT INTO nguoi_dung (email, mat_khau, ho_ten, vai_tro)
-SELECT
-    'chu.bt6@example.com',
-    '$2y$12$Ht42hefdfSinf/gcak3gj.KHTZQeTsWAbA0mVv6vbrAsrMJjQL4UG',
-    'Nguyễn Sơn Chu',
-    'khach_hang'
-WHERE NOT EXISTS (
-    SELECT 1 FROM nguoi_dung
-    WHERE email = 'chu.bt6@example.com'
-);
+SELECT 'chu.bt6@example.com', '$2y$12$Ht42hefdfSinf/gcak3gj.KHTZQeTsWAbA0mVv6vbrAsrMJjQL4UG', 'Nguyễn Sơn Chu', 'khach_hang'
+WHERE NOT EXISTS (SELECT 1 FROM nguoi_dung WHERE email = 'chu.bt6@example.com');
